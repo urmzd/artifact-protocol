@@ -23,6 +23,9 @@ jobs:
       - name: Verify benchmarks compile
         run: cargo bench --no-run
 
+      - name: Install Chrome
+        run: sudo apt-get update && sudo apt-get install -y chromium-browser
+
       - name: Test (HTML → PDF)
         run: |
           echo "<h1>ci</h1>" > /tmp/test.html

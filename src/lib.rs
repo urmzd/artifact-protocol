@@ -60,8 +60,10 @@ impl PdfRenderer {
     /// Launch a headless Chrome browser.
     pub fn new() -> Result<Self> {
         let _span = info_span!("browser_launch").entered();
+        let sandbox = !std::env::var("CI").is_ok_and(|v| !v.is_empty());
         let options = LaunchOptions {
             headless: true,
+            sandbox,
             ..LaunchOptions::default()
         };
         let browser = Browser::new(options).context("failed to launch headless Chrome")?;
