@@ -1,0 +1,28 @@
+{
+  "protocol": "aap/1.0",
+  "id": "dashboard-001",
+  "version": 1,
+  "format": "text/html",
+  "mode": "manifest",
+  "created_at": "2026-03-29T12:00:00Z",
+  "skeleton": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<title>Dashboard</title>\n<style>\nbody { font-family: system-ui; margin: 0; }\n.layout { display: flex; min-height: 100vh; }\naside { width: 220px; background: #1e293b; color: #f8fafc; }\nmain { flex: 1; padding: 32px; }\n</style>\n</head>\n<body>\n<div class=\"layout\">\n<!-- section:nav --><!-- /section:nav -->\n<main>\n<!-- section:stats --><!-- /section:stats -->\n<!-- section:users --><!-- /section:users -->\n<!-- section:orders --><!-- /section:orders -->\n</main>\n</div>\n</body>\n</html>",
+  "section_prompts": [
+    {
+      "id": "nav",
+      "prompt": "Generate a sidebar navigation with: Dashboard (active), Analytics, Reports, Users, Orders, Settings"
+    },
+    {
+      "id": "stats",
+      "prompt": "Generate 4 stat cards in a grid: Total Users (24,891, +4.2%), Revenue ($182,430, +11.7%), Orders (3,047, -2.1%), Uptime (99.97%)"
+    },
+    {
+      "id": "users",
+      "prompt": "Generate a users table with columns: #, Name, Email, Role, Status, Joined. Include 10 sample rows with colored status badges."
+    },
+    {
+      "id": "orders",
+      "prompt": "Generate a recent orders table with columns: Order ID, Product, Amount, Date, Status. Include 10 sample rows.",
+      "dependencies": ["stats"]
+    }
+  ]
+}

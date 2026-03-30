@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/rendering-hints.json",
+  "title": "Rendering Hints",
+  "description": "Display metadata for artifact rendering",
+  "type": "object",
+  "properties": {
+    "display": {
+      "type": "string",
+      "description": "Display mode hint",
+      "anyOf": [
+        {"enum": ["code", "preview", "form", "dashboard", "document", "diagram", "raw"]},
+        {"pattern": "^x-.+$"}
+      ]
+    },
+    "language": {
+      "type": "string",
+      "description": "Syntax highlighting language (e.g., python, javascript)"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["light", "dark", "auto"],
+      "description": "Theme preference"
+    },
+    "line_numbers": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show line numbers"
+    },
+    "word_wrap": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable word wrapping"
+    },
+    "max_height": {
+      "type": "string",
+      "description": "CSS-compatible max height (e.g., 80vh, 600px)"
+    },
+    "sandbox": {
+      "type": "object",
+      "description": "Sandbox policy for executable content",
+      "properties": {
+        "allow_scripts": {"type": "boolean", "default": false},
+        "allow_forms": {"type": "boolean", "default": false},
+        "allow_same_origin": {"type": "boolean", "default": false},
+        "allow_popups": {"type": "boolean", "default": false},
+        "allow_modals": {"type": "boolean", "default": false},
+        "csp": {"type": "string", "description": "Content Security Policy directive"}
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "description": "Accessibility metadata",
+      "properties": {
+        "label": {"type": "string", "description": "Short accessible label (aria-label)"},
+        "description": {"type": "string", "description": "Longer description (aria-description)"},
+        "role": {"type": "string", "enum": ["document", "application", "img", "table"], "description": "ARIA role hint"},
+        "lang": {"type": "string", "description": "BCP 47 language tag"}
+      }
+    },
+    "progressive": {
+      "type": "object",
+      "description": "Progressive rendering control",
+      "properties": {
+        "min_bytes": {"type": "integer", "minimum": 0, "default": 0, "description": "Minimum bytes before first render"},
+        "skeleton_content": {"type": "string", "description": "Placeholder content shown while streaming"},
+        "reveal": {"type": "string", "enum": ["streaming", "section", "final"], "default": "streaming", "description": "Reveal strategy"}
+      }
+    }
+  }
+}

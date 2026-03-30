@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/template-binding.json",
+  "title": "Template Bindings",
+  "description": "Map of slot names to content values for template mode",
+  "type": "object",
+  "additionalProperties": {
+    "oneOf": [
+      { "type": "string" },
+      {
+        "type": "array",
+        "items": { "type": "object" },
+        "description": "Array of objects for iteration slots ({{#items}})"
+      },
+      {
+        "type": "boolean",
+        "description": "Boolean for conditional slots ({{#condition}})"
+      }
+    ]
+  }
+}

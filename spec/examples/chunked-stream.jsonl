@@ -1,0 +1,11 @@
+{"seq":0,"envelope":{"protocol":"aap/1.0","id":"report-99","version":1,"format":"text/html","mode":"full"},"content":"<!DOCTYPE html>\n<html>\n<head><title>","flush":false,"final":false}
+{"seq":1,"content":"Streaming Report","flush":false,"final":false}
+{"seq":2,"content":"</title></head>","flush":true,"final":false}
+{"seq":3,"content":"\n<body>\n<h1>Q4 Performance</h1>","flush":true,"final":false}
+{"seq":4,"content":"\n<p>Revenue grew by ","flush":false,"final":false}
+{"seq":5,"content":"15% compared to Q3, driven by enterprise adoption.</p>","flush":true,"final":false}
+{"seq":6,"content":"\n<table>\n<tr><th>Metric</th><th>Value</th></tr>","flush":true,"final":false}
+{"seq":7,"content":"\n<tr><td>Revenue</td><td>$4.2M</td></tr>","flush":false,"final":false}
+{"seq":8,"content":"\n<tr><td>Users</td><td>12,400</td></tr>","flush":false,"final":false}
+{"seq":9,"content":"\n</table>","flush":true,"final":false}
+{"seq":10,"content":"\n</body>\n</html>","flush":true,"final":true}

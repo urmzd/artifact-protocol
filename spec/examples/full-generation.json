@@ -1,0 +1,15 @@
+{
+  "protocol": "aap/1.0",
+  "id": "dashboard-001",
+  "version": 1,
+  "format": "text/html",
+  "mode": "full",
+  "created_at": "2026-03-29T10:00:00Z",
+  "sections": [
+    { "id": "stats", "label": "Statistics Cards", "start_marker": "<!-- section:stats -->", "end_marker": "<!-- /section:stats -->" },
+    { "id": "users-table", "label": "Users Table", "start_marker": "<!-- section:users-table -->", "end_marker": "<!-- /section:users-table -->" },
+    { "id": "orders-table", "label": "Orders Table", "start_marker": "<!-- section:orders-table -->", "end_marker": "<!-- /section:orders-table -->" }
+  ],
+  "content": "<!DOCTYPE html>\n<html>\n<head><title>Dashboard</title></head>\n<body>\n<!-- section:stats -->\n<div class=\"stats\">\n  <div class=\"stat\"><span class=\"label\">Revenue</span><span class=\"stat-value\">$12,340</span></div>\n  <div class=\"stat\"><span class=\"label\">Users</span><span class=\"stat-value\">1,205</span></div>\n</div>\n<!-- /section:stats -->\n<!-- section:users-table -->\n<table>\n  <tr><th>Name</th><th>Email</th><th>Role</th></tr>\n  <tr><td>Alice</td><td>alice@example.com</td><td>Admin</td></tr>\n  <tr><td>Bob</td><td>bob@example.com</td><td>User</td></tr>\n</table>\n<!-- /section:users-table -->\n<!-- section:orders-table -->\n<table>\n  <tr><th>Order</th><th>Product</th><th>Amount</th></tr>\n  <tr><td>#001</td><td>Widget</td><td>$29.99</td></tr>\n</table>\n<!-- /section:orders-table -->\n</body>\n</html>",
+  "tokens_used": 210
+}

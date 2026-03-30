@@ -16,6 +16,9 @@ ag-stream = "artifact_generator.scripts.stream:main"
 ag-bench = "artifact_generator.benchmarks.run:main"
 ag-hf-stream = "artifact_generator.benchmarks.hf_stream:main"
 ag-realtime = "artifact_generator.scripts.realtime:main"
+ag-aap-bench = "artifact_generator.benchmarks.aap_bench:main"
+ag-aap-demo = "artifact_generator.scripts.aap_demo:main"
+ag-parallel-demo = "artifact_generator.scripts.parallel_demo:main"
 
 [build-system]
 requires = ["hatchling"]

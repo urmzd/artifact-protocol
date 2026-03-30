@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/sse-error.json",
+  "title": "SSE Error",
+  "description": "Error payload for aap:error SSE events",
+  "type": "object",
+  "required": ["code", "message"],
+  "properties": {
+    "code": {
+      "type": "string",
+      "enum": ["seq_expired", "budget_exceeded", "version_conflict", "section_failed", "timeout", "internal"],
+      "description": "Machine-readable error code"
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable error description"
+    },
+    "fatal": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, the stream is terminated"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Sequence number that triggered the error"
+    }
+  }
+}

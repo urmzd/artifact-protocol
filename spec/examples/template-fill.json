@@ -1,0 +1,16 @@
+{
+  "protocol": "aap/1.0",
+  "id": "dashboard-001",
+  "version": 4,
+  "format": "text/html",
+  "mode": "template",
+  "updated_at": "2026-03-29T10:15:00Z",
+  "template": "<!DOCTYPE html>\n<html>\n<head><title>{{title}}</title></head>\n<body>\n<div class=\"stats\">\n  <div class=\"stat\"><span class=\"label\">Revenue</span><span class=\"stat-value\">{{revenue}}</span></div>\n  <div class=\"stat\"><span class=\"label\">Users</span><span class=\"stat-value\">{{user_count}}</span></div>\n</div>\n{{{table_html}}}\n</body>\n</html>",
+  "bindings": {
+    "title": "Q1 2026 Dashboard",
+    "revenue": "$42,100",
+    "user_count": "2,890",
+    "table_html": "<table>\n  <tr><th>Name</th><th>Email</th></tr>\n  <tr><td>Eve</td><td>eve@example.com</td></tr>\n</table>"
+  },
+  "tokens_used": 78
+}

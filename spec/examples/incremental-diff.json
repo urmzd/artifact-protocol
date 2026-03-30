@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/1.0",
+  "id": "dashboard-001",
+  "version": 2,
+  "format": "text/html",
+  "mode": "diff",
+  "base_version": 1,
+  "updated_at": "2026-03-29T10:05:00Z",
+  "operations": [
+    {
+      "op": "replace",
+      "target": { "search": "<span class=\"stat-value\">$12,340</span>" },
+      "content": "<span class=\"stat-value\">$15,720</span>"
+    },
+    {
+      "op": "replace",
+      "target": { "search": "<span class=\"stat-value\">1,205</span>" },
+      "content": "<span class=\"stat-value\">1,342</span>"
+    }
+  ],
+  "tokens_used": 42
+}

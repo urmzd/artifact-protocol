@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard — AcmeCorp</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f1f5f9;color:#1e293b}
+nav{background:#1e293b;color:#f8fafc;display:flex;align-items:center;padding:0 24px;height:56px}
+.nav-brand{font-weight:700;font-size:18px}
+.layout{display:flex;min-height:100vh}
+aside{width:220px;background:#fff;border-right:1px solid #e2e8f0;padding:24px 0}
+.sidebar-link{display:flex;padding:9px 20px;font-size:14px;color:#475569;text-decoration:none}
+.sidebar-link.active{background:#eff6ff;color:#2563eb;font-weight:500}
+main{flex:1;padding:32px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
+.card{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.card-label{font-size:13px;color:#64748b}
+.card-value{font-size:28px;font-weight:700}
+.section{background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:32px}
+.section-header{padding:18px 24px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between}
+.section-title{font-size:16px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 16px;background:#f8fafc;font-weight:600;color:#475569;border-bottom:1px solid #e2e8f0}
+td{padding:11px 16px;border-bottom:1px solid #f1f5f9}
+tr:hover td{background:#f8fafc}
+.badge{padding:2px 8px;border-radius:12px;font-size:12px;color:#fff}
+</style>
+</head>
+<body>
+<!-- section:nav -->
+<nav><span class="nav-brand">AcmeCorp</span></nav>
+<div class="layout">
+<aside>
+  <a class="sidebar-link active" href="#">Dashboard</a>
+  <a class="sidebar-link" href="#">Analytics</a>
+  <a class="sidebar-link" href="#">Reports</a>
+  <a class="sidebar-link" href="#">Users</a>
+  <a class="sidebar-link" href="#">Orders</a>
+  <a class="sidebar-link" href="#">Products</a>
+  <a class="sidebar-link" href="#">Settings</a>
+</aside>
+<!-- /section:nav -->
+<main>
+<!-- section:stats -->
+<div class="stats">
+  <div class="card"><div class="card-label">Total Users</div><div class="card-value">24,891</div></div>
+  <div class="card"><div class="card-label">Revenue (MTD)</div><div class="card-value">$182,430</div></div>
+  <div class="card"><div class="card-label">Orders (MTD)</div><div class="card-value">3,047</div></div>
+  <div class="card"><div class="card-label">Uptime</div><div class="card-value">99.97%</div></div>
+</div>
+<!-- /section:stats -->
+<!-- section:users -->
+<div class="section">
+  <div class="section-header"><span class="section-title">Users</span></div>
+  <table>
+    <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Alice Smith</td><td>alice.smith1@example.com</td><td>Admin</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>2</td><td>Bob Johnson</td><td>bob.johnson42@example.com</td><td>User</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>3</td><td>Carol Williams</td><td>carol.williams7@example.com</td><td>Editor</td><td><span class="badge" style="background:#94a3b8">Inactive</span></td></tr>
+      <tr><td>4</td><td>Dave Brown</td><td>dave.brown99@example.com</td><td>Developer</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>5</td><td>Eve Jones</td><td>eve.jones15@example.com</td><td>Support</td><td><span class="badge" style="background:#f59e0b">Pending</span></td></tr>
+      <tr><td>6</td><td>Frank Garcia</td><td>frank.garcia33@example.com</td><td>Manager</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>7</td><td>Grace Miller</td><td>grace.miller88@example.com</td><td>Admin</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>8</td><td>Hank Davis</td><td>hank.davis56@example.com</td><td>Viewer</td><td><span class="badge" style="background:#ef4444">Suspended</span></td></tr>
+      <tr><td>9</td><td>Iris Wilson</td><td>iris.wilson21@example.com</td><td>Editor</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>10</td><td>Jack Taylor</td><td>jack.taylor64@example.com</td><td>User</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>11</td><td>Karen Anderson</td><td>karen.anderson2@example.com</td><td>Developer</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>12</td><td>Leo Thomas</td><td>leo.thomas77@example.com</td><td>Support</td><td><span class="badge" style="background:#94a3b8">Inactive</span></td></tr>
+      <tr><td>13</td><td>Mia Jackson</td><td>mia.jackson44@example.com</td><td>Manager</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>14</td><td>Ned White</td><td>ned.white91@example.com</td><td>Admin</td><td><span class="badge" style="background:#f59e0b">Pending</span></td></tr>
+      <tr><td>15</td><td>Olivia Harris</td><td>olivia.harris8@example.com</td><td>User</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>16</td><td>Paul Martin</td><td>paul.martin53@example.com</td><td>Editor</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>17</td><td>Quinn Thompson</td><td>quinn.thompson19@example.com</td><td>Viewer</td><td><span class="badge" style="background:#94a3b8">Inactive</span></td></tr>
+      <tr><td>18</td><td>Rita Moore</td><td>rita.moore66@example.com</td><td>Developer</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>19</td><td>Sam Young</td><td>sam.young30@example.com</td><td>Support</td><td><span class="badge" style="background:#22c55e">Active</span></td></tr>
+      <tr><td>20</td><td>Tina Allen</td><td>tina.allen47@example.com</td><td>Manager</td><td><span class="badge" style="background:#ef4444">Suspended</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<!-- /section:users -->
+<!-- section:orders -->
+<div class="section">
+  <div class="section-header"><span class="section-title">Recent Orders</span></div>
+  <table>
+    <thead><tr><th>Order ID</th><th>Product</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>ORD-100001</td><td>Widget Pro</td><td>$29.99</td><td>2026-03-15</td><td><span class="badge" style="background:#3b82f6">Shipped</span></td></tr>
+      <tr><td>ORD-100002</td><td>Gadget Plus</td><td>$149.00</td><td>2026-03-14</td><td><span class="badge" style="background:#f59e0b">Processing</span></td></tr>
+      <tr><td>ORD-100003</td><td>Doohickey Max</td><td>$89.50</td><td>2026-03-13</td><td><span class="badge" style="background:#22c55e">Delivered</span></td></tr>
+      <tr><td>ORD-100004</td><td>Thingamajig Lite</td><td>$499.99</td><td>2026-03-12</td><td><span class="badge" style="background:#3b82f6">Shipped</span></td></tr>
+      <tr><td>ORD-100005</td><td>Whatsit Premium</td><td>$199.00</td><td>2026-03-11</td><td><span class="badge" style="background:#ef4444">Cancelled</span></td></tr>
+      <tr><td>ORD-100006</td><td>Gizmo Basic</td><td>$24.99</td><td>2026-03-10</td><td><span class="badge" style="background:#22c55e">Delivered</span></td></tr>
+      <tr><td>ORD-100007</td><td>Contraption Ultra</td><td>$749.00</td><td>2026-03-09</td><td><span class="badge" style="background:#8b5cf6">Refunded</span></td></tr>
+      <tr><td>ORD-100008</td><td>Doodad Standard</td><td>$59.99</td><td>2026-03-08</td><td><span class="badge" style="background:#3b82f6">Shipped</span></td></tr>
+      <tr><td>ORD-100009</td><td>Widget Pro</td><td>$29.99</td><td>2026-03-07</td><td><span class="badge" style="background:#22c55e">Delivered</span></td></tr>
+      <tr><td>ORD-100010</td><td>Gadget Plus</td><td>$149.00</td><td>2026-03-06</td><td><span class="badge" style="background:#f59e0b">Processing</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<!-- /section:orders -->
+</main>
+</div>
+</body>
+</html>

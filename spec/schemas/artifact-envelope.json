@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/artifact-envelope.json",
+  "title": "Artifact Envelope",
+  "description": "Top-level wrapper for an Agent-Artifact Protocol (AAP) payload",
+  "type": "object",
+  "required": ["protocol", "id", "version", "format", "mode"],
+  "properties": {
+    "protocol": {
+      "type": "string",
+      "const": "aap/1.0",
+      "description": "Protocol identifier and version"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique artifact identifier"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Monotonically increasing version number"
+    },
+    "format": {
+      "type": "string",
+      "pattern": "^[a-z]+/[a-z0-9.+-]+$",
+      "description": "MIME type of the artifact content"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["full", "diff", "section", "template", "composite", "manifest"],
+      "description": "Generation mode"
+    },
+    "encoding": {
+      "type": "string",
+      "default": "utf-8",
+      "description": "Character encoding"
+    },
+    "base_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Version this payload applies against"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 creation timestamp"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 update timestamp"
+    },
+    "token_budget": {
+      "type": "object",
+      "properties": {
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum content tokens"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["completeness", "brevity", "fidelity"],
+          "description": "Budget priority hint"
+        },
+        "max_sections": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum sections to regenerate"
+        }
+      }
+    },
+    "tokens_used": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Actual content tokens consumed"
+    },
+    "checksum": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "description": "SHA-256 hash of resolved content"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique section identifier"
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable label"
+          },
+          "start_marker": {
+            "type": "string",
+            "description": "Format-specific start boundary"
+          },
+          "end_marker": {
+            "type": "string",
+            "description": "Format-specific end boundary"
+          },
+          "rendering": {
+            "$ref": "rendering-hints.json",
+            "description": "Per-section rendering overrides"
+          }
+        }
+      },
+      "description": "Section definitions"
+    },
+    "content": {
+      "type": "string",
+      "description": "Artifact content (full mode) or compressed base64 content"
+    },
+    "operations": {
+      "type": "array",
+      "items": { "$ref": "diff-operation.json" },
+      "description": "Diff operations (diff mode)"
+    },
+    "target_sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "content"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Section ID to replace"
+          },
+          "content": {
+            "type": "string",
+            "description": "New content for this section"
+          }
+        }
+      },
+      "description": "Section updates (section mode)"
+    },
+    "template": {
+      "type": "string",
+      "description": "Template content or registered template ID"
+    },
+    "bindings": {
+      "$ref": "template-binding.json",
+      "description": "Slot bindings (template mode)"
+    },
+    "includes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string",
+            "description": "Reference to artifact or artifact:section"
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri",
+            "description": "External URI"
+          },
+          "content": {
+            "type": "string",
+            "description": "Inline fallback content"
+          },
+          "hash": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "description": "Expected content hash"
+          }
+        },
+        "oneOf": [
+          { "required": ["ref"] },
+          { "required": ["uri"] },
+          { "required": ["content"] }
+        ]
+      },
+      "description": "Sub-artifact references (composite mode)"
+    },
+    "skeleton": {
+      "type": "string",
+      "description": "Static scaffold with section markers (manifest mode)"
+    },
+    "section_prompts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "prompt"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Section ID to generate"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Generation instruction for this section"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Section IDs that must complete first"
+          },
+          "token_budget": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Max tokens for this section"
+          }
+        }
+      },
+      "description": "Per-section generation instructions (manifest mode)"
+    },
+    "section_id": {
+      "type": "string",
+      "description": "Section this result fills (parallel section result)"
+    },
+    "content_encoding": {
+      "type": "string",
+      "enum": ["gzip", "zstd"],
+      "description": "Compression applied to content fields"
+    },
+    "rendering": {
+      "$ref": "rendering-hints.json",
+      "description": "Rendering hints for the consumer (Section 8)"
+    },
+    "state": {
+      "type": "string",
+      "enum": ["draft", "published", "archived"],
+      "default": "draft",
+      "description": "Entity lifecycle state"
+    },
+    "state_changed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last state transition"
+    },
+    "entity": {
+      "$ref": "entity-metadata.json",
+      "description": "Ownership and organizational metadata (Section 9)"
+    },
+    "lock": {
+      "type": "object",
+      "description": "Advisory lock hint",
+      "properties": {
+        "held_by": {
+          "type": "string"
+        },
+        "acquired_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ttl": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "mode": { "const": "full" } } },
+      "then": { "required": ["content"] }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "diff" } } },
+      "then": { "required": ["base_version", "operations"] }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "section" } } },
+      "then": { "required": ["base_version", "target_sections"] }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "template" } } },
+      "then": { "required": ["template", "bindings"] }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "composite" } } },
+      "then": { "required": ["includes"] }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "manifest" } } },
+      "then": { "required": ["skeleton", "section_prompts"] }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/relationship.json",
+  "title": "Artifact Relationship",
+  "description": "A typed link between artifacts",
+  "type": "object",
+  "required": ["type", "target"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["depends_on", "parent", "child", "derived_from", "supersedes", "related"],
+      "description": "Relationship type"
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Target artifact ID"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Specific version of the target (omit for latest)"
+    }
+  }
+}

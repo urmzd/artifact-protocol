@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/entity-metadata.json",
+  "title": "Entity Metadata",
+  "description": "Ownership and organizational metadata for managed artifacts",
+  "type": "object",
+  "properties": {
+    "owner": {
+      "type": "string",
+      "description": "Owning user or system identifier (type:id format)"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Creator identifier"
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Freeform classification tags"
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Role-based access control",
+      "properties": {
+        "read": {"type": "array", "items": {"type": "string"}, "description": "Principals that can read"},
+        "write": {"type": "array", "items": {"type": "string"}, "description": "Principals that can update"},
+        "admin": {"type": "array", "items": {"type": "string"}, "description": "Principals that can manage state/permissions"}
+      }
+    },
+    "collection": {
+      "type": "string",
+      "description": "Workspace or collection grouping identifier"
+    },
+    "ttl": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Time-to-live in seconds from updated_at"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 expiration timestamp (takes precedence over ttl)"
+    },
+    "relationships": {
+      "type": "array",
+      "items": {"$ref": "relationship.json"},
+      "description": "Links to other artifacts"
+    }
+  }
+}

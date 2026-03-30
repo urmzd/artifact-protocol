@@ -2,6 +2,8 @@
 
 A local dev tool that watches an HTML file on disk and continuously renders it to PDF using headless Chrome. Designed for streaming HTML artifacts token-by-token — useful for benchmarking tokenizers, LLM streaming, and any chunked-write workflow.
 
+Includes the **[Agent-Artifact Protocol (AAP)](spec/aap.md)** — an open standard for token-efficient artifact generation, updates, and streaming. The protocol defines how LLMs can declare, diff, and reprovision artifacts with minimal token expenditure (90-99% savings on updates).
+
 ## How it works
 
 1. The Rust binary watches a file on disk (polling every 100 ms).
@@ -49,11 +51,12 @@ just bench-rust
 ## CLI usage
 
 ```sh
-artifact-generator <input.html> [--output output.pdf]
+artifact-generator <input.html> [--output output.pdf] [--protocol]
 ```
 
 - `<input.html>` — the HTML file to watch.
 - `--output` — optional PDF output path (defaults to `<input>.pdf`).
+- `--protocol` — enable [Agent-Artifact Protocol (AAP)](spec/aap.md) mode. When the watched file contains a protocol envelope (JSON with `"protocol": "aap/1.0"`), the binary resolves the envelope (applying diffs, section updates, or templates) and renders the resolved HTML.
 
 The process runs until interrupted with Ctrl+C.
 
@@ -121,6 +124,9 @@ The Python scripts live under `tools/` and are structured as a proper package (`
 | `ag-hf-stream` | Stream via a HuggingFace tokenizer |
 | `ag-bench` | Offline benchmark: tokenize time, token count, throughput |
 | `ag-realtime` | Real-time streaming dashboard |
+| `ag-aap-demo` | AAP lifecycle demo (full → diff → section → template) |
+| `ag-aap-bench` | Token savings benchmark across AAP generation modes |
+| `ag-parallel-demo` | Parallel manifest generation demo (concurrent sections + assembly) |
 
 Install and run any entry point with:
 
@@ -128,7 +134,23 @@ Install and run any entry point with:
 uv run --project tools ag-bench
 ```
 
-## Benchmark output (example)
+## AAP benchmarks
+
+Payload size and apply time for each [Agent-Artifact Protocol (AAP)](spec/aap.md) generation mode, measured against an 8 KB HTML dashboard fixture. Regenerate with `cargo run --release --bin bench-table > benches/results.md`.
+
+<!-- embed-src src="benches/results.md" -->
+| Mode | Scenario | Payload | % of Full | Savings | Apply Time |
+|---|---|---:|---:|---:|---:|
+| **full** | Full regeneration (baseline) | 8,164 B | 100.0% | — | 0 ns |
+| **diff** | 1 value change | 12 B | 0.1% | **99.9%** | 822 ns |
+| **diff** | 4 value changes | 50 B | 0.6% | **99.4%** | 2.7 µs |
+| **section** | 1 section replaced | 441 B | 5.4% | **94.6%** | 1.1 µs |
+| **section** | 2 sections replaced | 516 B | 6.3% | **93.7%** | 3.4 µs |
+| **template** | 8 slot bindings | 141 B | 1.7% | **98.3%** | 2.7 µs |
+| **manifest** | 4 sections assembled | 487 B | 6.0% | **94.0%** | 1.8 µs |
+<!-- /embed-src -->
+
+## Tokenizer benchmarks (example)
 
 ```
 Tokenizer                    Tokens  Avg ch/tok    Tok ms   Tokens/sec

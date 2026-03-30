@@ -43,6 +43,11 @@ bench:
 bench-rust:
     cargo bench
 
+# Regenerate protocol benchmark table and embed into README
+bench-protocol:
+    cargo run --release --bin bench-table > benches/results.md
+    embed-src README.md
+
 # Stream with HF tokenizer
 demo-hf tokenizer="gpt2" file="/tmp/artifact.html": build
     #!/usr/bin/env bash

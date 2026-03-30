@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/chunk-frame.json",
+  "title": "Chunk Frame",
+  "description": "A single unit of streamed artifact content",
+  "type": "object",
+  "required": ["seq", "content"],
+  "properties": {
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonically increasing sequence number"
+    },
+    "envelope": {
+      "type": "object",
+      "description": "Envelope metadata (present on first chunk only, excludes content fields)",
+      "properties": {
+        "protocol": { "type": "string" },
+        "id": { "type": "string" },
+        "version": { "type": "integer" },
+        "format": { "type": "string" },
+        "mode": { "type": "string" }
+      }
+    },
+    "content": {
+      "type": "string",
+      "description": "Chunk payload"
+    },
+    "section_id": {
+      "type": "string",
+      "description": "Section being streamed"
+    },
+    "flush": {
+      "type": "boolean",
+      "default": false,
+      "description": "Hint to render/apply accumulated content"
+    },
+    "final": {
+      "type": "boolean",
+      "default": false,
+      "description": "True on the last chunk"
+    },
+    "rendering": {
+      "$ref": "rendering-hints.json",
+      "description": "Rendering hint overrides for this chunk onward"
+    }
+  }
+}

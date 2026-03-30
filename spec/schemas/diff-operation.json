@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/diff-operation.json",
+  "title": "Diff Operation",
+  "description": "A single diff operation applied to an artifact",
+  "type": "object",
+  "required": ["op", "target"],
+  "properties": {
+    "op": {
+      "type": "string",
+      "enum": ["replace", "insert_before", "insert_after", "delete"],
+      "description": "Operation type"
+    },
+    "target": {
+      "type": "object",
+      "description": "Target addressing — exactly one mode must be used",
+      "oneOf": [
+        {
+          "required": ["section"],
+          "properties": {
+            "section": {
+              "type": "string",
+              "description": "Target section by ID"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["lines"],
+          "properties": {
+            "lines": {
+              "type": "array",
+              "items": { "type": "integer", "minimum": 1 },
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "Line range [start, end] (1-indexed, inclusive)"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["offsets"],
+          "properties": {
+            "offsets": {
+              "type": "array",
+              "items": { "type": "integer", "minimum": 0 },
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "Character offset range [start, end) (0-indexed, exclusive end)"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": ["search"],
+          "properties": {
+            "search": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Literal text to find (first occurrence)"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "content": {
+      "type": "string",
+      "description": "New content (required for replace, insert_before, insert_after)"
+    }
+  },
+  "if": {
+    "properties": { "op": { "enum": ["replace", "insert_before", "insert_after"] } }
+  },
+  "then": {
+    "required": ["content"]
+  }
+}
