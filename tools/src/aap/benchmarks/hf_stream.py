@@ -10,8 +10,8 @@ Usage: uv run --project python ag-hf-stream [output-path] [tokenizer]
 import sys
 import time
 
-from artifact_generator import make_tokenizer
-from artifact_generator.assets import load_dashboard
+from aap import make_tokenizer
+from aap.assets import load_dashboard
 
 
 def main():

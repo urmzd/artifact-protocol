@@ -7,10 +7,10 @@ use std::collections::HashMap;
 
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 
-use artifact_generator::apply::{
+use aap::apply::{
     apply_diff, apply_section_update, assemble_manifest, fill_template,
 };
-use artifact_generator::aap::{DiffOp, OpType, SectionUpdate, Target};
+use aap::aap::{DiffOp, OpType, SectionUpdate, Target};
 
 const FULL_HTML: &str = include_str!("protocol_fixture.html");
 

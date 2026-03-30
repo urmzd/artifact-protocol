@@ -33,7 +33,7 @@ jobs:
       - name: Test (HTML → PDF)
         run: |
           echo "<h1>ci</h1>" > /tmp/test.html
-          ./target/debug/artifact-generator /tmp/test.html --output /tmp/test.pdf &
+          ./target/debug/aap /tmp/test.html --output /tmp/test.pdf &
           PID=$!
           # Poll for PDF instead of fixed sleep
           for i in $(seq 1 30); do

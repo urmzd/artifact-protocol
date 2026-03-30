@@ -9,10 +9,10 @@ Usage: uv run --project tools ag-aap-bench
 """
 import re
 
-from artifact_generator import make_tokenizer
-from artifact_generator.assets import load_dashboard
-from artifact_generator.aap import Envelope, apply_diff, apply_section_update, fill_template
-from artifact_generator.strategies import (
+from aap import make_tokenizer
+from aap.assets import load_dashboard
+from aap.aap import Envelope, apply_diff, apply_section_update, fill_template
+from aap.strategies import (
     generate_full,
     generate_diff,
     generate_section_update,

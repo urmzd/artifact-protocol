@@ -2,10 +2,10 @@ use std::path::PathBuf;
 use std::sync::mpsc;
 use std::time::Duration;
 
-use artifact_generator::aap::Envelope;
-use artifact_generator::store::ArtifactStore;
-use artifact_generator::telemetry;
-use artifact_generator::{spawn_file_watcher, spawn_render_thread, RenderMsg};
+use aap::aap::Envelope;
+use aap::store::ArtifactStore;
+use aap::telemetry;
+use aap::{spawn_file_watcher, spawn_render_thread, RenderMsg};
 use tokio::sync::broadcast;
 use tracing::{info, warn};
 

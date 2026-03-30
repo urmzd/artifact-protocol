@@ -1,14 +1,14 @@
 [package]
-name = "artifact-generator"
+name = "aap"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "artifact_generator"
+name = "aap"
 path = "src/lib.rs"
 
 [[bin]]
-name = "artifact-generator"
+name = "aap"
 path = "src/main.rs"
 
 [dependencies]

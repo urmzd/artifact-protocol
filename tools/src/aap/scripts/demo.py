@@ -8,8 +8,8 @@ Usage: uv run --project python ag-demo [output-path]
 import sys
 import time
 
-from artifact_generator.assets import load_dashboard
-from artifact_generator.corpus import CHUNK_SIZE
+from aap.assets import load_dashboard
+from aap.corpus import CHUNK_SIZE
 
 
 def main():

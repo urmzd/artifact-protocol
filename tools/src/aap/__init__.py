@@ -1,8 +1,8 @@
 import tiktoken
 from tokenizers import Tokenizer
 
-from artifact_generator.assets import load_dashboard
-from artifact_generator.corpus import build_html, CHUNK_SIZE
+from aap.assets import load_dashboard
+from aap.corpus import build_html, CHUNK_SIZE
 
 HF_TOKENIZERS = ["gpt2", "bert-base-uncased", "google/gemma-3-1b-it"]
 TT_ENCODINGS = ["o200k_base", "cl100k_base"]

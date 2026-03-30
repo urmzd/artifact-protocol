@@ -4,10 +4,10 @@
 
 use std::collections::HashMap;
 
-use artifact_generator::apply::{
+use aap::apply::{
     apply_diff, apply_section_update, assemble_manifest, fill_template,
 };
-use artifact_generator::aap::{DiffOp, OpType, SectionUpdate, Target};
+use aap::aap::{DiffOp, OpType, SectionUpdate, Target};
 
 const FULL_HTML: &str = include_str!("../../benches/protocol_fixture.html");
 

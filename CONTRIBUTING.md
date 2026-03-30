@@ -5,8 +5,8 @@ Contributions are welcome. Please follow these guidelines.
 ## Getting started
 
 ```sh
-git clone https://github.com/urmzd/artifact-generator
-cd artifact-generator
+git clone https://github.com/urmzd/aap
+cd aap
 just build   # compile the Rust binary
 just test    # run the smoke test
 just bench   # run offline tokenizer benchmarks
@@ -15,14 +15,14 @@ just bench   # run offline tokenizer benchmarks
 ## Project structure
 
 ```
-artifact-generator/
+aap/
 ├── src/
 │   ├── main.rs               # CLI entry point, signal handling
 │   ├── lib.rs                 # File watcher, PDF renderer, render thread
 │   └── telemetry.rs           # Tracing init, metrics collection, shutdown summary
 ├── tools/
 │   ├── pyproject.toml         # Python dependencies (uv)
-│   └── src/artifact_generator/
+│   └── src/aap/
 │       ├── __init__.py        # Package exports (tokenizer factory, corpus)
 │       ├── corpus.py          # HTML corpus generator
 │       ├── scripts/           # Streaming demos (demo, ollama, realtime)
@@ -38,7 +38,7 @@ artifact-generator/
 - **Rust binary** (`src/`): file watcher, headless Chrome renderer, telemetry. Keep dependencies light.
 - **Telemetry** (`src/telemetry.rs`): structured logging via `tracing`, metrics summary on shutdown.
 - **Python tools** (`tools/`): streaming scripts and benchmarks. Import `build_html()` from `corpus.py` rather than duplicating the corpus.
-- **New tokenizers**: add them to the `TOKENIZERS` list in `tools/src/artifact_generator/benchmarks/run.py`.
+- **New tokenizers**: add them to the `TOKENIZERS` list in `tools/src/aap/benchmarks/run.py`.
 - **New recipes**: add them to `justfile` with a comment describing what they do.
 
 ## Pull requests

@@ -3,7 +3,7 @@ use std::time::Duration;
 use criterion::{criterion_group, criterion_main, Criterion};
 use tokio::sync::broadcast;
 
-use artifact_generator::spawn_file_watcher;
+use aap::spawn_file_watcher;
 
 fn watcher_detect_change(c: &mut Criterion) {
     let rt = tokio::runtime::Runtime::new().unwrap();

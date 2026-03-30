@@ -3,6 +3,26 @@
 version = 4
 
 [[package]]
+name = "aap"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "criterion",
+ "headless_chrome",
+ "opentelemetry",
+ "opentelemetry_sdk",
+ "regex",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "tokio-stream",
+ "tracing",
+ "tracing-opentelemetry",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "adler2"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -34,26 +54,6 @@ name = "anyhow"
 version = "1.0.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
-
-[[package]]
-name = "artifact-generator"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "criterion",
- "headless_chrome",
- "opentelemetry",
- "opentelemetry_sdk",
- "regex",
- "serde",
- "serde_json",
- "tempfile",
- "tokio",
- "tokio-stream",
- "tracing",
- "tracing-opentelemetry",
- "tracing-subscriber",
-]
 
 [[package]]
 name = "async-trait"

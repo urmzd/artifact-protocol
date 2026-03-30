@@ -13,8 +13,8 @@ import time
 import urllib.parse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
-from artifact_generator import make_tokenizer, HF_TOKENIZERS, TT_ENCODINGS
-from artifact_generator.assets import load_dashboard
+from aap import make_tokenizer, HF_TOKENIZERS, TT_ENCODINGS
+from aap.assets import load_dashboard
 
 VIEWER_HTML = """\
 <!DOCTYPE html>

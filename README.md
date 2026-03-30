@@ -1,8 +1,8 @@
-# artifact-generator
+# aap
 
-A local dev tool that watches an HTML file on disk and continuously renders it to PDF using headless Chrome. Designed for streaming HTML artifacts token-by-token — useful for benchmarking tokenizers, LLM streaming, and any chunked-write workflow.
+An open standard for token-efficient artifact generation, updates, and streaming — the **[Agent-Artifact Protocol (AAP)](spec/aap.md)**. The protocol defines how LLMs can declare, diff, and reprovision artifacts with minimal token expenditure (90-99% savings on updates).
 
-Includes the **[Agent-Artifact Protocol (AAP)](spec/aap.md)** — an open standard for token-efficient artifact generation, updates, and streaming. The protocol defines how LLMs can declare, diff, and reprovision artifacts with minimal token expenditure (90-99% savings on updates).
+Includes a local dev tool that watches an HTML file on disk and continuously renders it to PDF using headless Chrome. Designed for streaming HTML artifacts token-by-token — useful for benchmarking tokenizers, LLM streaming, and any chunked-write workflow.
 
 ## How it works
 
@@ -13,7 +13,7 @@ Includes the **[Agent-Artifact Protocol (AAP)](spec/aap.md)** — an open standa
 ```
 writer (Python) ──writes──▶ file.html ──render──▶ file.pdf
                                         ▲
-                              artifact-generator (Rust + headless Chrome)
+                              aap (Rust + headless Chrome)
 ```
 
 ## Requirements
@@ -51,7 +51,7 @@ just bench-rust
 ## CLI usage
 
 ```sh
-artifact-generator <input.html> [--output output.pdf] [--protocol]
+aap <input.html> [--output output.pdf] [--protocol]
 ```
 
 - `<input.html>` — the HTML file to watch.
@@ -66,11 +66,11 @@ The Rust binary emits structured log lines to stderr via `tracing` and prints a 
 
 ### Structured logging
 
-Logs use `tracing-subscriber` (compact format with timestamps). Control verbosity with the `RUST_LOG` environment variable (default: `artifact_generator=info`).
+Logs use `tracing-subscriber` (compact format with timestamps). Control verbosity with the `RUST_LOG` environment variable (default: `aap=info`).
 
 ```sh
 # Show debug-level spans
-RUST_LOG=artifact_generator=debug artifact-generator input.html
+RUST_LOG=aap=debug aap input.html
 ```
 
 ### Tracing spans
@@ -105,16 +105,18 @@ broadcast.lag_count           0
 |---|---|
 | `just build` | Compile the Rust binary |
 | `just install` | Install the binary via `cargo install` |
+| `just run [file]` | Compile and run the binary on a file |
 | `just demo` | Stream a pre-built HTML dashboard, produce PDF |
 | `just demo-llm [model]` | Live ollama LLM streaming (default: gemma3) |
 | `just demo-hf [tokenizer]` | HuggingFace tokenizer streaming |
 | `just bench` | Offline Python tokenizer benchmarks |
 | `just bench-rust` | Rust criterion benchmarks (watcher, broadcast) |
+| `just bench-protocol` | Regenerate AAP benchmark table and embed into README |
 | `just test` | Smoke test: verify PDF output is produced |
 
 ## Tools package
 
-The Python scripts live under `tools/` and are structured as a proper package (`artifact_generator`) with console entry points:
+The Python scripts live under `tools/` and are structured as a proper package (`aap`) with console entry points:
 
 | Entry point | Description |
 |---|---|

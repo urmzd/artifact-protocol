@@ -12,9 +12,9 @@ import time
 import tempfile
 import os
 
-from artifact_generator import make_tokenizer, HF_TOKENIZERS, TT_ENCODINGS
-from artifact_generator.assets import load_dashboard
-from artifact_generator.corpus import CHUNK_SIZE
+from aap import make_tokenizer, HF_TOKENIZERS, TT_ENCODINGS
+from aap.assets import load_dashboard
+from aap.corpus import CHUNK_SIZE
 
 N_REPS = 100
 

@@ -12,7 +12,7 @@ demo file="/tmp/artifact.html": build
     #!/usr/bin/env bash
     set -e
     FILE="{{file}}"
-    ./target/debug/artifact-generator "$FILE" &
+    ./target/debug/aap "$FILE" &
     PID=$!
     sleep 0.3
     uv run --project tools ag-demo "$FILE"
@@ -26,7 +26,7 @@ demo-llm file="/tmp/artifact.html" model="gemma3": build
     #!/usr/bin/env bash
     set -e
     FILE="{{file}}"
-    ./target/debug/artifact-generator "$FILE" &
+    ./target/debug/aap "$FILE" &
     PID=$!
     sleep 0.3
     uv run --project tools ag-ollama "$FILE" "{{model}}"
@@ -53,7 +53,7 @@ demo-hf tokenizer="gpt2" file="/tmp/artifact.html": build
     #!/usr/bin/env bash
     set -e
     FILE="{{file}}"
-    ./target/debug/artifact-generator "$FILE" &
+    ./target/debug/aap "$FILE" &
     PID=$!
     sleep 0.3
     uv run --project tools ag-hf-stream "$FILE" "{{tokenizer}}"
@@ -68,7 +68,7 @@ test: build
     TEST_FILE=$(mktemp /tmp/artifact-test-XXXX.html)
     echo "<h1>just test</h1>" > "$TEST_FILE"
     PDF="${TEST_FILE%.html}.pdf"
-    ./target/debug/artifact-generator "$TEST_FILE" --output "$PDF" &
+    ./target/debug/aap "$TEST_FILE" --output "$PDF" &
     PID=$!
     sleep 3  # give Chrome time to start and render
     kill "$PID" 2>/dev/null || true

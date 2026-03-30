@@ -9,7 +9,7 @@ from __future__ import annotations
 import difflib
 import re
 
-from artifact_generator.aap import (
+from aap.aap import (
     Envelope,
     DiffOp,
     Target,

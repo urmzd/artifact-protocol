@@ -11,7 +11,7 @@ import asyncio
 from collections import defaultdict
 from typing import Callable, Awaitable
 
-from artifact_generator.aap import (
+from aap.aap import (
     Envelope,
     SectionDef,
     SectionPrompt,

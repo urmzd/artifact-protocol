@@ -12,14 +12,14 @@ import asyncio
 import json
 import time
 
-from artifact_generator.aap import (
+from aap.aap import (
     Envelope,
     SectionPrompt,
     SectionDef,
     now_iso,
     sha256_checksum,
 )
-from artifact_generator.orchestrator import (
+from aap.orchestrator import (
     orchestrate,
     build_dependency_order,
     assemble,

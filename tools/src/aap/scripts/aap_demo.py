@@ -9,8 +9,8 @@ Usage: uv run --project tools ag-aap-demo
 """
 import json
 
-from artifact_generator.assets import load_dashboard
-from artifact_generator.aap import (
+from aap.assets import load_dashboard
+from aap.aap import (
     Envelope,
     SectionDef,
     apply_diff,
@@ -18,7 +18,7 @@ from artifact_generator.aap import (
     fill_template,
     sha256_checksum,
 )
-from artifact_generator.strategies import (
+from aap.strategies import (
     generate_full,
     generate_diff,
     generate_section_update,
