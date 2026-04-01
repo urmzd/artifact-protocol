@@ -44,6 +44,8 @@ bench-protocol:
     cargo run --release --bin bench-table > benches/results.md
     embed-src README.md
 
+bench-all: bench bench-rust bench-protocol
+
 # Stream with HF tokenizer
 demo-hf tokenizer="gpt2" file="/tmp/artifact.html": build
     #!/usr/bin/env bash
