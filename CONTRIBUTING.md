@@ -18,7 +18,7 @@ just bench   # run offline tokenizer benchmarks
 aap/
 ├── src/
 │   ├── main.rs               # CLI entry point, signal handling
-│   ├── lib.rs                 # File watcher, PDF renderer, render thread
+│   ├── lib.rs                 # File watcher
 │   └── telemetry.rs           # Tracing init, metrics collection, shutdown summary
 ├── tools/
 │   ├── pyproject.toml         # Python dependencies (uv)
@@ -35,7 +35,7 @@ aap/
 
 ## Making changes
 
-- **Rust binary** (`src/`): file watcher, headless Chrome renderer, telemetry. Keep dependencies light.
+- **Rust binary** (`src/`): file watcher, apply engine, telemetry. Keep dependencies light.
 - **Telemetry** (`src/telemetry.rs`): structured logging via `tracing`, metrics summary on shutdown.
 - **Python tools** (`tools/`): streaming scripts and benchmarks. Import `build_html()` from `corpus.py` rather than duplicating the corpus.
 - **New tokenizers**: add them to the `TOKENIZERS` list in `tools/src/aap/benchmarks/run.py`.

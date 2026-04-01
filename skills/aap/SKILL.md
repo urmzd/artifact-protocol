@@ -1,8 +1,8 @@
 ---
 name: aap
-description: "Agent-Artifact Protocol (AAP) — token-efficient artifact generation, updates, and streaming. Render streaming HTML to PDF via headless Chrome for benchmarking tokenizers and LLM streaming output."
+description: "Agent-Artifact Protocol (AAP) — token-efficient artifact generation, updates, and streaming. Protocol for LLMs to declare, diff, and reprovision text artifacts with minimal token expenditure."
 ---
 
 # aap
 
-Open standard for token-efficient artifact generation, updates, and streaming. Includes a Rust file watcher paired with a headless Chrome PDF renderer that monitors streaming HTML output and converts it to PDF for benchmarking tokenizers and LLM streaming pipelines.
+Open standard for token-efficient artifact generation, updates, and streaming. Includes a Rust reference implementation with a versioned artifact store, apply engine, and CLI tool for resolving protocol envelopes. AAP produces text artifacts; rendering is a consumer responsibility.
