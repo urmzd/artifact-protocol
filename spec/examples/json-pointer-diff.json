@@ -1,0 +1,24 @@
+{
+  "protocol": "aap/1.0",
+  "id": "config-001",
+  "version": 2,
+  "format": "application/json",
+  "mode": "diff",
+  "base_version": 1,
+  "operations": [
+    {
+      "op": "replace",
+      "target": {"pointer": "/database/host"},
+      "content": "\"prod-db.example.com\""
+    },
+    {
+      "op": "replace",
+      "target": {"pointer": "/features/dark_mode"},
+      "content": "true"
+    },
+    {
+      "op": "delete",
+      "target": {"pointer": "/deprecated_field"}
+    }
+  ]
+}
