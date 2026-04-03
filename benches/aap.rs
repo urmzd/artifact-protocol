@@ -55,9 +55,9 @@ fn load_fixture(case_dir: &str) -> Fixture {
     Fixture {
         case: case_dir.into(),
         artifact,
-        diff_replace_ops: parse_diff_ops(parse_envelopes("diff-replace.jsonl")),
-        diff_multi_ops: parse_diff_ops(parse_envelopes("diff-multi.jsonl")),
-        diff_delete_ops: parse_diff_ops(parse_envelopes("diff-delete.jsonl")),
+        diff_replace_ops: parse_diff_ops(parse_envelopes("edit-replace.jsonl")),
+        diff_multi_ops: parse_diff_ops(parse_envelopes("edit-multi.jsonl")),
+        diff_delete_ops: parse_diff_ops(parse_envelopes("edit-delete.jsonl")),
     }
 }
 
