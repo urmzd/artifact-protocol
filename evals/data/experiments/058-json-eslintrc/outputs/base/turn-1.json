@@ -5,7 +5,7 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@tanstack/query/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:prettier/recommended"
   ],
   "env": {
@@ -24,6 +24,6 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "warn",
-    "@typescript-eslint/no-unused-vars": ["error"]
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

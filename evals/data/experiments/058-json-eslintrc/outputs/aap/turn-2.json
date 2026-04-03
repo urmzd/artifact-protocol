@@ -20,13 +20,15 @@
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
-    </aap:target>
+    ,
+    "plugin:@tanstack/eslint-plugin-query/recommended"</aap:target>
   ],
   "rules": {
     <aap:target id="rules">
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off"
-    </aap:target>
+    ,
+    "react-hooks/exhaustive-deps": "warn"</aap:target>
   },
   "settings": {
     <aap:target id="settings">
