@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "typer>=0.24",
     "rich>=14",
-    "pydantic-ai-slim[openai,google]>=1.0",
+    "pydantic-ai-slim[google,groq,openai]>=1.0",
     "pydantic>=2.0",
     "ragas>=0.4",
     "aiohttp>=3.11",
