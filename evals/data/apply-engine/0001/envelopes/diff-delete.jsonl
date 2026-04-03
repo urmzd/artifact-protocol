@@ -1,0 +1,2 @@
+{"protocol":"aap/0.1","id":"artifact-0001","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"<aap:section id=\"content\">"}}]}
+{"protocol":"aap/0.1","id":"artifact-0001","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                        <td>Diana Prince</td>"}}]}

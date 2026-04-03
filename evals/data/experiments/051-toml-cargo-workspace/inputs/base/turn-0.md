@@ -11,4 +11,8 @@ Include:
 
 Use section IDs: package, dependencies, workspace
 
+Use AAP section markers to delineate each major code block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
+
 Output raw code only. No markdown fences, no explanation.

@@ -1,0 +1,29 @@
+case_num: 1
+category: html-dashboard
+variant: dashboard for ecommerce admin
+format: text/html
+extension: .html
+filename: dashboard.html
+model: gemma4
+host: http://localhost:11434
+generated_at: 2026-04-03T02:44:54.239663+00:00
+artifact_bytes: 10737
+sections_expected: [nav, stats, content, footer]
+sections_found: [nav, stats, content, footer]
+envelope_files: [diff-delete.jsonl, diff-multi.jsonl, diff-replace.jsonl, full.jsonl, section-multi.jsonl, section-single.jsonl, template-fill.jsonl]
+system_prompt: |
+  You are a code generator. Output only raw code/content. No markdown fences, no explanation.
+user_prompt: |
+  Create a self-contained HTML dashboard with inline CSS dashboard for ecommerce admin.
+  
+  Requirements:
+  - Self-contained, realistic, production-quality code/content
+  - At least 80 lines of meaningful content
+  - Use diverse, realistic data values (names, numbers, strings)
+  
+  Wrap each major section with markers using EXACTLY this syntax: <aap:section id="ID"> ... </aap:section>
+  Replace ID with the section name.
+  
+  You MUST include these section IDs: nav, stats, content, footer
+  
+  Output ONLY the raw .html content. No markdown fences, no explanation, no commentary.

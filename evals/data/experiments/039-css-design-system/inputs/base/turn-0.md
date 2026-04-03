@@ -10,4 +10,8 @@ Include:
 
 Use section IDs: variables, reset, typography, layout, components, utilities
 
+Use AAP section markers to delineate each major block.
+Wrap each logical section with `/* section:id */` and `/* /section:id */`.
+
+
 Output raw code only. No markdown fences, no explanation.

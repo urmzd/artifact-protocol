@@ -10,4 +10,8 @@ Include:
 
 Use section IDs: properties, dependencies, build, profiles
 
+Use AAP section markers to delineate each major block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
+
 Output raw code only. No markdown fences, no explanation.

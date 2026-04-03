@@ -1,0 +1,1 @@
+{"protocol":"aap/0.1","id":"artifact-0001","version":40,"name":"section","operation":{"direction":"output","format":"text/html"},"content":[{"id":"nav","content":"<div class=\"dashboard-container\">\n        <aside>\n            <h4>Admin Dashboard</h4>\n            <\n"},{"id":"stats","content":"\n"},{"id":"content","content":"\n"}]}
