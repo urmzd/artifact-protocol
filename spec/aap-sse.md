@@ -1,7 +1,7 @@
 # AAP-SSE: Server-Sent Events Transport Binding
 
-**Version**: 1.0.0-draft
-**Status**: Draft
+**Version**: 0.1
+**Status**: Draft — subject to breaking changes
 **Date**: 2026-03-29
 **Companion to**: [Agent-Artifact Protocol (AAP)](aap.md)
 
@@ -58,7 +58,7 @@ The server SHOULD set `retry:` on the first event. The server MAY increase the i
 retry: 3000
 
 event: aap:envelope
-data: {"protocol":"aap/1.0","id":"dashboard-001","version":1,"format":"text/html","mode":"full","rendering":{"display":"preview"}}
+data: {"protocol":"aap/0.1","id":"dashboard-001","version":1,"format":"text/html","mode":"full","rendering":{"display":"preview"}}
 
 ```
 

@@ -1,5 +1,5 @@
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "config-001",
   "version": 2,
   "name": "diff",

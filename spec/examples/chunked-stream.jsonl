@@ -1,4 +1,4 @@
-{"seq":0,"envelope":{"protocol":"aap/1.0","id":"report-99","version":1,"name":"full","operation":{"direction":"output","format":"text/html"}},"content":"<!DOCTYPE html>\n<html>\n<head><title>","flush":false,"final":false}
+{"seq":0,"envelope":{"protocol":"aap/0.1","id":"report-99","version":1,"name":"full","operation":{"direction":"output","format":"text/html"}},"content":"<!DOCTYPE html>\n<html>\n<head><title>","flush":false,"final":false}
 {"seq":1,"content":"Streaming Report","flush":false,"final":false}
 {"seq":2,"content":"</title></head>","flush":true,"final":false}
 {"seq":3,"content":"\n<body>\n<h1>Q4 Performance</h1>","flush":true,"final":false}

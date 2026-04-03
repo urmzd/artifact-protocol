@@ -3,7 +3,7 @@
 
   "step_1_handle": {
     "_description": "Orchestrator holds this envelope after artifact creation",
-    "protocol": "aap/1.0",
+    "protocol": "aap/0.1",
     "id": "dashboard-001",
     "version": 3,
     "name": "handle",
@@ -15,7 +15,7 @@
 
   "step_2_projection": {
     "_description": "Orchestrator requests and receives a structure projection — an envelope",
-    "protocol": "aap/1.0",
+    "protocol": "aap/0.1",
     "id": "dashboard-001",
     "version": 3,
     "name": "projection",
@@ -37,7 +37,7 @@
 
   "step_3_edit_intent": {
     "_description": "Orchestrator sends edit intent — an input envelope with parallel intents",
-    "protocol": "aap/1.0",
+    "protocol": "aap/0.1",
     "id": "dashboard-001",
     "version": 3,
     "name": "intent",
@@ -61,7 +61,7 @@
     },
 
     "maintain_agent_output": {
-      "protocol": "aap/1.0",
+      "protocol": "aap/0.1",
       "id": "dashboard-001",
       "version": 4,
       "name": "diff",
@@ -77,7 +77,7 @@
 
   "step_4_edit_result": {
     "_description": "Orchestrator receives result envelope — summary of changes + updated handle",
-    "protocol": "aap/1.0",
+    "protocol": "aap/0.1",
     "id": "dashboard-001",
     "version": 4,
     "name": "result",
@@ -95,7 +95,7 @@
 
   "step_5_audit": {
     "_description": "Audit entry — also an envelope",
-    "protocol": "aap/1.0",
+    "protocol": "aap/0.1",
     "id": "dashboard-001",
     "version": 4,
     "name": "audit",

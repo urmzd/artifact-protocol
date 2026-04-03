@@ -8,7 +8,7 @@
   "properties": {
     "protocol": {
       "type": "string",
-      "const": "aap/1.0",
+      "const": "aap/0.1",
       "description": "Protocol identifier and version"
     },
     "id": {

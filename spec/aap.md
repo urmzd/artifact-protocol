@@ -1,7 +1,7 @@
 # Agent-Artifact Protocol (AAP) Specification
 
-**Version**: 2.0.0-draft
-**Status**: Draft
+**Version**: 0.1
+**Status**: Draft — subject to breaking changes
 **Date**: 2026-04-02
 
 ## 1. Introduction
@@ -63,7 +63,7 @@ Every protocol-aware payload is wrapped in an **envelope** — a JSON object wit
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `protocol` | string | YES | Protocol identifier. MUST be `"aap/1.0"` |
+| `protocol` | string | YES | Protocol identifier. MUST be `"aap/0.1"` |
 | `id` | string | YES | Unique artifact identifier (UUID or user-supplied) |
 | `version` | integer | YES | Monotonically increasing version number (starts at 1). For non-`full` operations, the apply engine validates `stored_version == version - 1` |
 | `name` | string | YES | Operation discriminator (see [Section 4](#4-operations)) |
@@ -107,7 +107,7 @@ The shape of each content item is determined by `name`. See [Section 4](#4-opera
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 1,
   "name": "full",
@@ -185,7 +185,7 @@ Complete artifact content. This is the baseline — most expensive, always corre
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "report-42",
   "version": 1,
   "name": "full",
@@ -236,7 +236,7 @@ A target identifies where in the artifact the operation applies. Exactly one add
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 2,
   "name": "diff",
@@ -273,7 +273,7 @@ Regenerate only targeted sections. All other sections are preserved from the pre
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 3,
   "name": "section",
@@ -312,7 +312,7 @@ Slot syntax follows [Mustache](https://mustache.github.io/):
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 4,
   "name": "template",
@@ -350,7 +350,7 @@ Exactly one of `ref`, `uri`, or `content` MUST be present per item.
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "full-page",
   "version": 1,
   "name": "composite",
@@ -389,7 +389,7 @@ Each `section_prompt` entry:
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 1,
   "name": "manifest",
@@ -485,7 +485,7 @@ Each parallel agent returns a **section result** — an envelope with `operation
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 1,
   "name": "full",
@@ -514,7 +514,7 @@ The same pattern applies to updates. When multiple sections need regeneration, d
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 2,
   "name": "manifest",
@@ -578,7 +578,7 @@ The first chunk frame (`seq: 0`) SHOULD include the envelope metadata (all field
 **Example** (streaming a full artifact):
 
 ```jsonl
-{"seq":0,"envelope":{"protocol":"aap/1.0","id":"doc-1","version":1,"name":"full","operation":{"direction":"output","format":"text/html"}},"content":"<!DOCTYPE html><html>","flush":true,"final":false}
+{"seq":0,"envelope":{"protocol":"aap/0.1","id":"doc-1","version":1,"name":"full","operation":{"direction":"output","format":"text/html"}},"content":"<!DOCTYPE html><html>","flush":true,"final":false}
 {"seq":1,"content":"<head><title>Report</title></head>","flush":true,"final":false}
 {"seq":2,"content":"<body><h1>Q4 Report</h1>","flush":false,"final":false}
 {"seq":3,"content":"<p>Revenue increased by 15%.</p></body></html>","flush":true,"final":true}
@@ -766,7 +766,7 @@ A **handle** is an envelope the orchestrator holds instead of full artifact cont
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 5,
   "name": "handle",
@@ -811,7 +811,7 @@ Each section summary contains: `id`, `label`, `token_count`, `summary`.
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 5,
   "name": "projection",
@@ -860,7 +860,7 @@ Multiple intents can be batched in a single envelope for parallel processing:
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 5,
   "name": "intent",
@@ -901,7 +901,7 @@ On `conflict`, the orchestrator SHOULD: request a `change_summary` projection to
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 6,
   "name": "result",
@@ -976,7 +976,7 @@ Multiple audit entries can be batched in a single envelope:
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 6,
   "name": "audit",
@@ -1078,7 +1078,7 @@ The optional `entity` object (carried in `content` for `name: "handle"` envelope
 
 ```json
 {
-  "protocol": "aap/1.0",
+  "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 3,
   "name": "handle",
