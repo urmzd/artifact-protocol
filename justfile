@@ -1,58 +1,27 @@
 build:
     cargo build
 
-install:
-    cargo install --path .
+test:
+    cargo test
 
-run file="/tmp/artifact.html":
-    cargo run -- {{file}}
-
-# Resolve an envelope file once and print to stdout
-resolve file:
-    cargo run -- {{file}}
-
-# Watch and resolve on changes
-watch file="/tmp/artifact.html":
-    cargo run -- {{file}} --watch
-
-# Stream pre-built HTML via demo script
-demo file="/tmp/artifact.html": build
-    #!/usr/bin/env bash
-    set -e
-    FILE="{{file}}"
-    uv run --project tools ag-demo "$FILE"
-    ./target/debug/aap "$FILE"
-
-# Real LLM stream via ollama
-demo-llm file="/tmp/artifact.html" model="gemma3": build
-    #!/usr/bin/env bash
-    set -e
-    FILE="{{file}}"
-    uv run --project tools ag-ollama "$FILE" "{{model}}"
-    ./target/debug/aap "$FILE"
-
-# Offline tokenizer benchmarks — no server needed
-bench:
-    uv run --project tools ag-bench
-
-# Rust criterion benchmarks
+# Rust criterion micro-benchmarks (apply engine performance)
 bench-rust:
     cargo bench
 
-# Regenerate protocol benchmark table and embed into README
+# Generate benchmark table and embed into README
 bench-protocol:
-    cargo run --release --bin bench-table > benches/results.md
-    embed-src README.md
+    cargo run --release --bin bench_table > benches/results.md
 
-bench-all: bench bench-rust bench-protocol
+# Generate experiment input directories (no LLM needed)
+bench-generate count="0":
+    cd benches && go run . generate $(if [ "{{count}}" != "0" ]; then echo "--count {{count}}"; fi)
 
-# Stream with HF tokenizer
-demo-hf tokenizer="gpt2" file="/tmp/artifact.html": build
-    #!/usr/bin/env bash
-    set -e
-    FILE="{{file}}"
-    uv run --project tools ag-hf-stream "$FILE" "{{tokenizer}}"
-    ./target/debug/aap "$FILE"
+# Run a single experiment (requires Ollama or API key)
+bench-single n="1" model="qwen3.5:4b":
+    cd benches && go run . run --single {{n}} --model {{model}}
 
-test:
-    cargo test
+# Run all experiments
+bench model="qwen3.5:4b" count="0":
+    cd benches && go run . run --model {{model}} $(if [ "{{count}}" != "0" ]; then echo "--count {{count}}"; fi)
+
+bench-all: bench-rust bench-protocol
