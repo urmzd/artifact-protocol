@@ -1,0 +1,218 @@
+{
+  "experiment_id": "051-toml-cargo-workspace",
+  "model": "gemini-3.1-flash-lite-preview",
+  "provider": "google",
+  "timestamp": "2026-04-03T07:27:26.256603+00:00",
+  "format": "text/x-toml",
+  "base_turn0": {
+    "input_tokens": 135,
+    "output_tokens": 548,
+    "latency_ms": 3390,
+    "artifact_bytes": 1665,
+    "ttft_ms": 0,
+    "ttlt_ms": 2180,
+    "median_itl_ms": 93.15
+  },
+  "aap_turn0": {
+    "input_tokens": 474,
+    "output_tokens": 488,
+    "latency_ms": 2854,
+    "artifact_bytes": 1413,
+    "ttft_ms": 0,
+    "ttlt_ms": 2001,
+    "median_itl_ms": 90.43
+  },
+  "default_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add sqlx and sea-orm to the dependencies with features for PostgreSQL and runtim",
+        "input_tokens": 704,
+        "output_tokens": 631,
+        "latency_ms": 2950,
+        "output_bytes": 1904,
+        "ttft_ms": 0,
+        "ttlt_ms": 2136,
+        "median_itl_ms": 77.67,
+        "failed": false,
+        "failure_reason": ""
+      },
+      {
+        "turn": 2,
+        "edit": "Update the release profile to enable codegen-units = 1 and add a bench profile w",
+        "input_tokens": 1361,
+        "output_tokens": 648,
+        "latency_ms": 2810,
+        "output_bytes": 1952,
+        "ttft_ms": 0,
+        "ttlt_ms": 2094,
+        "median_itl_ms": 71.36,
+        "failed": false,
+        "failure_reason": ""
+      }
+    ],
+    "total_input_tokens": 2065,
+    "total_output_tokens": 1279,
+    "total_latency_ms": 5760
+  },
+  "aap_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add sqlx and sea-orm to the dependencies with features for PostgreSQL and runtim",
+        "input_tokens": 1617,
+        "output_tokens": 128,
+        "latency_ms": 1912,
+        "output_bytes": 1567,
+        "ttft_ms": 0,
+        "ttlt_ms": 2,
+        "median_itl_ms": 2.91,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      },
+      {
+        "turn": 2,
+        "edit": "Update the release profile to enable codegen-units = 1 and add a bench profile w",
+        "input_tokens": 1678,
+        "output_tokens": 100,
+        "latency_ms": 1097,
+        "output_bytes": 1614,
+        "ttft_ms": 0,
+        "ttlt_ms": 3,
+        "median_itl_ms": 2.43,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      }
+    ],
+    "total_input_tokens": 3295,
+    "total_output_tokens": 228,
+    "total_latency_ms": 3009,
+    "envelope_parse_rate": 1.0,
+    "apply_success_rate": 1.0
+  },
+  "comparison": {
+    "output_token_savings_pct": 82.2,
+    "input_token_savings_pct": -59.6,
+    "latency_savings_pct": 47.8
+  },
+  "token_table": {
+    "turns": [
+      {
+        "turn": 0,
+        "base_input": 135,
+        "base_output": 548,
+        "base_latency_ms": 3390,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 2180,
+        "base_median_itl_ms": 93.15,
+        "aap_input": 474,
+        "aap_output": 488,
+        "aap_latency_ms": 2854,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 2001,
+        "aap_median_itl_ms": 90.43
+      },
+      {
+        "turn": 1,
+        "base_input": 704,
+        "base_output": 631,
+        "base_latency_ms": 2950,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 2136,
+        "base_median_itl_ms": 77.67,
+        "aap_input": 1617,
+        "aap_output": 128,
+        "aap_latency_ms": 1912,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 2,
+        "aap_median_itl_ms": 2.91,
+        "envelope_name": "edit",
+        "apply_ok": true
+      },
+      {
+        "turn": 2,
+        "base_input": 1361,
+        "base_output": 648,
+        "base_latency_ms": 2810,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 2094,
+        "base_median_itl_ms": 71.36,
+        "aap_input": 1678,
+        "aap_output": 100,
+        "aap_latency_ms": 1097,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 3,
+        "aap_median_itl_ms": 2.43,
+        "envelope_name": "edit",
+        "apply_ok": true
+      }
+    ],
+    "totals": {
+      "base_input": 2200,
+      "base_output": 1827,
+      "base_combined": 4027,
+      "aap_input": 3769,
+      "aap_output": 716,
+      "aap_combined": 4485,
+      "base_latency_ms": 9150,
+      "aap_latency_ms": 5863,
+      "output_savings_pct": 60.8,
+      "input_delta_pct": 71.3,
+      "combined_savings_pct": -11.4,
+      "latency_savings_pct": 35.9
+    }
+  },
+  "quality": {
+    "per_turn": [
+      {
+        "turn": 0,
+        "sequence_similarity": 0.4767,
+        "token_f1": 0.6957,
+        "base_char_count": 1665,
+        "aap_char_count": 974,
+        "char_delta_pct": -41.5,
+        "lines_added": 28,
+        "lines_removed": 60,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 1,
+        "sequence_similarity": 0.5165,
+        "token_f1": 0.7014,
+        "base_char_count": 1904,
+        "aap_char_count": 1128,
+        "char_delta_pct": -40.8,
+        "lines_added": 30,
+        "lines_removed": 64,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 2,
+        "sequence_similarity": 0.4861,
+        "token_f1": 0.711,
+        "base_char_count": 1952,
+        "aap_char_count": 1175,
+        "char_delta_pct": -39.8,
+        "lines_added": 27,
+        "lines_removed": 62,
+        "rouge_l": null,
+        "bleu": null
+      }
+    ],
+    "mean_sequence_similarity": 0.4931,
+    "mean_token_f1": 0.7027,
+    "mean_rouge_l": null,
+    "mean_bleu": null,
+    "judge_comparisons": null,
+    "mean_base_judge": null,
+    "mean_aap_judge": null
+  }
+}

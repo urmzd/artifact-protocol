@@ -1,0 +1,98 @@
+[workspace]
+members = [
+    "cli",
+    "core",
+    "utils",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["DataForge Contributors"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/example/dataforge"
+
+[workspace.dependencies]
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.37", features = ["full"] }
+anyhow = "1.0"
+tracing = "0.1"
+reqwest = { version = "0.12", features = ["json"] }
+sqlx = { version = "0.7", features = ["runtime-tokio", "postgres", "macros", "chrono", "uuid"] }
+sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
+criterion = "0.5"
+tempfile = "3.10"
+mockito = "1.4"
+
+[package]
+name = "dataforge"
+version.workspace = true
+edition.workspace = true
+description = "A CLI tool for data processing"
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "dataforge"
+path = "src/main.rs"
+
+[dependencies]
+cli_core = { path = "../core" }
+cli_utils = { path = "../utils" }
+clap.workspace = true
+serde.workspace = true
+tokio.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+reqwest.workspace = true
+
+[features]
+default = ["minimal"]
+full = ["core/full", "utils/full"]
+minimal = []
+
+[profile.release]
+lto = true
+strip = "symbols"
+
+[package]
+name = "core"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+serde.workspace = true
+anyhow.workspace = true
+sqlx.workspace = true
+sea-orm.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+tempfile.workspace = true
+
+[features]
+full = []
+
+[package]
+name = "utils"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+mockito.workspace = true
+
+[features]
+full = []

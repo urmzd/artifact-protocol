@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "workspace-config",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "release-profile"
+      },
+      "content": "lto = true\nstrip = \"symbols\"\ncodegen-units = 1\n\n[profile.bench]\ndebug = true\n"
+    }
+  ]
+}

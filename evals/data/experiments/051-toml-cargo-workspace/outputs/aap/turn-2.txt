@@ -1,0 +1,68 @@
+<aap:target id="workspace-config">
+[workspace]
+members = [
+    <aap:target id="member-cli">"cli"</aap:target>,
+    <aap:target id="member-core">"core"</aap:target>,
+    <aap:target id="member-utils">"utils"</aap:target>
+]
+resolver = "2"
+
+[workspace.package]
+<aap:target id="workspace-metadata">
+version = "0.1.0"
+edition = "2021"
+authors = ["Developer <dev@example.com>"]
+license = "MIT"
+repository = "https://github.com/example/dataforge"
+</aap:target>
+
+[workspace.dependencies]
+<aap:target id="dependencies">
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.37", features = ["full"] }
+anyhow = "1.0"
+tracing = "0.1"
+reqwest = { version = "0.12", features = ["json"] }
+sqlx = { version = "0.7", features = ["runtime-tokio", "postgres"] }
+sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio-rustls"] }
+</aap:target>
+
+[workspace.dependencies.dev]
+<aap:target id="dev-dependencies">
+criterion = "0.5"
+tempfile = "3.10"
+mockito = "1.4"
+</aap:target>
+
+[profile.release]
+<aap:target id="release-profile">lto = true
+strip = "symbols"
+codegen-units = 1
+
+[profile.bench]
+debug = true
+</aap:target>
+</aap:target>
+
+<aap:target id="cli-package">
+[package]
+name = "dataforge"
+version.workspace = true
+edition.workspace = true
+description = "A powerful data processing CLI tool"
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+<aap:target id="features">
+default = ["minimal"]
+minimal = []
+full = ["dep:reqwest"]
+</aap:target>
+
+[[bin]]
+name = "dataforge"
+path = "src/main.rs"
+</aap:target>
