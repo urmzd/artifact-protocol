@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.11.0 (2026-04-03)
+
+### Features
+
+- **apply**: populate targets array in handle envelopes ([77f28ee](https://github.com/urmzd/agent-artifact-protocol/commit/77f28ee2cb5328638898dc9438778a6da40f8521))
+- **markers**: extract target IDs from artifact content ([eae3a48](https://github.com/urmzd/agent-artifact-protocol/commit/eae3a48e87537f7822f800d2a32dfd149a751608))
+- **aap**: add target information to handle envelopes ([3860c1e](https://github.com/urmzd/agent-artifact-protocol/commit/3860c1e265606050d40f5b5618ba0a8500257bea))
+
+### Documentation
+
+- **spec**: document target information and recomputation ([cb3acaf](https://github.com/urmzd/agent-artifact-protocol/commit/cb3acaf88dc3a199493c89ca384381327a60146b))
+
+### Miscellaneous
+
+- **deps**: update artifact-protocol to 0.9.2 ([603ebe4](https://github.com/urmzd/agent-artifact-protocol/commit/603ebe493d24852ad40e96e134d910d348e0e2d4))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.10.0...v0.11.0)
+
+
 ## 0.10.0 (2026-04-03)
 
 ### Breaking Changes
