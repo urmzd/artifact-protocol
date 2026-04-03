@@ -1,49 +1,42 @@
 //! PyO3 bindings for the AAP apply engine.
 //!
-//! Exposes `resolve_envelope` to Python, which takes an operation envelope
-//! JSON string and an optional base artifact envelope JSON string, and
-//! returns `{"artifact": {...}, "handle": {...}}` as a JSON string.
+//! Exposes `resolve_envelope` to Python. Takes an operation envelope JSON
+//! and an optional base artifact JSON, returns `{"artifact": {...}, "handle": {...}}`.
 
 use pyo3::prelude::*;
 
-use crate::aap::Envelope;
+use crate::aap::{Artifact, Envelope};
 use crate::apply;
 
 /// Resolve an AAP operation against an optional base artifact.
 ///
 /// Args:
-///     operation_json: JSON string of the operation envelope.
-///     artifact_json: JSON string of the base artifact envelope (a `name:"synthesize"` envelope).
-///         Required for edit ops, ignored for synthesize.
+///     operation_json: JSON string of the operation envelope (synthesize or edit).
+///     artifact_json: JSON string of the base artifact. Required for edit ops.
 ///
 /// Returns:
-///     JSON string: `{"artifact": <envelope>, "handle": <envelope>}`
-///
-/// Raises:
-///     ValueError: If the envelope is malformed or the operation fails.
+///     JSON string: `{"artifact": {...}, "handle": {...}}`
 #[pyfunction]
 fn resolve_envelope(operation_json: &str, artifact_json: Option<&str>) -> PyResult<String> {
     let operation: Envelope = serde_json::from_str(operation_json)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("invalid operation envelope JSON: {e}")))?;
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("invalid envelope JSON: {e}")))?;
 
     let artifact = artifact_json
         .map(|json| {
-            serde_json::from_str::<Envelope>(json)
-                .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("invalid artifact envelope JSON: {e}")))
+            serde_json::from_str::<Artifact>(json)
+                .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("invalid artifact JSON: {e}")))
         })
         .transpose()?;
 
-    let (resolved, handle) = apply::apply(artifact.as_ref(), &operation)
+    let (result_artifact, handle) = apply::apply(artifact.as_ref(), &operation)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("apply failed: {e}")))?;
 
-    let result = serde_json::json!({
-        "artifact": serde_json::to_value(&resolved)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("artifact serialization failed: {e}")))?,
-        "handle": serde_json::to_value(&handle)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("handle serialization failed: {e}")))?,
+    let output = serde_json::json!({
+        "artifact": result_artifact,
+        "handle": handle,
     });
 
-    serde_json::to_string(&result)
+    serde_json::to_string(&output)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("serialization failed: {e}")))
 }
 
