@@ -1,0 +1,29 @@
+{
+  "case_num": 1,
+  "category": "html-dashboard",
+  "format": "text/html",
+  "extension": ".html",
+  "filename": "dashboard.html",
+  "variant_index": 0,
+  "sections_expected": [
+    "nav",
+    "stats",
+    "content",
+    "footer"
+  ],
+  "sections_found": [
+    "nav",
+    "stats",
+    "footer"
+  ],
+  "envelope_files": [
+    "diff-delete.jsonl",
+    "diff-multi.jsonl",
+    "diff-replace.jsonl",
+    "full.jsonl",
+    "section-multi.jsonl",
+    "section-single.jsonl",
+    "template-fill.jsonl"
+  ],
+  "artifact_bytes": 9030
+}

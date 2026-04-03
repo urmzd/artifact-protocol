@@ -1,0 +1,2 @@
+{"protocol":"aap/0.1","id":"artifact-0004","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                <a href=\"#\">Settings</a>"}}]}
+{"protocol":"aap/0.1","id":"artifact-0004","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                        Pro Mechanical Keyboard (RGB)<br><span style=\"font-size: 12px; color: #888;\">Black Cherry Blue Switches</span>"}}]}

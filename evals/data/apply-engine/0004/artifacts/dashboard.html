@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | E-Commerce</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Utility */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .btn {
+            background-color: #2c3e50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #1a252f;
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ccc;
+            color: #666;
+        }
+        
+        /* Section:nav Styles */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .top-menu {
+            display: flex;
+            gap: 25px;
+        }
+        .top-menu a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+        }
+        .search-bar {
+            background: #fff;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #333;
+        }
+
+        /* Section:stats Styles */
+        .dash-container {
+            margin: 20px 0;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid #0056b3;
+        }
+        .stat-card h3 {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        .stat-card .change {
+            font-size: 14px;
+        }
+        .text-green { color: #27ae60; }
+        .text-red { color: #c0392b; }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            transition: transform 0.2s;
+        }
+
+        /* Section:content Styles */
+        .main-content {
+            clear: both;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .data-table th {
+            background-color: #f8f9fa;
+            color: #444;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .data-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 3px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+
+        /* Section:footer Styles */
+        .footer {
+            margin-top: auto;
+            border-top: 1px solid #ddd;
+            padding: 20px 0;
+            background-color: #f1f3f5;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+        }
+        .footer-links {
+            margin-top: 10px;
+        }
+        .footer-links a {
+            color: #555;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .top-menu {
+                display: none; /* Simplified for mobile */
+            }
+            .dash-container {
+                display: flex;
+                flex-direction: column;
+            }
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- section:nav -->
+    <div class="container">
+        <div class="top-bar">
+            <div class="logo">NexStore Admin</div>
+            <div class="top-menu">
+                <a href="#">Dashboard</a>
+                <a href="#">Products</a>
+                <a href="#">Orders</a>
+                <a href="#">Customers</a>
+                <a href="#">Settings</a>
+                <a href="#" style="color:red;">Logout</a>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search analytics..." aria-label="Search Analytics">
+            </div>
+        </div>
+    </div>
+
+    <!-- section:stats -->
+    <div class="container">
+        <div class="dash-container">
+            <div class="grid-container">
+                <div class="stat-card">
+                    <h3>Total Sales Revenue</h3>
+                    <div class="value">$84,295.00</div>
+                    <div class="change text-green"><span>+12.5%</span> from last week</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Orders</h3>
+                    <div class="value">1,248</div>
+                    <div class="change">118 orders today</div>
+                </div>
+                <div class="stat-card">
+                    <h3>New Customers</h3>
+                    <div class="value">89</div>
+                    <div class="change text-green"><span>+4.2%</span> this month</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Average Order Value</h3>
+                    <div class="value">$68.50</div>
+                    <div class="change">15% compared to last period</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- section:content -->
+    <div class="container">
+        <div class="content-header">
+            <h2>Recent Product Activity</h2>
+            <div>
+                <span style="color: #666; font-size: 14px;">Total Items: 4</span>
+                <button class="btn">Export Report</button>
+                <button class="btn btn-outline">Clear</button>
+            </div>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>SKU</th>
+                    <th>Created Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#1012</td>
+                    <td>
+                        Pro Mechanical Keyboard (RGB)<br><span style="font-size: 12px; color: #888;">Black Cherry Blue Switches</span>
+                    </td>
+                    <td>Electronics</td>
+                    <td>$159.00</td>
+                    <td>KB-9921</td>
+                    <td>2023-10-12</td>
+                    <td><span class="status-badge">Active</span></td>
+                    <td>
+                        <a href="#" style="text-decoration: underline;">Track</a>
+                        <a href="#" style="text-decoration: underline;">Edit</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#1009</td>
+                    <td>Sustainable Cotton Tote Bags<br><span style="font-size: 12px; color: #888;">Recycled Material Pack</span></td>
+                    <td>Accessories</td>
+                    <td>$12.50</td>
+                    <td>ACC-553</td>
+                    <td>2023-10-11</td>
+                    <td><span class="status-badge">Inactive</span></td>
+                    <td>
+                        <a href="#" style="text-decoration: underline;">Track</a>
+                        <a href="#" style="text-decoration: underline;">Edit</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#1004</td>
+                    <td>Wireless Noise Cancelling Headphones<br><span style="font-size: 12px; color: #888;">Sony Headphones LM2500</span></td>
+                    <td>Electronics</td>
+                    <td>$299.00</td>
+                    <td>HL-1001</td>
+                    <td>2023-10-10</td>
+                    <td><span class="status-badge">Active</span></td>
+                    <td>
+                        <a href="#" style="text-decoration: underline;">Track</a>
+                        <a href="#" style="text-decoration: underline;">Edit</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#1001</td>
+                    <td>Organic Coffee Beans<br><span style="font-size: 12px; color: #888;">250g Premium Roast</span></td>
+                    <td>Food & Bev</td>
+                    <td>$28.00</td>
+                    <td>FB-992</td>
+                    <td>2023-10-08</td>
+                    <td><span class="status-badge">Inactive</span></td>
+                    <td>
+                        <a href="#" style="text-decoration: underline;">Track</a>
+                        <a href="#" style="text-decoration: underline;">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Section:footer -->
+        <div class="footer">
+            <p>&copy; 2023 NexStore Admin. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Contact</a>
+            </div>
+        </div>
+    </div>
