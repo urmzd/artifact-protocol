@@ -2,119 +2,75 @@
 
 > **Warning**: This project is `v0` — the protocol, schemas, and APIs are subject to breaking changes without notice until a formal release.
 
-An open standard for token-efficient artifact generation, updates, and streaming — the **[Agent-Artifact Protocol (AAP)](spec/aap.md)**. The protocol defines how LLMs can declare, diff, and reprovision text artifacts with minimal token expenditure — 90-99% output token reduction per update, translating to 43-86% total cost savings depending on the model's pricing (see [cost model](spec/aap.md#811-cost-model)).
+An open standard for token-efficient artifact updates and streaming — the **[Agent-Artifact Protocol (AAP)](spec/aap.md)**. The protocol defines how LLMs can declare, diff, and reprovision text artifacts with minimal token expenditure — 90-99% output token reduction per update, translating to 43-86% total cost savings depending on the model's pricing (see [cost model](spec/aap.md#811-cost-model)).
 
-Includes a Rust reference implementation with a versioned artifact store, apply engine, and CLI tool for resolving protocol envelopes.
+Includes a Rust reference implementation of the **apply engine** — a stateless, deterministic function that resolves protocol envelopes into artifact content — plus a Python evaluation framework for measuring token efficiency against real LLM runs.
 
 ## How it works
 
 1. An LLM produces an artifact envelope (JSON) declaring content, diffs, section updates, templates, or composites.
-2. The apply engine resolves the envelope against a versioned store to produce the final text artifact.
-3. The resolved artifact (HTML, SVG, source code, config, etc.) can be consumed by any downstream tool — browsers, PDF generators, IDEs, etc.
+2. The apply engine resolves the envelope against the current artifact state to produce the updated text.
+3. The resolved artifact (HTML, SVG, source code, config, etc.) can be consumed by any downstream tool — browsers, IDEs, etc.
 
 ```
-LLM ──produces──▶ envelope.json ──resolve──▶ artifact content
+LLM ──produces──▶ envelope.json ──apply──▶ updated artifact
                                     ▲
-                              aap (Rust apply engine)
+                              aap (stateless, ~2μs)
 ```
 
 > AAP produces text artifacts; rendering is a consumer responsibility.
 
+## Apply engine
+
+The core of the library is a single stateless function:
+
+```rust
+pub fn apply(artifact: Option<&Envelope>, operation: &Envelope) -> Result<Envelope>
+```
+
+It takes the current artifact state (if any) and an operation envelope, and returns the new artifact state. Supports 6 operation types:
+
+| Operation | Description |
+|---|---|
+| **full** | Complete artifact content (baseline or reset) |
+| **diff** | Incremental text updates via search, byte offsets, line ranges, or JSON Pointer |
+| **section** | Replace named sections (marked with `<aap:section>` tags) |
+| **template** | Mustache-subset variable substitution |
+| **composite** | Assemble content from inline includes |
+| **manifest** | Stitch section results into a skeleton template |
+
+The function is pure — no I/O, no state, no side effects. This makes it portable: embed it in browsers (via WASM), IDEs, CLI tools, or service backends.
+
 ## Requirements
 
 - [Rust](https://rustup.rs/) (stable)
-- [uv](https://github.com/astral-sh/uv) (Python package manager)
+- [uv](https://github.com/astral-sh/uv) (Python package manager, for evals)
 - [just](https://github.com/casey/just) (optional, for recipes)
 
 ## Quick start
 
 ```sh
-# Build the binary
+# Build the library
 just build
 
-# Resolve an envelope file
-just resolve path/to/envelope.json
+# Run tests
+just test
 
-# Watch a file and resolve on changes
-just watch path/to/artifact.html
-
-# Stream a pre-built HTML dashboard
-just demo
-
-# Stream via a real LLM (requires ollama)
-just demo-llm
-
-# Stream via a HuggingFace tokenizer (gpt2 by default)
-just demo-hf
-
-# Run offline tokenizer benchmarks (no server needed)
+# Run Rust criterion benchmarks (apply engine speed)
 just bench
-
-# Run Rust criterion benchmarks (watcher, broadcast throughput)
-just bench-rust
-```
-
-## CLI usage
-
-```sh
-aap <input> [--watch] [--output <file>]
-```
-
-- `<input>` — the file to read (or watch).
-- `--watch` — keep watching and resolve on changes (runs until Ctrl+C).
-- `--output` — write resolved content to a file instead of stdout.
-
-When the input contains a protocol envelope (JSON with `"protocol": "aap/0.1"`), the binary resolves the envelope (applying diffs, section updates, templates, or composites) using the versioned artifact store. Plain files are passed through unchanged.
-
-## Observability
-
-The Rust binary emits structured log lines to stderr via `tracing` and prints a metrics summary on shutdown.
-
-### Structured logging
-
-Logs use `tracing-subscriber` (compact format with timestamps). Control verbosity with the `RUST_LOG` environment variable (default: `aap=info`).
-
-```sh
-# Show debug-level spans
-RUST_LOG=aap=debug aap input.html
-```
-
-### Tracing spans
-
-| Span | Location |
-|---|---|
-| `file_watcher` | File polling loop |
-
-### Metrics summary
-
-On Ctrl+C (watch mode) the binary prints a summary table to stderr:
-
-```
-── Metrics Summary ───────────────────────────────────
-envelope.apply_count          5
-envelope.apply_duration_ms    avg=0.3        min=0.1        max=0.8
-watcher.changes_detected      5
-watcher.poll_duration_ms      avg=0.1        min=0.0        max=0.3
-broadcast.lag_count           0
-───────────────────────────────────────────────────────
 ```
 
 ## Recipes
 
 | Recipe | Description |
 |---|---|
-| `just build` | Compile the Rust binary |
-| `just install` | Install the binary via `cargo install` |
-| `just run [file]` | Compile and run the binary on a file |
-| `just resolve <file>` | Resolve an envelope and print to stdout |
-| `just watch [file]` | Watch a file and resolve on changes |
-| `just demo` | Stream a pre-built HTML dashboard |
-| `just demo-llm [model]` | Live ollama LLM streaming (default: gemma3) |
-| `just demo-hf [tokenizer]` | HuggingFace tokenizer streaming |
-| `just bench` | Offline Python tokenizer benchmarks |
-| `just bench-rust` | Rust criterion benchmarks (watcher, broadcast) |
-| `just bench-protocol` | Regenerate AAP benchmark table and embed into README |
+| `just build` | Compile the Rust library |
 | `just test` | Run Rust unit tests |
+| `just bench` | Rust criterion micro-benchmarks (apply engine speed) |
+| `just generate [count] [model]` | Generate benchmark corpus (artifacts + envelopes via Ollama) |
+| `just experiment [count] [model]` | Run baseline vs AAP experiment (LLM quality eval) |
+| `just run [count] [model] [id]` | Run conversation benchmark experiments (base vs AAP flows) |
+| `just report` | Generate experiment report (markdown) |
 
 ## Evals
 
@@ -142,12 +98,12 @@ At r = 1 (equal pricing), the same scenario yields ~49% savings after 10 edits. 
 
 ## AAP payload benchmarks
 
-Payload size and apply time for each [Agent-Artifact Protocol (AAP)](spec/aap.md) generation mode, measured against an 8 KB HTML dashboard fixture. Regenerate with `cargo run --release --bin bench-table > benches/results.md`.
+Payload size and apply time for each [Agent-Artifact Protocol (AAP)](spec/aap.md) operation type, measured against an 8 KB HTML dashboard fixture. Regenerate with `cargo run --release --bin bench-table > benches/results.md`.
 
 > **Note:** The "Payload savings" column measures **byte reduction** in the envelope payload — a proxy for output token reduction but not identical (tokenizers vary). Actual cost savings depend on the model's output/input price ratio; see [cost model](spec/aap.md#811-cost-model) for the full derivation.
 
 <!-- embed-src src="benches/results.md" -->
-| Mode | Scenario | Payload | % of Full | Payload savings | Apply Time |
+| Operation | Scenario | Payload | % of Full | Payload savings | Apply Time |
 |---|---|---:|---:|---:|---:|
 | **full** | Full regeneration (baseline) | 8,164 B | 100.0% | — | 1 ns |
 | **diff** | 1 value change | 12 B | 0.1% | **99.9%** | 1.5 µs |
@@ -157,16 +113,6 @@ Payload size and apply time for each [Agent-Artifact Protocol (AAP)](spec/aap.md
 | **template** | 8 slot bindings | 141 B | 1.7% | **98.3%** | 2.6 µs |
 | **manifest** | 4 sections assembled | 487 B | 6.0% | **94.0%** | 2.4 µs |
 <!-- /embed-src -->
-
-## Tokenizer benchmarks (example)
-
-```
-Tokenizer                    Tokens  Avg ch/tok    Tok ms   Tokens/sec
-────────────────────────────────────────────────────────────────────────
-gpt2                         27,300         2.4      14.2       1,917k
-bert-base-uncased            33,628         1.9      16.1       2,094k
-Fixed 30-char chunks          2,169        30.0       0.1      23,220k
-```
 
 ## License
 
