@@ -37,7 +37,7 @@ The **Agent-Artifact Protocol (AAP)** is a portable, format-agnostic standard th
 |---|---|
 | **Artifact** | A discrete unit of structured content (an HTML page, a source file, a config) |
 | **Envelope** | Universal JSON message carrying artifact identity, operation metadata, and content |
-| **Section** | A named, addressable region within an artifact |
+| **Target** | A named, addressable region within an artifact, marked by `<aap:target id="...">` |
 | **Chunk** | A unit of streamed content within a chunk frame |
 | **Operation** | The `operation` object in an envelope — metadata about the action being performed |
 | **Direction** | Whether an envelope is `"input"` (to the system) or `"output"` (from the system) |
@@ -115,42 +115,50 @@ The shape of each content item is determined by `name`. See [Section 4](#4-opera
   "content": [
     {
       "body": "<!DOCTYPE html><html><body><h1>Dashboard</h1></body></html>",
-      "sections": [{"id": "stats"}, {"id": "users"}]
+      "targets": [{"id": "stats"}, {"id": "users"}]
     }
   ]
 }
 ```
 
-### 3.2 Sections
+### 3.2 Targets
 
-An artifact MAY be divided into named **sections** — addressable regions that enable targeted updates. Section definitions are carried in the `content[0].sections` array of a `name: "full"` envelope.
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `id` | string | YES | Unique section identifier within the artifact |
-| `label` | string | no | Human-readable label |
-| `start_marker` | string | no | Format-specific start boundary |
-| `end_marker` | string | no | Format-specific end boundary |
-
-Section markers use a universal XML-style format across ALL text-based content types. The `aap:` namespace prefix makes markers uniquely identifiable and LLMs follow XML tag patterns reliably. If a section definition provides explicit `start_marker` and `end_marker`, those override the defaults.
+An artifact MAY contain named **targets** — addressable regions identified by stable IDs. Targets use a single universal marker format:
 
 | Format | Start marker | End marker |
 |---|---|---|
-| All text formats | `<aap:section id="ID">` | `</aap:section>` |
+| All text formats | `<aap:target id="ID">` | `</aap:target>` |
 | JSON (`application/json`) | N/A (use JSON Pointer paths via `pointer` targeting in diff operations) | N/A |
 
-> **Design note:** A single universal marker format is used rather than format-specific comment styles (e.g., `<!-- -->`, `// #region`, `# region`). LLMs are trained on vast amounts of XML and reliably reproduce XML tags. The `aap:` namespace prevents collisions with application content. Models MAY hallucinate slight variations; implementations SHOULD apply fuzzy matching when locating markers.
+Each target ID MUST be unique within the artifact. Targets MAY nest — a coarse-grained target can contain fine-grained targets within it.
 
-**Example** (sections in any format):
+> **Design note:** LLMs reliably reference identifiers — the same mechanism behind citations, anchor links, and XML attributes. ID-based targeting eliminates the most common diff failure mode: hallucinated search strings. The init context places targets on updatable regions, the maintain context references them by ID. No literal text reproduction required.
+
+**Guidelines for target placement:**
+- Place targets at **every granularity that changes independently** — structural blocks (navigation, stat cards, data tables) and leaf values (individual numbers, status badges, config values)
+- Use **descriptive, stable IDs** that describe the role, not the current value (e.g., `revenue-value`, `user-count`, `nav`, `users-table`)
+- Aim for **5-15 coarse targets** per artifact with **fine-grained targets** on individually-updatable values within them
+- Target placement is **preference-driven and prompt-optimizable** — the init context's system prompt can instruct where targets are most likely to be revised based on the artifact's purpose. A dashboard's stat values, a form's validation messages, a config's environment-specific fields — these are high-churn locations that benefit most from fine-grained targets
+- Targets MAY carry an optional `type` attribute as a classification hint (e.g., `type="section"`, `type="value"`). The apply engine ignores `type` — it is metadata for producers and consumers
+
+**Example:**
 
 ```html
-<aap:section id="stats">
-<div class="stats">...</div>
-</aap:section>
+<aap:target id="stats">
+<div class="stat-card">
+  <h3>Revenue</h3>
+  <span class="value"><aap:target id="revenue-value">$12,340</aap:target></span>
+  <small><aap:target id="revenue-trend">↑ 12%</aap:target></small>
+</div>
+<div class="stat-card">
+  <h3>Users</h3>
+  <span class="value"><aap:target id="user-count">1,205</aap:target></span>
+</div>
+</aap:target>
 
-<aap:section id="users-table">
+<aap:target id="users-table">
 <table>...</table>
-</aap:section>
+</aap:target>
 ```
 
 ### 3.3 Version Chain
@@ -180,7 +188,7 @@ Complete artifact content. This is the baseline — most expensive, always corre
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `body` | string | YES | Full artifact content |
-| `sections` | array | no | Section definitions (see [Section 3.2](#32-sections)) |
+| `targets` | array | no | Target definitions (see [Section 3.2](#32-targets)) |
 
 ```json
 {
@@ -192,7 +200,7 @@ Complete artifact content. This is the baseline — most expensive, always corre
   "content": [
     {
       "body": "<html><body><h1>Q4 Report</h1>...</body></html>",
-      "sections": [{"id": "summary"}, {"id": "charts"}]
+      "targets": [{"id": "summary"}, {"id": "charts"}]
     }
   ]
 }
@@ -218,11 +226,13 @@ A target identifies where in the artifact the operation applies. Exactly one add
 
 | Address mode | Fields | Description |
 |---|---|---|
-| Section | `{"section": "id"}` | Target an entire section by ID |
+| ID | `{"id": "target-id"}` | Target a named `<aap:target>` marker by ID **(recommended)** |
+| Search | `{"search": "literal text"}` | Target first occurrence of literal text |
 | Line range | `{"lines": [start, end]}` | Target lines (1-indexed, inclusive) |
 | Offset range | `{"offsets": [start, end]}` | Target character offsets (0-indexed, exclusive end) |
-| Search | `{"search": "literal text"}` | Target first occurrence of literal text |
 | Pointer | `{"pointer": "/path/to/value"}` | Target a value by JSON Pointer (RFC 6901) — for `application/json` and `application/yaml` formats |
+
+**ID targeting** is the recommended mode. The init context places `<aap:target id="...">` markers on updatable regions; the maintain context references them by ID. The apply engine locates the marker and operates on the content between `<aap:target id="ID">` and its closing `</aap:target>`. For `replace`, the content between markers is replaced. For `delete`, the markers and their content are removed. For `insert_before` / `insert_after`, new content is inserted adjacent to the marker boundaries.
 
 **Pointer targeting semantics:**
 - `replace`: `content` MUST be a valid JSON value. Replaces the value at the pointer location.
@@ -231,7 +241,7 @@ A target identifies where in the artifact the operation applies. Exactly one add
 - Non-existent paths MUST produce an error. Pointer operations do not auto-create intermediate paths.
 - Re-serialization may alter original formatting and comments.
 
-**Example** (update two stat card values in a single envelope):
+**Example** (update two stat card values by ID):
 
 ```json
 {
@@ -243,13 +253,13 @@ A target identifies where in the artifact the operation applies. Exactly one add
   "content": [
     {
       "op": "replace",
-      "target": {"search": "<span class=\"stat-value\">$12,340</span>"},
-      "content": "<span class=\"stat-value\">$15,720</span>"
+      "target": {"id": "revenue-value"},
+      "content": "$15,720"
     },
     {
       "op": "replace",
-      "target": {"search": "<span class=\"stat-value\">1,205</span>"},
-      "content": "<span class=\"stat-value\">1,342</span>"
+      "target": {"id": "user-count"},
+      "content": "1,342"
     }
   ]
 }
@@ -257,16 +267,16 @@ A target identifies where in the artifact the operation applies. Exactly one add
 
 ### 4.3 Section (`name: "section"`)
 
-Regenerate only targeted sections. All other sections are preserved from the previous version. Each `content` item is a section replacement.
+Regenerate the content of one or more named targets. All other targets are preserved from the previous version. Each `content` item is a target replacement — the content between `<aap:target id="ID">` and `</aap:target>` is replaced.
 
-**When to use**: one or a few sections need significant changes, but the rest is unchanged.
+**When to use**: one or a few targets need significant changes (e.g., rewriting a whole structural block), but the rest is unchanged.
 
 **Content item schema:**
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | string | YES | Section ID to replace |
-| `content` | string | YES | New content for this section |
+| `id` | string | YES | Target ID to replace |
+| `content` | string | YES | New content for this target |
 
 **Example** (replace the users table):
 
@@ -395,7 +405,7 @@ Each `section_prompt` entry:
   "operation": {"direction": "output", "format": "text/html"},
   "content": [
     {
-      "skeleton": "<!DOCTYPE html>\n<html>\n<body>\n<aap:section id=\"nav\"></aap:section>\n<aap:section id=\"stats\"></aap:section>\n<aap:section id=\"users\"></aap:section>\n</body>\n</html>",
+      "skeleton": "<!DOCTYPE html>\n<html>\n<body>\n<aap:target id=\"nav\"></aap:target>\n<aap:target id=\"stats\"></aap:target>\n<aap:target id=\"users\"></aap:target>\n</body>\n</html>",
       "section_prompts": [
         {"id": "nav", "prompt": "Generate a navigation bar with logo and user menu"},
         {"id": "stats", "prompt": "Generate 4 stat cards: users, revenue, orders, uptime"},
@@ -435,22 +445,16 @@ Compressed content MUST be base64-encoded in JSON. The `operation.checksum` fiel
 
 Reprovisioning is the act of updating an existing artifact. The producer selects a strategy based on the scope of change.
 
-### 5.1 Section-First Generation (Recommended)
+### 5.1 Target-First Generation (Recommended)
 
-Producers SHOULD emit section markers on the **initial full generation**. This incurs a small overhead (~2% extra tokens for markers) but enables all subsequent updates to use `section` or `diff` operations — reducing **output tokens** by 90-99% per update compared to full regeneration. Actual dollar savings depend on the model's output/input price ratio (see [Section 8.1.1](#811-cost-model)).
+Producers SHOULD emit `<aap:target>` markers on the **initial full generation**. This incurs a small overhead (~2% extra tokens for markers) but enables all subsequent updates to use ID-based `diff` operations — reducing **output tokens** by 90-99% per update compared to full regeneration. Actual dollar savings depend on the model's output/input price ratio (see [Section 8.1.1](#811-cost-model)).
 
-**Rationale**: the upfront cost of markers is amortized across every future update. After just one `section` update, the total output token spend is lower than two full regenerations.
-
-**Guidelines for section placement**:
-- Place section boundaries at **independently meaningful blocks** (navigation, stat cards, data tables, forms, sidebars)
-- Aim for **5-15 sections** per artifact — too few limits granularity, too many adds overhead
-- Each section should be **self-contained**: updating one section should not require changes to another
-- Avoid nesting sections deeper than 2 levels
+**Rationale**: the upfront cost of markers is amortized across every future update. After just one ID-targeted diff, the total output token spend is lower than two full regenerations.
 
 **Output cost model** (N = number of future updates, S = artifact size in output tokens):
-- Without sections: N full regenerations = N × S output tokens
-- With sections: 1 full (with markers) + N section updates = S × 1.02 + N × section_tokens output tokens
-- Break-even: 1 update (section_tokens is typically 1-10% of S)
+- Without targets: N full regenerations = N × S output tokens
+- With targets: 1 full (with markers) + N targeted diffs = S × 1.02 + N × diff_tokens output tokens
+- Break-even: 1 update (diff_tokens is typically 1-10% of S)
 
 > **Note:** Input costs are roughly equal in both cases — the maintain context reads the full artifact regardless of operation type. The savings concentrate on the output side, where tokens are 3-5× more expensive. See [Section 8.1](#81-memory-model) for the full cost derivation.
 
