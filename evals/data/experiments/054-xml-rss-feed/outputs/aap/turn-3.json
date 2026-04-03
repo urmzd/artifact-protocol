@@ -1,0 +1,30 @@
+{
+  "protocol": "aap/0.1",
+  "id": "rss-feed",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "channel-metadata"
+      },
+      "content": "<itunes:category text=\"Artificial Intelligence\"/>"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "items-list"
+      },
+      "content": "<category>Artificial Intelligence</category>"
+    }
+  ]
+}

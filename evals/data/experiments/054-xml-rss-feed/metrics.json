@@ -1,0 +1,276 @@
+{
+  "experiment_id": "054-xml-rss-feed",
+  "model": "gemini-3.1-flash-lite-preview",
+  "provider": "google",
+  "timestamp": "2026-04-03T07:28:35.645357+00:00",
+  "format": "application/xml",
+  "base_turn0": {
+    "input_tokens": 117,
+    "output_tokens": 2700,
+    "latency_ms": 13533,
+    "artifact_bytes": 9119,
+    "ttft_ms": 0,
+    "ttlt_ms": 11405,
+    "median_itl_ms": 104.02
+  },
+  "aap_turn0": {
+    "input_tokens": 456,
+    "output_tokens": 2736,
+    "latency_ms": 11998,
+    "artifact_bytes": 9279,
+    "ttft_ms": 0,
+    "ttlt_ms": 11053,
+    "median_itl_ms": 97.64
+  },
+  "default_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add 5 new items about Rust, WebAssembly, and edge computing topics with dates fr",
+        "input_tokens": 2842,
+        "output_tokens": 1047,
+        "latency_ms": 7295,
+        "output_bytes": 3436,
+        "ttft_ms": 0,
+        "ttlt_ms": 4489,
+        "median_itl_ms": 94.02,
+        "failed": false,
+        "failure_reason": ""
+      },
+      {
+        "turn": 2,
+        "edit": "Update the channel-info to change the blog name to 'CodeStream Weekly' and add a",
+        "input_tokens": 3923,
+        "output_tokens": 1105,
+        "latency_ms": 4772,
+        "output_bytes": 3618,
+        "ttft_ms": 0,
+        "ttlt_ms": 3631,
+        "median_itl_ms": 81.55,
+        "failed": false,
+        "failure_reason": ""
+      },
+      {
+        "turn": 3,
+        "edit": "Change the category of all AI/ML related items from 'Technology' to 'Artificial ",
+        "input_tokens": 5049,
+        "output_tokens": 1617,
+        "latency_ms": 7253,
+        "output_bytes": 5434,
+        "ttft_ms": 0,
+        "ttlt_ms": 6429,
+        "median_itl_ms": 96.32,
+        "failed": false,
+        "failure_reason": ""
+      }
+    ],
+    "total_input_tokens": 11814,
+    "total_output_tokens": 3769,
+    "total_latency_ms": 19320
+  },
+  "aap_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add 5 new items about Rust, WebAssembly, and edge computing topics with dates fr",
+        "input_tokens": 3867,
+        "output_tokens": 887,
+        "latency_ms": 4298,
+        "output_bytes": 12054,
+        "ttft_ms": 0,
+        "ttlt_ms": 2,
+        "median_itl_ms": 2.21,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      },
+      {
+        "turn": 2,
+        "edit": "Update the channel-info to change the blog name to 'CodeStream Weekly' and add a",
+        "input_tokens": 4692,
+        "output_tokens": 261,
+        "latency_ms": 1762,
+        "output_bytes": 12152,
+        "ttft_ms": 0,
+        "ttlt_ms": 4,
+        "median_itl_ms": 3.32,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      },
+      {
+        "turn": 3,
+        "edit": "Change the category of all AI/ML related items from 'Technology' to 'Artificial ",
+        "input_tokens": 4703,
+        "output_tokens": 118,
+        "latency_ms": 2501,
+        "output_bytes": 325,
+        "ttft_ms": 0,
+        "ttlt_ms": 3,
+        "median_itl_ms": 3.53,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      }
+    ],
+    "total_input_tokens": 13262,
+    "total_output_tokens": 1266,
+    "total_latency_ms": 8561,
+    "envelope_parse_rate": 1.0,
+    "apply_success_rate": 1.0
+  },
+  "comparison": {
+    "output_token_savings_pct": 66.4,
+    "input_token_savings_pct": -12.3,
+    "latency_savings_pct": 55.7
+  },
+  "token_table": {
+    "turns": [
+      {
+        "turn": 0,
+        "base_input": 117,
+        "base_output": 2700,
+        "base_latency_ms": 13533,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 11405,
+        "base_median_itl_ms": 104.02,
+        "aap_input": 456,
+        "aap_output": 2736,
+        "aap_latency_ms": 11998,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 11053,
+        "aap_median_itl_ms": 97.64
+      },
+      {
+        "turn": 1,
+        "base_input": 2842,
+        "base_output": 1047,
+        "base_latency_ms": 7295,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 4489,
+        "base_median_itl_ms": 94.02,
+        "aap_input": 3867,
+        "aap_output": 887,
+        "aap_latency_ms": 4298,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 2,
+        "aap_median_itl_ms": 2.21,
+        "envelope_name": "edit",
+        "apply_ok": true
+      },
+      {
+        "turn": 2,
+        "base_input": 3923,
+        "base_output": 1105,
+        "base_latency_ms": 4772,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 3631,
+        "base_median_itl_ms": 81.55,
+        "aap_input": 4692,
+        "aap_output": 261,
+        "aap_latency_ms": 1762,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 4,
+        "aap_median_itl_ms": 3.32,
+        "envelope_name": "edit",
+        "apply_ok": true
+      },
+      {
+        "turn": 3,
+        "base_input": 5049,
+        "base_output": 1617,
+        "base_latency_ms": 7253,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 6429,
+        "base_median_itl_ms": 96.32,
+        "aap_input": 4703,
+        "aap_output": 118,
+        "aap_latency_ms": 2501,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 3,
+        "aap_median_itl_ms": 3.53,
+        "envelope_name": "edit",
+        "apply_ok": true
+      }
+    ],
+    "totals": {
+      "base_input": 11931,
+      "base_output": 6469,
+      "base_combined": 18400,
+      "aap_input": 13718,
+      "aap_output": 4002,
+      "aap_combined": 17720,
+      "base_latency_ms": 32853,
+      "aap_latency_ms": 20559,
+      "output_savings_pct": 38.1,
+      "input_delta_pct": 15.0,
+      "combined_savings_pct": 3.7,
+      "latency_savings_pct": 37.4
+    }
+  },
+  "quality": {
+    "per_turn": [
+      {
+        "turn": 0,
+        "sequence_similarity": 0.1262,
+        "token_f1": 0.4253,
+        "base_char_count": 9117,
+        "aap_char_count": 9191,
+        "char_delta_pct": 0.8,
+        "lines_added": 151,
+        "lines_removed": 146,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 1,
+        "sequence_similarity": 0.0934,
+        "token_f1": 0.2601,
+        "base_char_count": 3436,
+        "aap_char_count": 11966,
+        "char_delta_pct": 248.3,
+        "lines_added": 196,
+        "lines_removed": 56,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 2,
+        "sequence_similarity": 0.094,
+        "token_f1": 0.2657,
+        "base_char_count": 3618,
+        "aap_char_count": 12064,
+        "char_delta_pct": 233.4,
+        "lines_added": 196,
+        "lines_removed": 58,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 3,
+        "sequence_similarity": 0.0268,
+        "token_f1": 0.0594,
+        "base_char_count": 5434,
+        "aap_char_count": 237,
+        "char_delta_pct": -95.6,
+        "lines_added": 4,
+        "lines_removed": 88,
+        "rouge_l": null,
+        "bleu": null
+      }
+    ],
+    "mean_sequence_similarity": 0.0851,
+    "mean_token_f1": 0.2526,
+    "mean_rouge_l": null,
+    "mean_bleu": null,
+    "judge_comparisons": null,
+    "mean_base_judge": null,
+    "mean_aap_judge": null
+  }
+}

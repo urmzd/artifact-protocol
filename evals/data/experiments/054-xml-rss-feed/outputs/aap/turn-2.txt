@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:aap="https://aap.example.com/schema">
+  <channel>
+    <aap:target id="channel-metadata"><title>CodeStream Weekly</title>
+      <link>https://bytestream.tech</link>
+      <description>Deep dives into software architecture, DevOps practices, and emerging AI trends.</description>
+      <language>en-us</language>
+      <copyright>Copyright 2023-2024 ByteStream</copyright>
+      <lastBuildDate>Mon, 20 May 2024 10:00:00 GMT</lastBuildDate>
+      <image>
+        <url>https://bytestream.tech/logo.png</url>
+        <title>CodeStream Weekly</title>
+        <link>https://bytestream.tech</link>
+      </image>
+      <itunes:author>ByteStream Team</itunes:author>
+      <itunes:category text="Technology"/></aap:target>
+
+    <aap:target id="items-list">
+      <item>
+        <title>Mastering Rust Ownership for Concurrent Systems</title>
+        <link>https://bytestream.tech/posts/rust-ownership</link>
+        <description>Exploring the memory safety guarantees provided by the Rust compiler. We break down how ownership rules influence architectural design in multi-threaded environments.</description>
+        <author>jane.doe@bytestream.tech</author>
+        <pubDate>Mon, 20 May 2024 09:00:00 GMT</pubDate>
+        <category>Programming</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/rust-ownership</guid>
+      </item>
+      <item>
+        <title>Deploying LLMs with KServe on Kubernetes</title>
+        <link>https://bytestream.tech/posts/kserve-llm</link>
+        <description>A guide to scaling Large Language Models using KServe. Learn how to manage inference resources efficiently in a production Kubernetes cluster.</description>
+        <author>devops.guru@bytestream.tech</author>
+        <pubDate>Thu, 16 May 2024 14:30:00 GMT</pubDate>
+        <category>DevOps</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/kserve-llm</guid>
+      </item>
+      <item>
+        <title>Vector Databases: The Backbone of RAG Applications</title>
+        <link>https://bytestream.tech/posts/vector-dbs</link>
+        <description>How vector databases like Milvus and Pinecone enable semantic search for generative AI. We compare indexing strategies for high-dimensional embeddings.</description>
+        <author>data.arch@bytestream.tech</author>
+        <pubDate>Tue, 14 May 2024 11:20:00 GMT</pubDate>
+        <category>Databases</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/vector-dbs</guid>
+      </item>
+      <item>
+        <title>Optimizing AWS Lambda Cold Starts</title>
+        <link>https://bytestream.tech/posts/lambda-cold-starts</link>
+        <description>Proven techniques to minimize latency in serverless workloads. We analyze Provisioned Concurrency versus code optimization strategies.</description>
+        <author>cloud.wiz@bytestream.tech</author>
+        <pubDate>Fri, 10 May 2024 08:45:00 GMT</pubDate>
+        <category>Cloud</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/lambda-cold-starts</guid>
+      </item>
+      <item>
+        <title>The Future of TypeScript: Beyond the Type System</title>
+        <link>https://bytestream.tech/posts/ts-future</link>
+        <description>Examining upcoming ECMAScript features that are reshaping TypeScript development. Insights into how strict mode is evolving for modern web stacks.</description>
+        <author>jane.doe@bytestream.tech</author>
+        <pubDate>Mon, 06 May 2024 16:00:00 GMT</pubDate>
+        <category>Programming</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/ts-future</guid>
+      </item>
+      <item>
+        <title>Infrastructure as Code: Terraform vs. Pulumi</title>
+        <link>https://bytestream.tech/posts/terraform-vs-pulumi</link>
+        <description>A detailed head-to-head comparison of declarative HCL versus imperative multi-language SDKs. Find out which tool fits your team's workflow best.</description>
+        <author>devops.guru@bytestream.tech</author>
+        <pubDate>Wed, 01 May 2024 10:15:00 GMT</pubDate>
+        <category>DevOps</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/terraform-vs-pulumi</guid>
+      </item>
+      <item>
+        <title>SQL Performance Tuning for Large Datasets</title>
+        <link>https://bytestream.tech/posts/sql-tuning</link>
+        <description>Understanding query plans and index selection in Postgres. We look at real-world scenarios where join order impacts query execution time significantly.</description>
+        <author>data.arch@bytestream.tech</author>
+        <pubDate>Thu, 25 Apr 2024 09:30:00 GMT</pubDate>
+        <category>Databases</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/sql-tuning</guid>
+      </item>
+      <item>
+        <title>Building Micro-Frontends with Module Federation</title>
+        <link>https://bytestream.tech/posts/micro-frontends</link>
+        <description>Managing dependencies across decoupled frontend services. We explore the architectural benefits of using Webpack Module Federation.</description>
+        <author>jane.doe@bytestream.tech</author>
+        <pubDate>Tue, 23 Apr 2024 14:00:00 GMT</pubDate>
+        <category>Programming</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/micro-frontends</guid>
+      </item>
+      <item>
+        <title>AI Ethics: Mitigating Bias in Training Pipelines</title>
+        <link>https://bytestream.tech/posts/ai-ethics</link>
+        <description>Strategies for detecting and removing bias in structured datasets. How developers can implement responsible AI practices from day one.</description>
+        <author>data.arch@bytestream.tech</author>
+        <pubDate>Fri, 19 Apr 2024 11:00:00 GMT</pubDate>
+        <category>AI/ML</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/ai-ethics</guid>
+      </item>
+      <item>
+        <title>Kubernetes Networking Deep Dive: CNI Explained</title>
+        <link>https://bytestream.tech/posts/cni-explained</link>
+        <description>How Container Network Interface plugins manage pod-to-pod communication. We contrast Flannel, Calico, and Cilium networking models.</description>
+        <author>devops.guru@bytestream.tech</author>
+        <pubDate>Mon, 15 Apr 2024 08:30:00 GMT</pubDate>
+        <category>DevOps</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/cni-explained</guid>
+      </item>
+      <item>
+        <title>Cloud-Native Logging with the ELK Stack</title>
+        <link>https://bytestream.tech/posts/elk-cloud</link>
+        <description>Setting up robust observability for distributed systems. Learn how to forward logs efficiently from Kubernetes pods to an Elastic cluster.</description>
+        <author>cloud.wiz@bytestream.tech</author>
+        <pubDate>Wed, 10 Apr 2024 13:00:00 GMT</pubDate>
+        <category>Cloud</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/elk-cloud</guid>
+      </item>
+      <item>
+        <title>Functional Programming Patterns in Python</title>
+        <link>https://bytestream.tech/posts/python-functional</link>
+        <description>Leveraging map, filter, and reduce for cleaner, more predictable data transformation code. We discuss the limits of FP in a strictly object-oriented language.</description>
+        <author>jane.doe@bytestream.tech</author>
+        <pubDate>Fri, 05 Apr 2024 10:45:00 GMT</pubDate>
+        <category>Programming</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/python-functional</guid>
+      </item>
+      <item>
+        <title>Fine-tuning Small Language Models for Niche Tasks</title>
+        <link>https://bytestream.tech/posts/small-llms</link>
+        <description>Why smaller models often outperform massive ones for domain-specific tasks. We walk through a fine-tuning pipeline using HuggingFace transformers.</description>
+        <author>data.arch@bytestream.tech</author>
+        <pubDate>Mon, 01 Apr 2024 09:15:00 GMT</pubDate>
+        <category>AI/ML</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/small-llms</guid>
+      </item>
+      <item>
+        <title>Zero-Trust Security in Public Clouds</title>
+        <link>https://bytestream.tech/posts/zero-trust</link>
+        <description>Transitioning from perimeter-based security to granular identity management. How to implement mTLS and OPA for service-to-service communication.</description>
+        <author>cloud.wiz@bytestream.tech</author>
+        <pubDate>Wed, 27 Mar 2024 15:30:00 GMT</pubDate>
+        <category>Cloud</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/zero-trust</guid>
+      </item>
+      <item>
+        <title>Distributed Transaction Patterns: Saga vs 2PC</title>
+        <link>https://bytestream.tech/posts/distributed-transactions</link>
+        <description>Handling data consistency across microservices. We explore the trade-offs of Saga patterns versus traditional two-phase commits.</description>
+        <author>data.arch@bytestream.tech</author>
+        <pubDate>Mon, 25 Mar 2024 11:00:00 GMT</pubDate>
+        <category>Databases</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/distributed-transactions</guid>
+      </item>
+          <item>
+        <title>Writing Performant WebAssembly with Rust</title>
+        <link>https://bytestream.tech/posts/wasm-rust</link>
+        <description>Leveraging wasm-bindgen to bridge Rust with the browser ecosystem. We optimize memory layouts for high-performance frontend components.</description>
+        <author>jane.doe@bytestream.tech</author>
+        <pubDate>Mon, 27 May 2024 10:00:00 GMT</pubDate>
+        <category>Programming</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/wasm-rust</guid>
+      </item>
+      <item>
+        <title>Edge Computing: Scaling Logic Closer to Users</title>
+        <link>https://bytestream.tech/posts/edge-computing</link>
+        <description>An architectural overview of deploying serverless functions to the edge. We compare Cloudflare Workers, Fastly Compute, and AWS Lambda@Edge.</description>
+        <author>cloud.wiz@bytestream.tech</author>
+        <pubDate>Thu, 23 May 2024 14:00:00 GMT</pubDate>
+        <category>Cloud</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/edge-computing</guid>
+      </item>
+      <item>
+        <title>Asynchronous I/O Patterns in Rust</title>
+        <link>https://bytestream.tech/posts/rust-async</link>
+        <description>Deep dive into the async/await syntax and the Tokio runtime. We examine how to build highly scalable networked services.</description>
+        <author>jane.doe@bytestream.tech</author>
+        <pubDate>Tue, 21 May 2024 09:30:00 GMT</pubDate>
+        <category>Programming</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/rust-async</guid>
+      </item>
+      <item>
+        <title>Security Challenges in Edge-Native Applications</title>
+        <link>https://bytestream.tech/posts/edge-security</link>
+        <description>Mitigating threats in decentralized compute environments. Discussing runtime isolation and secure credential storage at the edge.</description>
+        <author>devops.guru@bytestream.tech</author>
+        <pubDate>Fri, 17 May 2024 11:00:00 GMT</pubDate>
+        <category>DevOps</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/edge-security</guid>
+      </item>
+      <item>
+        <title>Wasm and the Future of Serverless Runtimes</title>
+        <link>https://bytestream.tech/posts/wasm-serverless</link>
+        <description>Why WebAssembly is replacing Docker containers for high-density serverless execution. Exploring the startup time and memory overhead benefits.</description>
+        <author>devops.guru@bytestream.tech</author>
+        <pubDate>Tue, 14 May 2024 16:00:00 GMT</pubDate>
+        <category>Cloud</category>
+        <guid isPermaLink="true">https://bytestream.tech/posts/wasm-serverless</guid>
+      </item>
+</aap:target>
+  </channel>
+</rss>

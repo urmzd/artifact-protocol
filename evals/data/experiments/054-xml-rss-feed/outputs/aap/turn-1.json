@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "channel-rss-feed-001",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "items-list"
+      },
+      "content": "      <item>\n        <title>Writing Performant WebAssembly with Rust</title>\n        <link>https://bytestream.tech/posts/wasm-rust</link>\n        <description>Leveraging wasm-bindgen to bridge Rust with the browser ecosystem. We optimize memory layouts for high-performance frontend components.</description>\n        <author>jane.doe@bytestream.tech</author>\n        <pubDate>Mon, 27 May 2024 10:00:00 GMT</pubDate>\n        <category>Programming</category>\n        <guid isPermaLink=\"true\">https://bytestream.tech/posts/wasm-rust</guid>\n      </item>\n      <item>\n        <title>Edge Computing: Scaling Logic Closer to Users</title>\n        <link>https://bytestream.tech/posts/edge-computing</link>\n        <description>An architectural overview of deploying serverless functions to the edge. We compare Cloudflare Workers, Fastly Compute, and AWS Lambda@Edge.</description>\n        <author>cloud.wiz@bytestream.tech</author>\n        <pubDate>Thu, 23 May 2024 14:00:00 GMT</pubDate>\n        <category>Cloud</category>\n        <guid isPermaLink=\"true\">https://bytestream.tech/posts/edge-computing</guid>\n      </item>\n      <item>\n        <title>Asynchronous I/O Patterns in Rust</title>\n        <link>https://bytestream.tech/posts/rust-async</link>\n        <description>Deep dive into the async/await syntax and the Tokio runtime. We examine how to build highly scalable networked services.</description>\n        <author>jane.doe@bytestream.tech</author>\n        <pubDate>Tue, 21 May 2024 09:30:00 GMT</pubDate>\n        <category>Programming</category>\n        <guid isPermaLink=\"true\">https://bytestream.tech/posts/rust-async</guid>\n      </item>\n      <item>\n        <title>Security Challenges in Edge-Native Applications</title>\n        <link>https://bytestream.tech/posts/edge-security</link>\n        <description>Mitigating threats in decentralized compute environments. Discussing runtime isolation and secure credential storage at the edge.</description>\n        <author>devops.guru@bytestream.tech</author>\n        <pubDate>Fri, 17 May 2024 11:00:00 GMT</pubDate>\n        <category>DevOps</category>\n        <guid isPermaLink=\"true\">https://bytestream.tech/posts/edge-security</guid>\n      </item>\n      <item>\n        <title>Wasm and the Future of Serverless Runtimes</title>\n        <link>https://bytestream.tech/posts/wasm-serverless</link>\n        <description>Why WebAssembly is replacing Docker containers for high-density serverless execution. Exploring the startup time and memory overhead benefits.</description>\n        <author>devops.guru@bytestream.tech</author>\n        <pubDate>Tue, 14 May 2024 16:00:00 GMT</pubDate>\n        <category>Cloud</category>\n        <guid isPermaLink=\"true\">https://bytestream.tech/posts/wasm-serverless</guid>\n      </item>\n"
+    }
+  ]
+}
