@@ -7,11 +7,6 @@ Include:
 - API reference with 8 functions documented: name, description, parameters table, return type, example
 - Responsive layout: sidebar collapses on mobile
 
-Use section IDs: sidebar, content, code-examples, api-reference
 
-Use AAP section markers to delineate each major content block.
-Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
 
 All CSS inline. Documentation-focused typography with code font for examples.
-
-Output raw code only. No markdown fences, no explanation.

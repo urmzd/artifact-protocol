@@ -7,5 +7,3 @@ Include:
 - Use realistic names, emails, and dates
 
 No section markers needed for JSON.
-
-Output raw code only. No markdown fences, no explanation.

@@ -7,11 +7,6 @@ Include:
 - Top referrers list with 20 entries
 - Geographic breakdown table with 30 countries
 
-Use section IDs: nav, kpi-cards, traffic-table, referrers, geo
 
-Use AAP section markers to delineate each major content block.
-Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
 
 All CSS inline. No external dependencies. Clean data-focused design.
-
-Output raw code only. No markdown fences, no explanation.

@@ -8,11 +8,6 @@ Include:
 - Step 4: Review all entered information
 - Next/Previous/Submit buttons with basic JS to show/hide steps
 
-Use section IDs: progress-bar, step-personal, step-address, step-payment, step-review
 
-Use AAP section markers to delineate each major content block.
-Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
 
 All CSS and JS inline. Clean form design with validation styling.
-
-Output raw code only. No markdown fences, no explanation.

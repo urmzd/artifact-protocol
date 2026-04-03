@@ -8,5 +8,3 @@ Include:
 - 8 milestones with target dates and associated tasks
 
 Use realistic, coherent data — tasks should relate to their projects, comments should reference task context.
-
-Output raw code only. No markdown fences, no explanation.

@@ -9,5 +9,3 @@ Include nested keys for:
 - settings: profile, notifications, security, billing
 
 At least 150 translation keys total with realistic UI text.
-
-Output raw code only. No markdown fences, no explanation.

@@ -9,5 +9,3 @@ Include:
 - engines field
 
 Use realistic, current version numbers.
-
-Output raw code only. No markdown fences, no explanation.

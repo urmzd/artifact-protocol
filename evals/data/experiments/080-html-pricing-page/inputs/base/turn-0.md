@@ -7,11 +7,6 @@ Include:
 - Feature comparison table with checkmarks across all 3 plans (15+ features)
 - FAQ accordion section with 6 questions about billing, trials, upgrades
 
-Use section IDs: header, toggle, pricing-cards, comparison-table, faq
 
-Use AAP section markers to delineate each major content block.
-Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
 
 All CSS and JS inline. Highlight the "Professional" plan as recommended.
-
-Output raw code only. No markdown fences, no explanation.

@@ -8,7 +8,4 @@ Include:
 - Seed data: 5 categories, 10 products, 3 users, 5 sample orders with items
 - Use SERIAL/BIGSERIAL for PKs, TIMESTAMPTZ for dates
 
-Use section IDs: tables, indexes, views, seed-data
 -- Use `-- region id` and `-- endregion id` for section markers.
-
-Output raw code only. No markdown fences, no explanation.

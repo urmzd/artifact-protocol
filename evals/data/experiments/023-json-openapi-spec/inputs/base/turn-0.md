@@ -9,5 +9,3 @@ Include:
 - At least 8 endpoints with full request/response schemas
 
 No section markers needed for JSON (use JSON Pointer addressing).
-
-Output raw code only. No markdown fences, no explanation.

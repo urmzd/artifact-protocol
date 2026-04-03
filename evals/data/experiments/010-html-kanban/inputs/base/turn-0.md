@@ -7,11 +7,6 @@ Include:
 - Cards should have realistic software development task names
 - Basic drag hint styling (grab cursor)
 
-Use section IDs: board-header, col-backlog, col-in-progress, col-review, col-done
 
-Use AAP section markers to delineate each major content block.
-Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
 
 All CSS inline. Horizontal scrolling layout with colored column headers.
-
-Output raw code only. No markdown fences, no explanation.

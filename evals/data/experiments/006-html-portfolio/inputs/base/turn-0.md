@@ -7,11 +7,6 @@ Include:
 - Skills section with categorized skill bars (Frontend, Backend, DevOps)
 - Contact form (name, email, message) and social links
 
-Use section IDs: hero, about, projects, skills, contact
 
-Use AAP section markers to delineate each major content block.
-Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
 
 All CSS inline. Dark theme with accent color highlights.
-
-Output raw code only. No markdown fences, no explanation.

@@ -8,5 +8,3 @@ Include paths for:
 - /users/favorites: add, remove, list
 
 Full schemas for Pet, Shelter, Adoption, User with relationships. Include tags, security definitions (apiKey), and example responses.
-
-Output raw code only. No markdown fences, no explanation.
