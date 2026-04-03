@@ -1,0 +1,24 @@
+# Experiment: html-documentation-page
+
+**Format:** text/html | **Size:** large | **Edits:** 4
+
+**Expected sections:** sidebar, content, code-examples, api-reference
+
+## Protocol cost (the only difference from base)
+
+| Prompt | Chars | ~Tokens |
+|---|---|---|
+| Base system | 90 | 22 |
+| AAP init system | 243 | 60 |
+| AAP maintain system | 853 | 213 |
+| **Protocol overhead** | | **~251 tokens** |
+
+## Turns
+
+| Turn | Edit |
+|---|---|
+| 0 | (creation) |
+| 1 | Rewrite the sidebar navigation to add a 'Plugins' section with 3 sub-items: O... |
+| 2 | Add 3 more functions to the API reference: 'pipe', 'compose', and 'memoize' w... |
+| 3 | Update the installation section to add a Deno import example and a 'Requireme... |
+| 4 | Add a 'Migration Guide' section after the FAQ showing how to migrate from v1 ... |

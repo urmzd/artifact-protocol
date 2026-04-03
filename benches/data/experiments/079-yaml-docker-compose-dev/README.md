@@ -1,0 +1,22 @@
+# Experiment: yaml-docker-compose-dev
+
+**Format:** text/x-yaml | **Size:** small | **Edits:** 2
+
+**Expected sections:** services, volumes
+
+## Protocol cost (the only difference from base)
+
+| Prompt | Chars | ~Tokens |
+|---|---|---|
+| Base system | 92 | 23 |
+| AAP init system | 231 | 57 |
+| AAP maintain system | 855 | 213 |
+| **Protocol overhead** | | **~248 tokens** |
+
+## Turns
+
+| Turn | Edit |
+|---|---|
+| 0 | (creation) |
+| 1 | Add a MinIO service for S3-compatible local object storage on port 9000 with ... |
+| 2 | Update the PostgreSQL service to use version 16 and add a health check with p... |
