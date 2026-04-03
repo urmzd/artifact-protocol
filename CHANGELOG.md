@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.9.2 (2026-04-03)
+
+### Documentation
+
+- **README**: update apply engine semantics to reflect synthesize/edit model ([f2c7542](https://github.com/urmzd/agent-artifact-protocol/commit/f2c754258d709d7b5b45a8f8cc707cbce487615a))
+- **spec**: clarify entity metadata and ttl behavior ([7bee222](https://github.com/urmzd/agent-artifact-protocol/commit/7bee2223353ba966ec84de8ad6d1625904b695d9))
+- **spec**: clarify all-or-nothing semantics for edit operations ([4223e07](https://github.com/urmzd/agent-artifact-protocol/commit/4223e078851b5316cf492d30e075680876e1961f))
+
+### Refactoring
+
+- **benches**: rename diff benchmark functions to edit ([90daaff](https://github.com/urmzd/agent-artifact-protocol/commit/90daaff5a5a692042713ef1cffe8325055e35a68))
+- **spec**: rename diff-operation schema to edit-operation ([14bb883](https://github.com/urmzd/agent-artifact-protocol/commit/14bb8832c3e0d79904447da8ab9d6b86266485a8))
+
+### Miscellaneous
+
+- **spec**: restructure envelope examples to match synthesize/edit model ([d469efa](https://github.com/urmzd/agent-artifact-protocol/commit/d469efa262aec3305f5b1ce0a2ba2de46e927746))
+- **evals**: migrate evaluation data to edit/synthesize envelope structure ([6a31d8b](https://github.com/urmzd/agent-artifact-protocol/commit/6a31d8b703733296c5e52012d0f84f2a1ae7514c))
+- **evals**: add evaluation results for experiments 062-063 ([2d8f1e2](https://github.com/urmzd/agent-artifact-protocol/commit/2d8f1e22f9826d70b967ac8a8b4e5d20025b82c5))
+- **evals**: update experiment 059-yaml-renovate results ([e8a5d6a](https://github.com/urmzd/agent-artifact-protocol/commit/e8a5d6a923c17a5ec9cdf5252747ebad3d883c47))
+- **evals**: update experiment 058-json-eslintrc results ([5f24402](https://github.com/urmzd/agent-artifact-protocol/commit/5f24402cd3a3c1d8348eb666c1741a1c161c4565))
+- **evals**: update experiment 057-sql-schema-ecommerce results ([183cb08](https://github.com/urmzd/agent-artifact-protocol/commit/183cb082cac5b526f89a36967239fb52c8561ff2))
+- **evals**: update experiment 056-ruby-rails-model results ([8128449](https://github.com/urmzd/agent-artifact-protocol/commit/81284493548bc2dd69219fc6b774999094d1a602))
+- **evals**: update experiment 055-java-spring-controller results ([17ab941](https://github.com/urmzd/agent-artifact-protocol/commit/17ab94119dbb4abd7eaf3792348260536441eb5b))
+- **evals**: add experiment 054-xml-rss-feed evaluation results ([20dcba2](https://github.com/urmzd/agent-artifact-protocol/commit/20dcba223341d7d5f45a067dd2484d838e158a57))
+- **evals**: add experiment 054 xml rss feed evaluation outputs ([a81bcc8](https://github.com/urmzd/agent-artifact-protocol/commit/a81bcc88e8432532b8b2cc24d1dff823f420600f))
+- **evals**: add experiment 053 xml maven pom evaluation outputs ([061bcf0](https://github.com/urmzd/agent-artifact-protocol/commit/061bcf0fd4baa3367e648c3108a0bfa7456b0db3))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.9.1...v0.9.2)
+
+
 ## 0.9.1 (2026-04-03)
 
 ### Bug Fixes
