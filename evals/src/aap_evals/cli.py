@@ -145,135 +145,6 @@ def generate(
     console.print(f"\n[green]Done: {succeeded}/{total} succeeded, {failed} failed[/green]")
 
 
-# ── experiment ─────────────────────────────────────────────────────────
-
-
-@app.command()
-def experiment(
-    corpus: Annotated[Path, typer.Option(help="Corpus directory")] = DATA_DIR / "apply-engine",
-    output: Annotated[Path, typer.Option(help="Results JSONL")] = DATA_DIR / "experiments" / "results.jsonl",
-    provider: Annotated[str, typer.Option(help="LLM provider")] = "ollama",
-    model: Annotated[str, typer.Option(help="Model name")] = "gemma4",
-    host: Annotated[str, typer.Option(help="Ollama host")] = "http://localhost:11434",
-    count: Annotated[int, typer.Option(help="Max test cases (0 = all)")] = 0,
-) -> None:
-    """Run baseline vs AAP experiment on corpus artifacts. Writes results incrementally."""
-    from .agents import AAPResult, BaselineResult, create_model, run_aap, run_baseline
-
-    llm = create_model(provider, model, host)
-    meta_files = sorted(corpus.glob("*/metadata.yml"))
-    if count > 0:
-        meta_files = meta_files[:count]
-
-    if not meta_files:
-        console.print("[red]No test cases found. Run generate first.[/red]")
-        raise typer.Exit(1)
-
-    output.parent.mkdir(parents=True, exist_ok=True)
-    console.print(f"Running {len(meta_files)} experiment(s) with [bold]{model}[/bold]\n")
-
-    with open(output, "a") as results_file:
-        for mf in meta_files:
-            case_dir = mf.parent
-            meta_text = mf.read_text()
-            meta = {}
-            for line in meta_text.split("\n"):
-                if ": " in line and not line.startswith(" "):
-                    key, val = line.split(": ", 1)
-                    meta[key.strip()] = val.strip()
-
-            fmt = meta.get("format", "text/html")
-            category = meta.get("category", "")
-            variant = meta.get("variant", "")
-            prompt_md = case_dir / "prompt.md"
-
-            if not prompt_md.exists():
-                continue
-
-            # Extract creation prompt from prompt.md
-            prompt_content = prompt_md.read_text()
-            # Get user prompt section
-            user_prompt = ""
-            in_user_prompt = False
-            for line in prompt_content.split("\n"):
-                if line.startswith("## User Prompt"):
-                    in_user_prompt = True
-                    continue
-                if in_user_prompt and line == "```":
-                    if user_prompt:
-                        break
-                    continue
-                if in_user_prompt:
-                    user_prompt += line + "\n"
-
-            if not user_prompt.strip():
-                continue
-
-            # Simple edit prompts derived from the artifact
-            edit_prompts = [
-                "Change the primary heading text to 'Updated Dashboard'",
-                "Update the first numeric value you find to 99999",
-            ]
-
-            console.print(f"[bold]{case_dir.name}[/bold] ({category})")
-
-            # Run baseline
-            try:
-                baseline = run_baseline(llm, user_prompt.strip(), edit_prompts, fmt)
-            except Exception as e:
-                console.print(f"  [red]baseline failed: {e}[/red]")
-                baseline = BaselineResult()
-
-            # Run AAP
-            try:
-                aap = run_aap(llm, user_prompt.strip(), edit_prompts, fmt, f"artifact-{meta.get('case_num', 0)}")
-            except Exception as e:
-                console.print(f"  [red]AAP failed: {e}[/red]")
-                aap = AAPResult()
-
-            # Compute comparison
-            savings_out = 0.0
-            if baseline.total_output_tokens > 0:
-                savings_out = 100 * (baseline.total_output_tokens - aap.total_output_tokens) / baseline.total_output_tokens
-
-            result = {
-                "case": case_dir.name,
-                "category": category,
-                "variant": variant,
-                "format": fmt,
-                "model": model,
-                "baseline": {
-                    "total_input_tokens": baseline.total_input_tokens,
-                    "total_output_tokens": baseline.total_output_tokens,
-                    "total_latency_ms": baseline.total_latency_ms,
-                    "turns": [t.to_dict() for t in baseline.turns],
-                },
-                "aap": {
-                    "total_input_tokens": aap.total_input_tokens,
-                    "total_output_tokens": aap.total_output_tokens,
-                    "total_latency_ms": aap.total_latency_ms,
-                    "parse_rate": aap.parse_rate,
-                    "apply_rate": aap.apply_rate,
-                    "turns": [t.to_dict() for t in aap.turns],
-                },
-                "comparison": {
-                    "output_token_savings_pct": round(savings_out, 1),
-                },
-            }
-
-            results_file.write(json.dumps(result) + "\n")
-            results_file.flush()
-
-            tag = f"[green]{savings_out:.1f}% savings[/green]" if savings_out > 0 else f"[red]{savings_out:.1f}%[/red]"
-            console.print(
-                f"  baseline: {baseline.total_output_tokens} out tokens | "
-                f"AAP: {aap.total_output_tokens} out tokens | "
-                f"{tag} | parse: {aap.parse_rate:.0%} apply: {aap.apply_rate:.0%}"
-            )
-
-    console.print(f"\n[green]Results appended to {output}[/green]")
-
-
 # ── run (conversation benchmark experiments) ──────────────────────────
 
 
@@ -580,45 +451,85 @@ def run_experiments(
 
 @app.command()
 def report(
-    results_path: Annotated[Path, typer.Option("--input", help="Results JSONL")] = DATA_DIR / "experiments" / "results.jsonl",
+    experiments_dir: Annotated[Path, typer.Option(help="Experiments directory")] = DATA_DIR / "experiments",
     output: Annotated[Path, typer.Option(help="Markdown output")] = DATA_DIR / "experiments" / "results.md",
 ) -> None:
-    """Generate markdown report from experiment results."""
-    if not results_path.exists():
-        console.print("[red]No results found. Run experiment first.[/red]")
+    """Generate markdown report from experiment metrics.json files."""
+    metrics_files = sorted(experiments_dir.glob("*/metrics.json"))
+
+    if not metrics_files:
+        console.print("[red]No metrics found. Run experiments first.[/red]")
         raise typer.Exit(1)
 
-    results = [json.loads(line) for line in results_path.read_text().strip().split("\n") if line]
+    results = [json.loads(mf.read_text()) for mf in metrics_files]
 
-    if not results:
-        console.print("[red]Empty results file.[/red]")
-        raise typer.Exit(1)
-
+    model = results[0].get("model", "unknown")
     lines = [
         "# AAP Experiment Results\n",
-        f"**Model:** `{results[0].get('model', 'unknown')}` | **Cases:** {len(results)}\n",
-        "| Case | Category | Baseline Out | AAP Out | Savings | Parse | Apply |",
-        "|------|----------|-------------:|--------:|--------:|------:|------:|",
+        f"**Model:** `{model}` | **Experiments:** {len(results)}\n",
+        "| Experiment | Format | Base Out | AAP Out | Out Savings | Parse | Apply |",
+        "|------------|--------|--------:|---------:|------------:|------:|------:|",
     ]
 
-    total_baseline = 0
-    total_aap = 0
+    total_base_out = 0
+    total_aap_out = 0
+    total_base_in = 0
+    total_aap_in = 0
+    total_parse = 0
+    total_apply = 0
+    total_edits = 0
 
     for r in results:
-        b = r["baseline"]
-        a = r["aap"]
-        c = r["comparison"]
-        total_baseline += b["total_output_tokens"]
-        total_aap += a["total_output_tokens"]
+        base = r.get("default_flow", {})
+        aap = r.get("aap_flow", {})
+        comp = r.get("comparison", {})
+
+        b_out = base.get("total_output_tokens", 0)
+        a_out = aap.get("total_output_tokens", 0)
+        total_base_out += b_out
+        total_aap_out += a_out
+        total_base_in += base.get("total_input_tokens", 0)
+        total_aap_in += aap.get("total_input_tokens", 0)
+
+        num_edits = len(aap.get("per_turn", []))
+        total_edits += num_edits
+        total_parse += sum(1 for t in aap.get("per_turn", []) if t.get("envelope_parsed"))
+        total_apply += sum(1 for t in aap.get("per_turn", []) if t.get("apply_succeeded"))
+
+        savings = comp.get("output_token_savings_pct", 0)
+        parse_rate = aap.get("envelope_parse_rate", 0)
+        apply_rate = aap.get("apply_success_rate", 0)
+
         lines.append(
-            f"| {r['case'][:20]} | {r['category']} | "
-            f"{b['total_output_tokens']} | {a['total_output_tokens']} | "
-            f"{c['output_token_savings_pct']}% | "
-            f"{a['parse_rate']:.0%} | {a['apply_rate']:.0%} |"
+            f"| {r['experiment_id'][:30]} | {r.get('format', '')[:12]} | "
+            f"{b_out:,} | {a_out:,} | "
+            f"{savings}% | "
+            f"{parse_rate:.0%} | {apply_rate:.0%} |"
         )
 
-    overall_savings = 100 * (total_baseline - total_aap) / total_baseline if total_baseline > 0 else 0
-    lines.append(f"\n**Overall output token savings: {overall_savings:.1f}%**\n")
+    overall_out_savings = (
+        100 * (total_base_out - total_aap_out) / total_base_out
+        if total_base_out > 0 else 0
+    )
+    overall_in_savings = (
+        100 * (total_base_in - total_aap_in) / total_base_in
+        if total_base_in > 0 else 0
+    )
+    overall_parse = total_parse / total_edits if total_edits else 0
+    overall_apply = total_apply / total_edits if total_edits else 0
+
+    lines.extend([
+        "",
+        "## Summary",
+        "",
+        f"- **Output token savings:** {overall_out_savings:.1f}%",
+        f"- **Input token savings:** {overall_in_savings:.1f}%",
+        f"- **Envelope parse rate:** {overall_parse:.0%} ({total_parse}/{total_edits})",
+        f"- **Apply success rate:** {overall_apply:.0%} ({total_apply}/{total_edits})",
+        f"- **Total base output tokens:** {total_base_out:,}",
+        f"- **Total AAP output tokens:** {total_aap_out:,}",
+        "",
+    ])
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(lines) + "\n")
