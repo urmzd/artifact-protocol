@@ -132,26 +132,25 @@ An artifact MAY be divided into named **sections** — addressable regions that 
 | `start_marker` | string | no | Format-specific start boundary |
 | `end_marker` | string | no | Format-specific end boundary |
 
-Section markers are format-specific. Implementations MUST derive markers from the envelope's `operation.format` field using this table. If a section definition provides explicit `start_marker` and `end_marker`, those override the format-derived defaults.
+Section markers use a universal XML-style format across ALL text-based content types. The `aap:` namespace prefix makes markers uniquely identifiable and LLMs follow XML tag patterns reliably. If a section definition provides explicit `start_marker` and `end_marker`, those override the defaults.
 
-| Format family | MIME types | Start marker | End marker |
-|---|---|---|---|
-| HTML / Markdown / SVG / XML | `text/html`, `text/markdown`, `image/svg+xml`, `*+xml` | `<!-- section:id -->` | `<!-- /section:id -->` |
-| C-style languages | `application/javascript`, `text/typescript`, `text/x-rust`, `text/x-go`, `text/x-java`, `text/x-c`, `text/css` | `// #region id` | `// #endregion id` |
-| Hash-comment languages | `text/x-python`, `text/x-ruby`, `application/x-sh`, `text/x-yaml`, `application/yaml` | `# region id` | `# endregion id` |
-| JSON | `application/json` | N/A (use JSON Pointer paths via `pointer` targeting in diff operations) | N/A |
-| Unknown `text/*` | Fallback | `<!-- section:id -->` | `<!-- /section:id -->` |
+| Format | Start marker | End marker |
+|---|---|---|
+| All text formats | `<aap:section id="ID">` | `</aap:section>` |
+| JSON (`application/json`) | N/A (use JSON Pointer paths via `pointer` targeting in diff operations) | N/A |
 
-**Example** (HTML with sections):
+> **Design note:** A single universal marker format is used rather than format-specific comment styles (e.g., `<!-- -->`, `// #region`, `# region`). LLMs are trained on vast amounts of XML and reliably reproduce XML tags. The `aap:` namespace prevents collisions with application content. Models MAY hallucinate slight variations; implementations SHOULD apply fuzzy matching when locating markers.
+
+**Example** (sections in any format):
 
 ```html
-<!-- section:stats -->
+<aap:section id="stats">
 <div class="stats">...</div>
-<!-- /section:stats -->
+</aap:section>
 
-<!-- section:users-table -->
+<aap:section id="users-table">
 <table>...</table>
-<!-- /section:users-table -->
+</aap:section>
 ```
 
 ### 3.3 Version Chain
@@ -396,7 +395,7 @@ Each `section_prompt` entry:
   "operation": {"direction": "output", "format": "text/html"},
   "content": [
     {
-      "skeleton": "<!DOCTYPE html>\n<html>\n<body>\n<!-- section:nav --><!-- /section:nav -->\n<!-- section:stats --><!-- /section:stats -->\n<!-- section:users --><!-- /section:users -->\n</body>\n</html>",
+      "skeleton": "<!DOCTYPE html>\n<html>\n<body>\n<aap:section id=\"nav\"></aap:section>\n<aap:section id=\"stats\"></aap:section>\n<aap:section id=\"users\"></aap:section>\n</body>\n</html>",
       "section_prompts": [
         {"id": "nav", "prompt": "Generate a navigation bar with logo and user menu"},
         {"id": "stats", "prompt": "Generate 4 stat cards: users, revenue, orders, uptime"},

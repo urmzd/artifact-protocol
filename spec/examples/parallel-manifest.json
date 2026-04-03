@@ -10,7 +10,7 @@
   },
   "content": [
     {
-      "skeleton": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<title>Dashboard</title>\n<style>\nbody { font-family: system-ui; margin: 0; }\n.layout { display: flex; min-height: 100vh; }\naside { width: 220px; background: #1e293b; color: #f8fafc; }\nmain { flex: 1; padding: 32px; }\n</style>\n</head>\n<body>\n<div class=\"layout\">\n<!-- section:nav --><!-- /section:nav -->\n<main>\n<!-- section:stats --><!-- /section:stats -->\n<!-- section:users --><!-- /section:users -->\n<!-- section:orders --><!-- /section:orders -->\n</main>\n</div>\n</body>\n</html>",
+      "skeleton": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<title>Dashboard</title>\n<style>\nbody { font-family: system-ui; margin: 0; }\n.layout { display: flex; min-height: 100vh; }\naside { width: 220px; background: #1e293b; color: #f8fafc; }\nmain { flex: 1; padding: 32px; }\n</style>\n</head>\n<body>\n<div class=\"layout\">\n<aap:section id=\"nav\"></aap:section>\n<main>\n<aap:section id=\"stats\"></aap:section>\n<aap:section id=\"users\"></aap:section>\n<aap:section id=\"orders\"></aap:section>\n</main>\n</div>\n</body>\n</html>",
       "section_prompts": [
         {"id": "nav", "prompt": "Generate a sidebar navigation with: Dashboard (active), Analytics, Reports, Users, Orders, Settings"},
         {"id": "stats", "prompt": "Generate 4 stat cards in a grid: Total Users (24,891, +4.2%), Revenue ($182,430, +11.7%), Orders (3,047, -2.1%), Uptime (99.97%)"},
