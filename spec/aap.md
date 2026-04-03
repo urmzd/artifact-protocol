@@ -437,9 +437,9 @@ Reprovisioning is the act of updating an existing artifact. The producer selects
 
 ### 5.1 Section-First Generation (Recommended)
 
-Producers SHOULD emit section markers on the **initial full generation**. This incurs a small overhead (~2% extra tokens for markers) but enables all subsequent updates to use `section` or `diff` operations — typically saving 90-99% of tokens per update.
+Producers SHOULD emit section markers on the **initial full generation**. This incurs a small overhead (~2% extra tokens for markers) but enables all subsequent updates to use `section` or `diff` operations — reducing **output tokens** by 90-99% per update compared to full regeneration. Actual dollar savings depend on the model's output/input price ratio (see [Section 8.1.1](#811-cost-model)).
 
-**Rationale**: the upfront cost of markers is amortized across every future update. After just one `section` update, the total token spend is lower than two full regenerations.
+**Rationale**: the upfront cost of markers is amortized across every future update. After just one `section` update, the total output token spend is lower than two full regenerations.
 
 **Guidelines for section placement**:
 - Place section boundaries at **independently meaningful blocks** (navigation, stat cards, data tables, forms, sidebars)
@@ -447,10 +447,12 @@ Producers SHOULD emit section markers on the **initial full generation**. This i
 - Each section should be **self-contained**: updating one section should not require changes to another
 - Avoid nesting sections deeper than 2 levels
 
-**Cost model** (N = number of future updates):
-- Without sections: N full regenerations = N × full_tokens
-- With sections: 1 full (with markers) + N section updates = full_tokens × 1.02 + N × section_tokens
-- Break-even: 1 update (section_tokens is typically 1-10% of full_tokens)
+**Output cost model** (N = number of future updates, S = artifact size in output tokens):
+- Without sections: N full regenerations = N × S output tokens
+- With sections: 1 full (with markers) + N section updates = S × 1.02 + N × section_tokens output tokens
+- Break-even: 1 update (section_tokens is typically 1-10% of S)
+
+> **Note:** Input costs are roughly equal in both cases — the maintain context reads the full artifact regardless of operation type. The savings concentrate on the output side, where tokens are 3-5× more expensive. See [Section 8.1](#81-memory-model) for the full cost derivation.
 
 ### 5.2 Parallel Generation
 
@@ -534,7 +536,7 @@ Only the listed sections are regenerated. The assembler merges results into the 
 
 ### 5.3 Strategy Selection Guide
 
-| Change scope | Recommended operation | Token savings |
+| Change scope | Recommended operation | Output token reduction |
 |---|---|---|
 | Single value change | `diff` (search/replace) | ~95-99% |
 | Few lines changed | `diff` (line range) | ~90-98% |
@@ -542,6 +544,8 @@ Only the listed sections are regenerated. The assembler merges results into the 
 | Multiple sections rewritten | `section` | ~50-80% |
 | Same structure, different data | `template` | ~90-98% |
 | Complete rewrite | `full` | 0% (baseline) |
+
+> **Interpreting the table:** the "Output token reduction" column measures how many fewer output tokens the LLM produces compared to full regeneration. Because output tokens are priced 3-5× higher than input tokens (varies by provider), a 95% output reduction translates to roughly 75-80% total cost reduction when input costs are included. See [Section 8.1.1](#811-cost-model) for the precise formula.
 
 ### 5.4 Version Chain Integrity
 
@@ -733,34 +737,225 @@ In every case: instructions are re-injected next time. Intent is discarded. Enve
 
 #### 8.1.1 Cost Model
 
-**Per-edit cost (maintain context):**
+The cost of artifact operations depends on three LLM-specific variables that vary across providers and models:
 
-| Component | Input tokens | Output tokens | Persists? |
+| Variable | Definition | Typical range |
+|---|---|---|
+| S_k | Artifact size in tokens at version k (tokenizer-dependent) | 500–10,000 |
+| d | Diff/section envelope size in output tokens | 30–500 |
+| I | System prompt + instructions in tokens | 200–1,000 |
+| p_in | Price per input token | varies by model |
+| p_out | Price per output token | varies by model |
+| r | Output/input price ratio (p_out / p_in) | 1–5× |
+| N | Number of edits over the artifact's lifetime | 1–∞ |
+
+> **Why these variables matter:** A given 8 KB HTML artifact might tokenize to ~2,000 tokens on GPT-4's tokenizer but ~2,400 on Claude's. The output/input price ratio ranges from 1× (some open-source providers) to 5× (frontier models). These differences change the absolute savings but not the structural advantage — AAP always reduces output tokens, and output tokens are always ≥ input token price.
+
+##### Three Scenarios
+
+To understand where savings come from, compare three approaches to making N edits on an artifact:
+
+**Scenario A — Naive conversation (single growing context, full regen):**
+
+The LLM accumulates conversation history. At edit k, the context contains all prior versions.
+
+| Component | Input tokens | Output tokens |
+|---|---|---|
+| Edit k | I + k·S + intents | S |
+| Total (N edits) | N·I + S·N(N+1)/2 | (N+1)·S |
+
+Input cost grows **quadratically** — O(N²·S) — because every prior artifact version remains in context.
+
+**Scenario B — Stateless full regen (fresh context, full output):**
+
+Each edit starts a fresh context with the current artifact, but the LLM still regenerates the full content.
+
+| Component | Input tokens | Output tokens |
+|---|---|---|
+| Each edit | I + S + intent | S |
+| Total (N edits) | (N+1)·(I + S) | (N+1)·S |
+
+Input cost is **linear** — context offloading eliminates the quadratic growth. But output cost is unchanged.
+
+**Scenario C — AAP (fresh context, diff output):**
+
+Each edit starts a fresh context. The LLM reads the full artifact but produces only a diff envelope.
+
+| Component | Input tokens | Output tokens |
+|---|---|---|
+| Init (create) | I + prompt | S |
+| Each edit | I + S + intent | d |
+| Total (N edits) | I + (I + S)·N | S + N·d |
+
+Input cost is **identical to Scenario B**. Output cost drops from (N+1)·S to S + N·d.
+
+##### Where the Savings Come From
+
+The fundamental trade: **spend input tokens to read the artifact, produce a small diff as output, and let the CPU apply it.** The diff output is consumed by the deterministic apply engine — it never re-enters any LLM context. Meanwhile, the orchestrator (the main conversation) never reads the artifact at all; it holds only lightweight handles and can ask targeted questions via projections. This architecture produces three independent, compounding savings.
+
+**Effect 1 — Output tokens are consumed, not re-read (C vs B).**
+
+In Scenario B (stateless full regen), every edit produces S output tokens — the full artifact, regenerated. Those S tokens are the product, but producing them is the expensive part: output tokens cost r× more than input tokens.
+
+In Scenario C (AAP), the LLM produces d tokens — a diff envelope describing what changed. The apply engine resolves the diff against the stored artifact deterministically (CPU, ~2μs, zero tokens) and stores the new version. The d output tokens are **consumed by the apply engine and discarded** — no LLM ever reads them back as input.
+
+The maintain context does re-read the full artifact (S input tokens) each edit — that's how it knows what to diff against. But S input tokens are cheap (1/r of the output price). The trade is always profitable: pay S·p_in to read, save (S−d)·p_out on output. Since r ≥ 1 and d ≪ S, the output savings dominate.
+
+**Effect 2 — The orchestrator never reads the artifact (context separation).**
+
+In a naive conversation (Scenario A), the main context holds the full artifact — and every prior version. Each regeneration (S output tokens) becomes part of the context for the next edit (S input tokens). You write S, it gets read back next turn, you write S again on top of it, and now the following turn reads 2S. Every output S paid in round k is paid again as input in rounds k+1, k+2, ..., N. This is the mechanism behind quadratic growth.
+
+AAP eliminates this through **context separation**:
+
+- The **orchestrator** (main context) holds only handles (~10 tokens) and projections (~100 tokens). It never reads the artifact body. It can ask specific questions about the artifact via projection requests without loading the content. Its context grows only with conversation, not with artifact size.
+- The **maintain context** is ephemeral — it loads the current artifact revision (S tokens), produces a diff (d tokens), and terminates. Its context is discarded after each call.
+- The **apply engine** is pure CPU. It consumes the diff envelope, splices it into the stored artifact, and stores the new version.
+
+A crucial distinction: the maintain context *does* read the applied result of all prior edits — the artifact at version k reflects every diff that was ever applied. But it reads only the **current artifact** (S_k tokens), not the **edit history** (all prior envelopes, conversations, and regenerations). The diff envelope itself (d tokens) is consumed by the apply engine and never re-enters any LLM context. What the maintain context sees is the *product* of prior edits, not the *process*.
+
+Note that S_k (artifact size at version k) is not fixed — it may grow if an operation adds content, or shrink if content is deleted. In the cost formulas, S represents the artifact size at the time of each edit. The key property is that S_k depends only on the artifact's content, not on the number of prior edits or the size of prior conversations. In a naive conversation, context at edit k is proportional to k·S (all prior versions); in AAP, input at edit k is always I + S_k — bounded by the artifact's current size, not its history.
+
+> **Alternative: projections instead of full read.** In principle, the maintain context could receive a projection of the artifact instead of the full content, reducing input below S. But this risks reduced recall — the maintain context needs high fidelity over the artifact to produce accurate diffs (targeting the right search strings, correct line numbers). Frontier models have sufficient recall over full artifacts that reading S input tokens is the pragmatic choice: better diff accuracy outweighs the input token savings.
+
+The input savings (A→C) over N edits:
+
+```
+Input_A - Input_C = S·N(N+1)/2 - (I + S)·N ≈ S·N²/2  (for large N)
+```
+
+This is quadratic in N — the longer the artifact lives, the more AAP saves on input *in addition to* saving on output.
+
+**Effect 3 — Model cost asymmetry.** The maintain context (which produces diffs) can run on a cheaper model than the orchestrator or init context. A small model with good recall and structured output is sufficient for producing diffs against content it can see in full. If the maintain model costs c_m per output token and the init/orchestrator model costs c_o, the effective per-edit output cost is d·c_m instead of S·c_o.
+
+These effects multiply: **fewer output tokens × cheaper per token × no context accumulation.**
+
+##### Per-Edit Cost Comparison
+
+The **total cost** of a single edit (init excluded) under each scenario. Edit k (1-indexed):
+
+| | Input cost (edit k) | Output cost (edit k) | Total (edit k) |
 |---|---|---|---|
-| Instructions | ~fixed | — | No (re-injected each call) |
-| Artifact revision | ~artifact_size | — | **Yes** (as vN+1 after apply) |
-| Edit intent | ~small | — | No |
-| Envelope operations | — | ~50-500 (diff) | No (consumed by apply engine) |
-| **Total per edit** | **instructions + artifact + intent** | **~50-500** | **artifact only** |
+| **A (naive convo)** | (I + k·S)·p_in | S·p_out | (I + k·S)·p_in + S·p_out |
+| **B (stateless full)** | (I + S)·p_in | S·p_out | (I + S)·p_in + S·p_out |
+| **C (AAP diff)** | (I + S)·p_in | d·p_out | (I + S)·p_in + d·p_out |
 
-Compare the naive approach: `~artifact_size` input + `~artifact_size` output + growing conversation history per edit. Output tokens are 3-5× more expensive than input tokens, so the reduction from `~artifact_size` output to `~50-500` output is where the savings concentrate.
+**C vs B (same input, less output):** Input costs are identical — the maintain context reads the full artifact regardless. Savings are purely on the output side: (S − d)·p_out per edit. This is the diff efficiency.
 
-When the maintain context runs on a cheaper model than the orchestrator, the savings multiply further. The per-token cost of the maintain context's output can be a fraction of the orchestrator's — a small model that excels at recall and structured output is often sufficient for producing diffs against content it can see in full. The total cost reduction is: (fewer output tokens) × (lower cost per token).
+**C vs A (less input AND less output):** At edit k, Scenario A reads k prior artifact versions that Scenario C never sees. Input savings: (k−1)·S·p_in. Output savings: (S − d)·p_out. Both grow with k — the longer the artifact lives, the wider the gap.
 
-> **Non-normative note:** The ~50-500 output token estimate is derived from hand-crafted envelope benchmarks (Appendix B). AI-generated envelopes from natural language intents may produce larger diffs or fall back to section-mode rewrites when a targeted diff would suffice. Implementations SHOULD track actual output token counts via the audit log to calibrate expectations.
+This is why the output/input price ratio matters: the higher r = p_out/p_in, the more the output reduction dominates total savings. But even at r = 1, AAP saves on both sides vs the naive conversation.
+
+The **cost savings percentage** for a single edit (B→C) is:
+
+```
+savings% = (S − d) · p_out / [(I + S) · p_in + S · p_out]
+         = (S − d) · r / [(I + S) + S · r]
+```
+
+Where r = p_out / p_in. As r → ∞, savings% → (S − d) / S ≈ 1 (approaches the raw output token reduction). As r → 1, savings% ≈ (S − d) / (I + 2S) (approaches roughly half the output reduction, since input and output cost equally).
+
+> **Non-normative note:** The d ≈ 30-500 output token estimate is derived from hand-crafted envelope benchmarks. AI-generated envelopes from natural language intents may produce larger diffs or fall back to section-mode rewrites when a targeted diff would suffice. Implementations SHOULD track actual output token counts via the audit log to calibrate expectations.
 
 #### 8.1.2 Amortization
 
-The initial creation (init context, `name: "full"`) is the most expensive operation — full output tokens to produce the artifact with section markers. This is a one-time investment that makes every subsequent edit cheap:
+The initial creation (init context, `name: "full"`) is the most expensive operation — full output tokens to produce the artifact with section markers. This is a one-time investment that makes every subsequent edit cheap.
 
-| | Initial create | Edit 1 | Edit 2 | ... | Edit N | Total output |
-|---|---|---|---|---|---|---|
-| **Dispatch model** | S | ~50 | ~50 | | ~50 | S + 50N |
-| **Naive (full regen)** | S | S | S | | S | S × (N+1) |
+##### Iteration-by-Iteration Comparison
 
-Where S = artifact size in output tokens. Break-even: **one edit**. After a single diff update, total spend is lower than two full regenerations. By edit N, savings ≈ `(N-1) × S` output tokens.
+Total **cumulative cost** after each edit (init + N edits):
 
-#### 8.1.3 Anti-Hallucination Properties
+| | Init | After 1 edit | After 5 edits | After 10 edits |
+|---|---|---|---|---|
+| **A (naive convo)** input | I | I + (I+S) | I + 5I + 15S | I + 10I + 55S |
+| **A** output | S | 2S | 6S | 11S |
+| **B (stateless full)** input | I | I + (I+S) | I + 5(I+S) | I + 10(I+S) |
+| **B** output | S | 2S | 6S | 11S |
+| **C (AAP)** input | I | I + (I+S) | I + 5(I+S) | I + 10(I+S) |
+| **C** output | S | S + d | S + 5d | S + 10d |
+
+The output rows tell the story. After N edits:
+
+- **B and A** produce (N+1)·S output tokens
+- **C** produces S + N·d output tokens
+- **Output savings** = N·(S − d) tokens
+
+##### Concrete Example
+
+An 8 KB HTML dashboard artifact with typical model pricing:
+
+| Parameter | Value | Rationale |
+|---|---|---|
+| S | 2,000 tokens | ~4 bytes/token average for HTML |
+| d | 30 tokens | Small diff: update two stat values |
+| I | 500 tokens | System prompt + AAP instructions |
+| r (p_out/p_in) | 4× | Typical frontier model ratio |
+| N | 10 edits | Moderate lifecycle |
+
+**Output tokens (cumulative):**
+
+| Edit # | B: Stateless full | C: AAP diff | C saves |
+|---|---:|---:|---:|
+| Init | 2,000 | 2,000 | 0 |
+| 1 | 4,000 | 2,030 | 1,970 |
+| 2 | 6,000 | 2,060 | 3,940 |
+| 5 | 12,000 | 2,150 | 9,850 |
+| 10 | 22,000 | 2,300 | 19,700 |
+
+**Dollar cost (output only, at $15/M output tokens):**
+
+| Edit # | B output cost | C output cost | C saves |
+|---|---:|---:|---:|
+| Init | $0.030 | $0.030 | $0.000 |
+| 1 | $0.060 | $0.030 | $0.030 |
+| 5 | $0.180 | $0.032 | $0.148 |
+| 10 | $0.330 | $0.035 | $0.296 |
+
+**Dollar cost (total: input + output, at $3.75/M input, $15/M output):**
+
+| Edit # | A (naive convo) | B (stateless full) | C (AAP diff) | C vs B saves | C vs A saves |
+|---|---:|---:|---:|---:|---:|
+| Init | $0.032 | $0.032 | $0.032 | 0% | 0% |
+| 1 | $0.071 | $0.069 | $0.039 | 43% | 45% |
+| 5 | $0.304 | $0.217 | $0.070 | 68% | 77% |
+| 10 | $0.763 | $0.402 | $0.107 | 74% | 86% |
+
+The three columns reveal the two savings mechanisms:
+
+- **B vs A** (input savings from context flattening): $0.763 → $0.402 at edit 10. The naive conversation re-reads every prior regeneration; stateless dispatch reads only the current version.
+- **C vs B** (output savings from diff operations): $0.402 → $0.107 at edit 10. Same input cost, but output drops from S to d per edit.
+- **C vs A** (both effects combined): $0.763 → $0.107 at edit 10 — **86% total savings**. The gap widens with every edit because both quadratic input growth *and* redundant output accumulate in A but not in C.
+
+> **Sensitivity to price ratio:** At r = 1 (equal input/output pricing), the same scenario yields ~49% total savings after 10 edits. At r = 5, it reaches ~78%. The output token reduction is constant regardless — what changes is how much of total cost it represents.
+
+##### With Model Asymmetry
+
+If the maintain context runs on a model costing 1/10th the orchestrator's output price (e.g., a small model for structured diffs), the output cost column for C drops further. In the example above, 10 edits of AAP diff output at 1/10th price: $0.035 × 0.1 = $0.0035 — effectively free. Total savings approach the theoretical maximum.
+
+##### Break-Even
+
+Break-even occurs at **one edit**. After a single diff update, cumulative output spend (S + d) is less than two full regenerations (2S) whenever d < S — which is always true for any non-trivial artifact.
+
+#### 8.1.3 Why Savings Are LLM-Dependent
+
+The three variables that determine actual dollar savings are all model-specific:
+
+**Tokenizer efficiency.** The same 8 KB HTML file tokenizes to different counts across models. Byte-pair encoding (BPE) tokenizers average 3-4 bytes/token for English prose but vary for code, markup, and non-Latin scripts. S (artifact size in tokens) is not a fixed number — it depends on the model. However, d/S (the ratio of diff to full) is relatively stable across tokenizers because both numerator and denominator scale similarly.
+
+**Output/input price ratio (r).** This is the single most important factor for translating output token reduction into dollar savings. At r = 5, output tokens dominate cost and AAP captures most of the total. At r = 1, output and input cost equally and AAP captures roughly half.
+
+| r (p_out/p_in) | Output % of edit cost (no AAP) | AAP total savings % (d/S = 1.5%) |
+|---|---:|---:|
+| 1× | 44% | ~43% |
+| 2× | 62% | ~60% |
+| 3× | 71% | ~69% |
+| 4× | 76% | ~74% |
+| 5× | 80% | ~78% |
+
+**Model cost per token.** The maintain context does not require a frontier model — it needs recall (find the right location in the artifact) and structured output (emit valid envelope JSON). Smaller, cheaper models excel at this constrained task. When the maintain model is cheaper than the orchestrator, the savings multiply beyond what output token reduction alone provides.
+
+> **Non-normative note:** Implementations SHOULD report both output token reduction (model-independent) and estimated cost savings (model-dependent) in their benchmarks. Payload byte reduction (as measured by the Rust apply engine) is a useful proxy for output token reduction but not identical — envelope JSON overhead adds a small constant.
+
+#### 8.1.4 Anti-Hallucination Properties
 
 The architecture structurally reduces hallucination through context separation:
 
