@@ -25,9 +25,9 @@ pub enum ArtifactState {
     Archived,
 }
 
-/// Envelope operation metadata.
+/// Envelope metadata.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Operation {
+pub struct Meta {
     pub direction: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -50,7 +50,7 @@ pub struct Envelope {
     pub id: String,
     pub version: u64,
     pub name: Name,
-    pub operation: Operation,
+    pub meta: Meta,
     pub content: Vec<serde_json::Value>,
 }
 
