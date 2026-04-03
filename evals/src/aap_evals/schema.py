@@ -66,7 +66,7 @@ class OperationMeta(BaseModel):
 
 
 class Envelope(BaseModel):
-    """Spec-compliant AAP envelope — used as structured output for the maintain-agent."""
+    """Spec-compliant AAP envelope — structured output from the maintain context."""
 
     protocol: Literal["aap/0.1"] = "aap/0.1"
     id: str

@@ -8,7 +8,7 @@ The Agent-Artifact Protocol reduces token cost and latency for multi-turn artifa
 2. **Input tokens stay bounded** — AAP context does not grow with conversation history
 3. **Cumulative cost breaks even after one edit** — the protocol overhead (larger system prompt) is recovered
 4. **Apply engine adds negligible latency** — envelope resolution is ~2μs, dominated by LLM time
-5. **Envelope reliability is measurable** — the maintain-agent can produce valid, applicable envelopes
+5. **Envelope reliability is measurable** — the maintain context can produce valid, applicable envelopes
 
 ## Design
 
@@ -28,7 +28,7 @@ Each experiment runs the same sequence of follow-up edits through both flows:
 
 **AAP flow** — stateless dispatch:
 - Turn 0: same creation prompt → same artifact (shared)
-- Turn N: fresh maintain-agent call with:
+- Turn N: fresh maintain context call with:
   - System prompt: AAP spec excerpt (~350 tokens, describes envelope format)
   - Artifact injection: current artifact revision (not conversation history)
   - Edit instruction: same edit as default flow

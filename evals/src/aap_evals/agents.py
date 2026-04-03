@@ -140,7 +140,7 @@ class AAPResult:
         return sum(1 for t in edits if t.apply_succeeded) / len(edits) if edits else 0
 
 
-# ── Baseline agent ──────────────────────────────────────────────────────────
+# ── Baseline flow (no offloading — growing conversation context) ───────────
 
 
 def run_baseline(
@@ -180,7 +180,7 @@ def run_baseline(
     return result
 
 
-# ── AAP agent ───────────────────────────────────────────────────────────────
+# ── AAP flow (context offloading — ephemeral secondary contexts) ───────────
 
 
 def run_aap(
@@ -190,7 +190,7 @@ def run_aap(
     fmt: str,
     artifact_id: str = "artifact",
 ) -> AAPResult:
-"""AAP: both init and maintain are offloaded to ephemeral secondary contexts.
+    """AAP: both init and maintain are offloaded to ephemeral secondary contexts.
 
     The orchestrator (this function) never holds artifact content in its own
     context — it dispatches to bounded secondary contexts and receives
@@ -229,7 +229,7 @@ def run_aap(
 
     result = AAPResult()
 
-    # Turn 0: init-agent creates artifact with section markers
+    # Turn 0: offload creation to init context (ephemeral, discarded after)
     t0 = time.perf_counter()
     r = init_ctx.run_sync(creation_prompt)
     latency_ms = int((time.perf_counter() - t0) * 1000)
@@ -244,7 +244,7 @@ def run_aap(
         output_bytes=len(artifact.encode()),
     ))
 
-    # Turns 1+: maintain-agent returns Envelope
+    # Turns 1+: offload edits to maintain context (ephemeral, fresh each call)
     version = 1
     for i, edit in enumerate(edit_prompts):
         user_msg = f"## Current Artifact\n\n```\n{artifact}\n```\n\n## Edit Instruction\n\n{edit}"
@@ -255,7 +255,7 @@ def run_aap(
         env_name = ""
 
         try:
-            r = maintain_agent.run_sync(user_msg)
+            r = maintain_ctx.run_sync(user_msg)
             latency_ms = int((time.perf_counter() - t0) * 1000)
             usage = r.usage()
 
