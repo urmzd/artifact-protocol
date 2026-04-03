@@ -1,94 +1,63 @@
-//! Universal XML section marker resolution.
+//! Universal XML marker resolution for `<aap:target>`.
 //!
-//! All formats use the same `<aap:section id="...">` / `</aap:section>` markers.
+//! All formats use `<aap:target id="...">` / `</aap:target>` markers.
 //! The `aap:` namespace prefix is uniquely identifiable and LLMs follow XML tags
 //! reliably. JSON uses pointer addressing instead.
 
 use anyhow::{bail, Context, Result};
 
-use crate::aap::SectionDef;
-
-/// Build start and end markers for a section ID.
+/// Build start and end markers for a target ID.
 ///
-/// All text formats use the same XML-style markers:
-/// `<aap:section id="nav">` / `</aap:section>`
+/// `<aap:target id="nav">` / `</aap:target>`
 ///
 /// JSON (`application/json`) does not support text markers — use pointer addressing.
-pub fn markers_for(section_id: &str, format: &str) -> Result<(String, String)> {
+pub fn markers_for(target_id: &str, format: &str) -> Result<(String, String)> {
     if format == "application/json" {
-        bail!("JSON does not support text-based section markers; use pointer addressing instead");
+        bail!("JSON does not support text-based markers; use pointer addressing instead");
     }
     Ok((
-        format!(r#"<aap:section id="{section_id}">"#),
-        "</aap:section>".to_string(),
+        format!(r#"<aap:target id="{target_id}">"#),
+        "</aap:target>".to_string(),
     ))
 }
 
-/// Resolve section markers for a given section ID and format.
+/// Find the byte range of a target's content within a string.
 ///
-/// If the `section_def` provides explicit `start_marker` and `end_marker`,
-/// those are used (user override). Otherwise, the universal XML markers are used.
-pub fn resolve_markers(
-    section_id: &str,
-    format: &str,
-    section_def: Option<&SectionDef>,
-) -> Result<(String, String)> {
-    // Explicit override wins
-    if let Some(def) = section_def {
-        if let (Some(start), Some(end)) = (&def.start_marker, &def.end_marker) {
-            return Ok((start.clone(), end.clone()));
-        }
-    }
-
-    markers_for(section_id, format)
-}
-
-/// Find the byte range of a section's content within a string.
-///
-/// Returns `(content_start, content_end)` — the byte offsets of the content
-/// between the start and end markers (exclusive of markers themselves).
-pub fn find_section_range(
+/// Returns `(content_start, content_end)` — byte offsets between markers (exclusive of markers).
+pub fn find_target_range(
     content: &str,
-    section_id: &str,
+    target_id: &str,
     format: &str,
-    section_def: Option<&SectionDef>,
 ) -> Result<(usize, usize)> {
-    let (start_marker, end_marker) = resolve_markers(section_id, format, section_def)?;
+    let (start_marker, end_marker) = markers_for(target_id, format)?;
     let si = content
         .find(&start_marker)
-        .with_context(|| format!("start marker not found for section: {section_id}"))?;
-    let ei = content
+        .with_context(|| format!("start marker not found for target: {target_id}"))?;
+    let content_start = si + start_marker.len();
+    let ei = content[content_start..]
         .find(&end_marker)
-        .with_context(|| format!("end marker not found for section: {section_id}"))?;
-    Ok((si + start_marker.len(), ei))
+        .map(|i| content_start + i)
+        .with_context(|| format!("end marker not found for target: {target_id}"))?;
+    Ok((content_start, ei))
 }
 
-/// Find the byte range of a section including its markers.
+/// Find the byte range of a target including its markers.
 ///
-/// Returns `(marker_start, marker_end)` — the byte offsets that include both
-/// the start marker, content, and end marker.
-pub fn find_section_range_inclusive(
+/// Returns `(marker_start, marker_end)` — byte offsets including both markers and content.
+pub fn find_target_range_inclusive(
     content: &str,
-    section_id: &str,
+    target_id: &str,
     format: &str,
-    section_def: Option<&SectionDef>,
 ) -> Result<(usize, usize)> {
-    let (start_marker, end_marker) = resolve_markers(section_id, format, section_def)?;
+    let (start_marker, end_marker) = markers_for(target_id, format)?;
     let si = content
         .find(&start_marker)
-        .with_context(|| format!("start marker not found for section: {section_id}"))?;
-    let ei = content
+        .with_context(|| format!("start marker not found for target: {target_id}"))?;
+    let ei = content[si..]
         .find(&end_marker)
-        .with_context(|| format!("end marker not found for section: {section_id}"))?;
-    Ok((si, ei + end_marker.len()))
-}
-
-/// Look up a `SectionDef` by ID from an optional list.
-pub fn find_section_def<'a>(
-    sections: Option<&'a [SectionDef]>,
-    section_id: &str,
-) -> Option<&'a SectionDef> {
-    sections?.iter().find(|s| s.id == section_id)
+        .map(|i| si + i + end_marker.len())
+        .with_context(|| format!("end marker not found for target: {target_id}"))?;
+    Ok((si, ei))
 }
 
 #[cfg(test)]
@@ -97,69 +66,41 @@ mod tests {
 
     #[test]
     fn test_html_markers() {
-        let (start, end) = resolve_markers("nav", "text/html", None).unwrap();
-        assert_eq!(start, r#"<aap:section id="nav">"#);
-        assert_eq!(end, "</aap:section>");
-    }
-
-    #[test]
-    fn test_javascript_markers() {
-        let (start, end) = resolve_markers("utils", "application/javascript", None).unwrap();
-        assert_eq!(start, r#"<aap:section id="utils">"#);
-        assert_eq!(end, "</aap:section>");
+        let (start, end) = markers_for("nav", "text/html").unwrap();
+        assert_eq!(start, r#"<aap:target id="nav">"#);
+        assert_eq!(end, "</aap:target>");
     }
 
     #[test]
     fn test_python_markers() {
-        let (start, end) = resolve_markers("imports", "text/x-python", None).unwrap();
-        assert_eq!(start, r#"<aap:section id="imports">"#);
-        assert_eq!(end, "</aap:section>");
+        let (start, end) = markers_for("imports", "text/x-python").unwrap();
+        assert_eq!(start, r#"<aap:target id="imports">"#);
+        assert_eq!(end, "</aap:target>");
     }
 
     #[test]
     fn test_json_unsupported() {
-        let result = resolve_markers("data", "application/json", None);
-        assert!(result.is_err());
+        assert!(markers_for("data", "application/json").is_err());
     }
 
     #[test]
-    fn test_explicit_override() {
-        let def = SectionDef {
-            id: "custom".to_string(),
-            label: None,
-            start_marker: Some("/* BEGIN custom */".to_string()),
-            end_marker: Some("/* END custom */".to_string()),
-        };
-        let (start, end) = resolve_markers("custom", "application/json", Some(&def)).unwrap();
-        assert_eq!(start, "/* BEGIN custom */");
-        assert_eq!(end, "/* END custom */");
+    fn test_find_target_range() {
+        let content = r#"before<aap:target id="stats">old stats</aap:target>after"#;
+        let (start, end) = find_target_range(content, "stats", "text/html").unwrap();
+        assert_eq!(&content[start..end], "old stats");
     }
 
     #[test]
-    fn test_xml_format() {
-        let (start, end) = resolve_markers("data", "application/xhtml+xml", None).unwrap();
-        assert_eq!(start, r#"<aap:section id="data">"#);
-        assert_eq!(end, "</aap:section>");
+    fn test_find_target_range_nested() {
+        let content = r#"<aap:target id="outer"><aap:target id="inner">val</aap:target></aap:target>"#;
+        let (start, end) = find_target_range(content, "inner", "text/html").unwrap();
+        assert_eq!(&content[start..end], "val");
     }
 
     #[test]
-    fn test_unknown_text_format() {
-        let (start, end) = resolve_markers("block", "text/x-unknown", None).unwrap();
-        assert_eq!(start, r#"<aap:section id="block">"#);
-        assert_eq!(end, "</aap:section>");
-    }
-
-    #[test]
-    fn test_find_section_range() {
-        let content = "before\n<aap:section id=\"stats\">\nold stats\n</aap:section>\nafter";
-        let (start, end) = find_section_range(content, "stats", "text/html", None).unwrap();
-        assert_eq!(&content[start..end], "\nold stats\n");
-    }
-
-    #[test]
-    fn test_find_section_range_python() {
-        let content = "import os\n<aap:section id=\"imports\">\nimport sys\n</aap:section>\ncode";
-        let (start, end) = find_section_range(content, "imports", "text/x-python", None).unwrap();
-        assert_eq!(&content[start..end], "\nimport sys\n");
+    fn test_find_target_range_inclusive() {
+        let content = r#"before<aap:target id="x">data</aap:target>after"#;
+        let (start, end) = find_target_range_inclusive(content, "x", "text/html").unwrap();
+        assert_eq!(&content[start..end], r#"<aap:target id="x">data</aap:target>"#);
     }
 }
