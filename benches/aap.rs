@@ -1,278 +1,347 @@
 //! Agent-Artifact Protocol (AAP) benchmarks — measures apply time and payload size
-//! for each generation mode against the full-regeneration baseline.
+//! using real fixtures from evals/data/apply-engine/.
 //!
 //! Run: cargo bench --bench aap
 
 use std::collections::HashMap;
+use std::fs;
+use std::path::PathBuf;
 
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 
-use aap::apply::{
-    apply_diff, apply_section_update, assemble_manifest, fill_template,
-};
-use aap::aap::{DiffOp, OpType, SectionUpdate, Target};
+use aap::aap::{DiffOp, Envelope, SectionUpdate, TemplateContentItem};
+use aap::apply::{apply_diff, apply_section_update, fill_template};
 
-const FULL_HTML: &str = include_str!("protocol_fixture.html");
+// ── Fixture loading ────────────────────────────────────────────────────────
 
-// ── Payloads ────────────────────────────────────────────────────────────────
-
-fn single_diff_ops() -> Vec<DiffOp> {
-    vec![DiffOp {
-        op: OpType::Replace,
-        target: Target {
-            search: Some("24,891".into()),
-            lines: None,
-            offsets: None,
-            section: None,
-            pointer: None,
-        },
-        content: Some("27,103".into()),
-    }]
+struct Fixture {
+    case: String,
+    artifact: String,
+    diff_replace_ops: Vec<Vec<DiffOp>>,
+    diff_multi_ops: Vec<Vec<DiffOp>>,
+    diff_delete_ops: Vec<Vec<DiffOp>>,
+    section_single: Vec<Vec<SectionUpdate>>,
+    section_multi: Vec<Vec<SectionUpdate>>,
+    template_fills: Vec<(String, HashMap<String, serde_json::Value>)>,
 }
 
-fn multi_diff_ops() -> Vec<DiffOp> {
-    vec![
-        DiffOp {
-            op: OpType::Replace,
-            target: Target { search: Some("24,891".into()), lines: None, offsets: None, section: None, pointer: None },
-            content: Some("31,205".into()),
-        },
-        DiffOp {
-            op: OpType::Replace,
-            target: Target { search: Some("$182,430".into()), lines: None, offsets: None, section: None, pointer: None },
-            content: Some("$210,880".into()),
-        },
-        DiffOp {
-            op: OpType::Replace,
-            target: Target { search: Some("3,047".into()), lines: None, offsets: None, section: None, pointer: None },
-            content: Some("4,112".into()),
-        },
-        DiffOp {
-            op: OpType::Replace,
-            target: Target { search: Some("99.97%".into()), lines: None, offsets: None, section: None, pointer: None },
-            content: Some("99.99%".into()),
-        },
-    ]
+fn fixtures_dir() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("evals/data/apply-engine")
 }
 
-fn stats_section_update() -> Vec<SectionUpdate> {
-    vec![SectionUpdate {
-        id: "stats".into(),
-        content: r#"<div class="stats">
-  <div class="card"><div class="card-label">Total Users</div><div class="card-value">31,205</div></div>
-  <div class="card"><div class="card-label">Revenue (MTD)</div><div class="card-value">$210,880</div></div>
-  <div class="card"><div class="card-label">Orders (MTD)</div><div class="card-value">4,112</div></div>
-  <div class="card"><div class="card-label">Uptime</div><div class="card-value">99.99%</div></div>
-</div>"#.into(),
-    }]
+fn load_fixture(case_dir: &str) -> Fixture {
+    let base = fixtures_dir().join(case_dir);
+    let artifact = fs::read_to_string(base.join("artifacts/dashboard.html"))
+        .expect("read artifact");
+
+    let parse_envelopes = |name: &str| -> Vec<Envelope> {
+        let path = base.join("envelopes").join(name);
+        fs::read_to_string(&path)
+            .unwrap_or_default()
+            .lines()
+            .filter(|l| !l.trim().is_empty())
+            .map(|l| Envelope::from_json(l).expect("parse envelope"))
+            .collect()
+    };
+
+    let parse_diff_ops = |envs: Vec<Envelope>| -> Vec<Vec<DiffOp>> {
+        envs.into_iter()
+            .map(|env| {
+                env.content
+                    .into_iter()
+                    .map(|v| serde_json::from_value::<DiffOp>(v).expect("parse DiffOp"))
+                    .collect()
+            })
+            .collect()
+    };
+
+    let parse_section_updates = |envs: Vec<Envelope>| -> Vec<Vec<SectionUpdate>> {
+        envs.into_iter()
+            .map(|env| {
+                env.content
+                    .into_iter()
+                    .map(|v| serde_json::from_value::<SectionUpdate>(v).expect("parse SectionUpdate"))
+                    .collect()
+            })
+            .collect()
+    };
+
+    let parse_templates =
+        |envs: Vec<Envelope>| -> Vec<(String, HashMap<String, serde_json::Value>)> {
+            envs.into_iter()
+                .map(|env| {
+                    let item: TemplateContentItem =
+                        serde_json::from_value(env.content.into_iter().next().unwrap())
+                            .expect("parse TemplateContentItem");
+                    (item.template, item.bindings)
+                })
+                .collect()
+        };
+
+    Fixture {
+        case: case_dir.into(),
+        artifact,
+        diff_replace_ops: parse_diff_ops(parse_envelopes("diff-replace.jsonl")),
+        diff_multi_ops: parse_diff_ops(parse_envelopes("diff-multi.jsonl")),
+        diff_delete_ops: parse_diff_ops(parse_envelopes("diff-delete.jsonl")),
+        section_single: parse_section_updates(parse_envelopes("section-single.jsonl")),
+        section_multi: parse_section_updates(parse_envelopes("section-multi.jsonl")),
+        template_fills: parse_templates(parse_envelopes("template-fill.jsonl")),
+    }
 }
 
-fn multi_section_update() -> Vec<SectionUpdate> {
-    vec![
-        SectionUpdate {
-            id: "stats".into(),
-            content: r#"<div class="stats">
-  <div class="card"><div class="card-label">Total Users</div><div class="card-value">31,205</div></div>
-  <div class="card"><div class="card-label">Revenue (MTD)</div><div class="card-value">$210,880</div></div>
-</div>"#.into(),
-        },
-        SectionUpdate {
-            id: "orders".into(),
-            content: r#"<div class="section">
-  <div class="section-header"><span class="section-title">Recent Orders</span></div>
-  <table><thead><tr><th>ID</th><th>Product</th><th>Amount</th></tr></thead>
-  <tbody><tr><td>ORD-200001</td><td>New Product</td><td>$99.99</td></tr></tbody></table>
-</div>"#.into(),
-        },
-    ]
+fn all_fixtures() -> Vec<Fixture> {
+    let dir = fixtures_dir();
+    let mut cases: Vec<String> = fs::read_dir(&dir)
+        .expect("read apply-engine dir")
+        .filter_map(|e| {
+            let e = e.ok()?;
+            if e.file_type().ok()?.is_dir() {
+                Some(e.file_name().to_string_lossy().to_string())
+            } else {
+                None
+            }
+        })
+        .collect();
+    cases.sort();
+    cases.into_iter().map(|c| load_fixture(&c)).collect()
 }
 
-fn template_and_bindings() -> (String, HashMap<String, serde_json::Value>) {
-    let template = r#"<!DOCTYPE html>
-<html><head><title>{{title}}</title></head>
-<body>
-<nav><span>{{brand}}</span></nav>
-<div class="stats">
-  <div class="card"><span>Users</span><span>{{users}}</span></div>
-  <div class="card"><span>Revenue</span><span>{{revenue}}</span></div>
-  <div class="card"><span>Orders</span><span>{{orders}}</span></div>
-  <div class="card"><span>Uptime</span><span>{{uptime}}</span></div>
-</div>
-{{{users_table}}}
-{{{orders_table}}}
-</body></html>"#;
+// ── Scale helper ───────────────────────────────────────────────────────────
 
-    let mut bindings = HashMap::new();
-    bindings.insert("title".into(), serde_json::Value::String("Dashboard".into()));
-    bindings.insert("brand".into(), serde_json::Value::String("AcmeCorp".into()));
-    bindings.insert("users".into(), serde_json::Value::String("31,205".into()));
-    bindings.insert("revenue".into(), serde_json::Value::String("$210,880".into()));
-    bindings.insert("orders".into(), serde_json::Value::String("4,112".into()));
-    bindings.insert("uptime".into(), serde_json::Value::String("99.99%".into()));
-    bindings.insert("users_table".into(), serde_json::Value::String(
-        "<table><tr><td>Alice</td></tr><tr><td>Bob</td></tr></table>".into()
-    ));
-    bindings.insert("orders_table".into(), serde_json::Value::String(
-        "<table><tr><td>ORD-001</td></tr></table>".into()
-    ));
-
-    (template.into(), bindings)
+/// Repeat the artifact content N times to simulate larger documents.
+fn scale_artifact(html: &str, multiplier: usize) -> String {
+    if multiplier <= 1 {
+        return html.to_string();
+    }
+    // Find the first <tbody>...</tbody> and repeat its inner content
+    if let Some(start) = html.find("<tbody>") {
+        if let Some(rel_end) = html[start..].find("</tbody>") {
+            let inner = &html[start + 7..start + rel_end];
+            let repeated = inner.repeat(multiplier);
+            return format!(
+                "{}{}{}",
+                &html[..start + 7],
+                repeated,
+                &html[start + rel_end..]
+            );
+        }
+    }
+    // Fallback: just repeat the whole thing
+    html.repeat(multiplier)
 }
 
-fn manifest_skeleton_and_sections() -> (String, HashMap<String, String>) {
-    let skeleton = r#"<!DOCTYPE html>
-<html><head><title>Dashboard</title>
-<style>body{font-family:system-ui}</style></head>
-<body>
-<!-- section:nav --><!-- /section:nav -->
-<main>
-<!-- section:stats --><!-- /section:stats -->
-<!-- section:users --><!-- /section:users -->
-<!-- section:orders --><!-- /section:orders -->
-</main>
-</body></html>"#;
+// ── Benchmarks ─────────────────────────────────────────────────────────────
 
-    let mut sections = HashMap::new();
-    sections.insert("nav".into(), r##"<nav><span>AcmeCorp</span></nav>
-<aside><a href="#">Dashboard</a><a href="#">Analytics</a></aside>"##.into());
-    sections.insert("stats".into(), r#"<div class="stats">
-  <div class="card"><span>Users: 31,205</span></div>
-  <div class="card"><span>Revenue: $210,880</span></div>
-</div>"#.into());
-    sections.insert("users".into(), r#"<table>
-  <tr><th>Name</th><th>Email</th></tr>
-  <tr><td>Alice</td><td>alice@example.com</td></tr>
-  <tr><td>Bob</td><td>bob@example.com</td></tr>
-</table>"#.into());
-    sections.insert("orders".into(), r#"<table>
-  <tr><th>ID</th><th>Product</th></tr>
-  <tr><td>ORD-001</td><td>Widget</td></tr>
-</table>"#.into());
-
-    (skeleton.into(), sections)
-}
-
-// ── Byte-size helper ────────────────────────────────────────────────────────
-
-fn payload_bytes(ops: &[DiffOp]) -> usize {
-    ops.iter().map(|op| {
-        let search_len = op.target.search.as_ref().map_or(0, |s| s.len());
-        let content_len = op.content.as_ref().map_or(0, |s| s.len());
-        search_len + content_len
-    }).sum()
-}
-
-fn section_payload_bytes(updates: &[SectionUpdate]) -> usize {
-    updates.iter().map(|u| u.content.len()).sum()
-}
-
-// ── Benchmarks ──────────────────────────────────────────────────────────────
-
-fn bench_baseline_full_copy(c: &mut Criterion) {
-    // Baseline: simulate "full regeneration" cost = copying the entire artifact
-    c.bench_function("baseline_full_copy", |b| {
-        b.iter(|| {
-            let copy = FULL_HTML.to_string();
-            std::hint::black_box(copy);
-        });
-    });
-}
-
-fn bench_diff(c: &mut Criterion) {
-    let mut group = c.benchmark_group("diff_apply");
-    let single = single_diff_ops();
-    let multi = multi_diff_ops();
-
-    group.bench_with_input(
-        BenchmarkId::new("single_replace", format!("{}B payload", payload_bytes(&single))),
-        &single,
-        |b, ops| b.iter(|| apply_diff(FULL_HTML, ops, "text/html", None).unwrap()),
-    );
-    group.bench_with_input(
-        BenchmarkId::new("four_replaces", format!("{}B payload", payload_bytes(&multi))),
-        &multi,
-        |b, ops| b.iter(|| apply_diff(FULL_HTML, ops, "text/html", None).unwrap()),
-    );
-    group.finish();
-}
-
-fn bench_section(c: &mut Criterion) {
-    let mut group = c.benchmark_group("section_apply");
-    let single = stats_section_update();
-    let multi = multi_section_update();
-
-    group.bench_with_input(
-        BenchmarkId::new("one_section", format!("{}B payload", section_payload_bytes(&single))),
-        &single,
-        |b, updates| b.iter(|| apply_section_update(FULL_HTML, updates, "text/html", None).unwrap()),
-    );
-    group.bench_with_input(
-        BenchmarkId::new("two_sections", format!("{}B payload", section_payload_bytes(&multi))),
-        &multi,
-        |b, updates| b.iter(|| apply_section_update(FULL_HTML, updates, "text/html", None).unwrap()),
-    );
-    group.finish();
-}
-
-fn bench_template(c: &mut Criterion) {
-    let (template, bindings) = template_and_bindings();
-    let bindings_size: usize = bindings.values().map(|v| {
-        match v { serde_json::Value::String(s) => s.len(), _ => 0 }
-    }).sum();
-
-    c.bench_function(
-        &format!("template_fill/{}B bindings", bindings_size),
-        |b| b.iter(|| fill_template(&template, &bindings)),
-    );
-}
-
-fn bench_manifest_assembly(c: &mut Criterion) {
-    let (skeleton, sections) = manifest_skeleton_and_sections();
-    let total_section_bytes: usize = sections.values().map(|s| s.len()).sum();
-
-    c.bench_function(
-        &format!("manifest_assemble/4_sections_{}B", total_section_bytes),
-        |b| b.iter(|| assemble_manifest(&skeleton, &sections, "text/html", None).unwrap()),
-    );
-}
-
-fn bench_payload_comparison(c: &mut Criterion) {
-    // Print payload sizes for reference (runs once as a "benchmark")
-    let full_size = FULL_HTML.len();
-    let single_diff = payload_bytes(&single_diff_ops());
-    let multi_diff = payload_bytes(&multi_diff_ops());
-    let single_section = section_payload_bytes(&stats_section_update());
-    let multi_section = section_payload_bytes(&multi_section_update());
-    let (_, bindings) = template_and_bindings();
-    let template_size: usize = bindings.values().map(|v| {
-        match v { serde_json::Value::String(s) => s.len(), _ => 0 }
-    }).sum();
-    let (_, manifest_sections) = manifest_skeleton_and_sections();
-    let manifest_size: usize = manifest_sections.values().map(|s| s.len()).sum();
+fn bench_payload_sizes(c: &mut Criterion) {
+    let fixtures = all_fixtures();
 
     eprintln!();
-    eprintln!("─── Payload Size Comparison ────────────────────────────────");
-    eprintln!("  Full artifact:        {:>6} bytes (baseline)", full_size);
-    eprintln!("  Diff (1 replace):     {:>6} bytes ({:.1}% of full)", single_diff, single_diff as f64 / full_size as f64 * 100.0);
-    eprintln!("  Diff (4 replaces):    {:>6} bytes ({:.1}% of full)", multi_diff, multi_diff as f64 / full_size as f64 * 100.0);
-    eprintln!("  Section (1 section):  {:>6} bytes ({:.1}% of full)", single_section, single_section as f64 / full_size as f64 * 100.0);
-    eprintln!("  Section (2 sections): {:>6} bytes ({:.1}% of full)", multi_section, multi_section as f64 / full_size as f64 * 100.0);
-    eprintln!("  Template (bindings):  {:>6} bytes ({:.1}% of full)", template_size, template_size as f64 / full_size as f64 * 100.0);
-    eprintln!("  Manifest (4 sections):{:>6} bytes ({:.1}% of full)", manifest_size, manifest_size as f64 / full_size as f64 * 100.0);
+    eprintln!("─── Payload Size Comparison (real fixtures) ────────────────");
+    for f in &fixtures {
+        let art_bytes = f.artifact.len();
+        eprintln!("  Case {}: artifact = {} bytes", f.case, art_bytes);
+        for ops in &f.diff_replace_ops {
+            let sz: usize = ops.iter().map(|o| {
+                o.target.search.as_ref().map_or(0, |s| s.len())
+                    + o.content.as_ref().map_or(0, |s| s.len())
+            }).sum();
+            eprintln!("    diff-replace:    {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
+        }
+        for ops in &f.diff_multi_ops {
+            let sz: usize = ops.iter().map(|o| {
+                o.target.search.as_ref().map_or(0, |s| s.len())
+                    + o.content.as_ref().map_or(0, |s| s.len())
+            }).sum();
+            eprintln!("    diff-multi:      {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
+        }
+        for updates in &f.section_single {
+            let sz: usize = updates.iter().map(|u| u.content.len()).sum();
+            eprintln!("    section-single:  {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
+        }
+        for updates in &f.section_multi {
+            let sz: usize = updates.iter().map(|u| u.content.len()).sum();
+            eprintln!("    section-multi:   {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
+        }
+        for (_, bindings) in &f.template_fills {
+            let sz: usize = bindings.values().map(|v| match v {
+                serde_json::Value::String(s) => s.len(),
+                _ => v.to_string().len(),
+            }).sum();
+            eprintln!("    template-fill:   {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
+        }
+    }
     eprintln!("────────────────────────────────────────────────────────────");
     eprintln!();
 
-    // Dummy bench so criterion doesn't complain
     c.bench_function("payload_sizes_printed", |b| b.iter(|| 1 + 1));
+}
+
+fn bench_full_copy(c: &mut Criterion) {
+    let fixtures = all_fixtures();
+    let scales: &[usize] = &[1, 2, 3, 4];
+
+    let mut group = c.benchmark_group("full_copy");
+    group.sample_size(500);
+    group.measurement_time(std::time::Duration::from_secs(10));
+
+    for f in &fixtures {
+        for &scale in scales {
+            let scaled = scale_artifact(&f.artifact, scale);
+            let label = format!("case_{}/{}x_{}B", f.case, scale, scaled.len());
+            group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
+                b.iter(|| {
+                    let copy = html.to_string();
+                    std::hint::black_box(copy);
+                })
+            });
+        }
+    }
+    group.finish();
+}
+
+fn bench_diff_replace(c: &mut Criterion) {
+    let fixtures = all_fixtures();
+    let scales: &[usize] = &[1, 2, 3, 4];
+
+    let mut group = c.benchmark_group("diff_replace");
+    group.sample_size(500);
+    group.measurement_time(std::time::Duration::from_secs(10));
+
+    for f in &fixtures {
+        for (i, ops) in f.diff_replace_ops.iter().enumerate() {
+            for &scale in scales {
+                let scaled = scale_artifact(&f.artifact, scale);
+                let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
+                group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
+                    b.iter(|| apply_diff(html, ops, "text/html", None).unwrap())
+                });
+            }
+        }
+    }
+    group.finish();
+}
+
+fn bench_diff_multi(c: &mut Criterion) {
+    let fixtures = all_fixtures();
+    let scales: &[usize] = &[1, 2, 3, 4];
+
+    let mut group = c.benchmark_group("diff_multi");
+    group.sample_size(500);
+    group.measurement_time(std::time::Duration::from_secs(10));
+
+    for f in &fixtures {
+        for (i, ops) in f.diff_multi_ops.iter().enumerate() {
+            for &scale in scales {
+                let scaled = scale_artifact(&f.artifact, scale);
+                let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
+                group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
+                    b.iter(|| apply_diff(html, ops, "text/html", None).unwrap())
+                });
+            }
+        }
+    }
+    group.finish();
+}
+
+fn bench_diff_delete(c: &mut Criterion) {
+    let fixtures = all_fixtures();
+    let scales: &[usize] = &[1, 2, 3, 4];
+
+    let mut group = c.benchmark_group("diff_delete");
+    group.sample_size(500);
+    group.measurement_time(std::time::Duration::from_secs(10));
+
+    for f in &fixtures {
+        for (i, ops) in f.diff_delete_ops.iter().enumerate() {
+            for &scale in scales {
+                let scaled = scale_artifact(&f.artifact, scale);
+                let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
+                group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
+                    b.iter(|| apply_diff(html, ops, "text/html", None).unwrap())
+                });
+            }
+        }
+    }
+    group.finish();
+}
+
+fn bench_section_single(c: &mut Criterion) {
+    let fixtures = all_fixtures();
+    let scales: &[usize] = &[1, 2, 3, 4];
+
+    let mut group = c.benchmark_group("section_single");
+    group.sample_size(500);
+    group.measurement_time(std::time::Duration::from_secs(10));
+
+    for f in &fixtures {
+        for (i, updates) in f.section_single.iter().enumerate() {
+            for &scale in scales {
+                let scaled = scale_artifact(&f.artifact, scale);
+                let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
+                group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
+                    b.iter(|| {
+                        apply_section_update(html, updates, "text/html", None).unwrap()
+                    })
+                });
+            }
+        }
+    }
+    group.finish();
+}
+
+fn bench_section_multi(c: &mut Criterion) {
+    let fixtures = all_fixtures();
+    let scales: &[usize] = &[1, 2, 3, 4];
+
+    let mut group = c.benchmark_group("section_multi");
+    group.sample_size(500);
+    group.measurement_time(std::time::Duration::from_secs(10));
+
+    for f in &fixtures {
+        for (i, updates) in f.section_multi.iter().enumerate() {
+            for &scale in scales {
+                let scaled = scale_artifact(&f.artifact, scale);
+                let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
+                group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
+                    b.iter(|| {
+                        apply_section_update(html, updates, "text/html", None).unwrap()
+                    })
+                });
+            }
+        }
+    }
+    group.finish();
+}
+
+fn bench_template_fill(c: &mut Criterion) {
+    let fixtures = all_fixtures();
+
+    let mut group = c.benchmark_group("template_fill");
+    group.sample_size(500);
+    group.measurement_time(std::time::Duration::from_secs(10));
+
+    for f in &fixtures {
+        for (i, (template, bindings)) in f.template_fills.iter().enumerate() {
+            let label = format!("case_{}/env_{}/{}B", f.case, i, template.len());
+            group.bench_function(BenchmarkId::from_parameter(&label), |b| {
+                b.iter(|| fill_template(template, bindings))
+            });
+        }
+    }
+    group.finish();
 }
 
 criterion_group!(
     benches,
-    bench_payload_comparison,
-    bench_baseline_full_copy,
-    bench_diff,
-    bench_section,
-    bench_template,
-    bench_manifest_assembly,
+    bench_payload_sizes,
+    bench_full_copy,
+    bench_diff_replace,
+    bench_diff_multi,
+    bench_diff_delete,
+    bench_section_single,
+    bench_section_multi,
+    bench_template_fill,
 );
 criterion_main!(benches);
