@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "pom-xml-project",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "plugins"
+      },
+      "content": "                <plugin>\n                    <groupId>com.google.cloud.tools</groupId>\n                    <artifactId>jib-maven-plugin</artifactId>\n                    <version>3.4.2</version>\n                    <configuration>\n                        <from>\n                            <image>gcr.io/distroless/java21-debian12</image>\n                        </from>\n                        <to>\n                            <image>example.com/spring-boot-app:${project.version}</image>\n                        </to>\n                    </configuration>\n                </plugin>\n"
+    }
+  ]
+}

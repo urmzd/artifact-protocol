@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "pom-xml-id",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/xml",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "dependencies"
+      },
+      "content": "            <dependency>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-starter-cache</artifactId>\n            </dependency>\n            <dependency>\n                <groupId>com.github.ben-manes.caffeine</groupId>\n                <artifactId>caffeine</artifactId>\n            </dependency>\n"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "pom.xml",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "profiles"
+      },
+      "content": "            <profile>\n                <id>dev</id>\n                <activation><activeByDefault>true</activeByDefault></activation>\n            </profile>\n            <profile>\n                <id>test</id>\n                <properties>\n                    <spring.datasource.url>jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1</spring.datasource.url>\n                    <spring.datasource.driverClassName>org.h2.Driver</spring.datasource.driverClassName>\n                    <spring.jpa.database-platform>org.hibernate.dialect.H2Dialect</spring.jpa.database-platform>\n                    <logging.level.root>WARN</logging.level.root>\n                </properties>\n                <dependencies>\n                    <dependency>\n                        <groupId>com.h2database</groupId>\n                        <artifactId>h2</artifactId>\n                        <scope>runtime</scope>\n                    </dependency>\n                </dependencies>\n            </profile>\n            <profile>\n                <id>staging</id>\n            </profile>\n            <profile>\n                <id>production</id>\n            </profile>"
+    }
+  ]
+}
