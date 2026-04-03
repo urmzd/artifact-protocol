@@ -77,21 +77,21 @@ The `evals/` directory contains an evaluation framework that measures AAP's toke
 
 AAP saves tokens by replacing full artifact regeneration with small diff envelopes. The savings are real but **LLM-dependent** — they vary with the model's tokenizer, output/input price ratio, and whether a cheaper model handles diffs. See the [full derivation in the spec](spec/aap.md#811-cost-model).
 
-**The mechanism:** the maintain context reads the full artifact (S input tokens) and produces an edit envelope (d output tokens, where d is typically 1-5% of S). The apply engine resolves the edit at zero token cost (CPU, ~2μs). The orchestrator never reads the artifact at all — it holds only lightweight handles.
+**The mechanism:** the maintain context reads the full artifact ($S$ input tokens) and produces an edit envelope ($d$ output tokens, where $d$ is typically 1–5% of $S$). The apply engine resolves the edit at zero token cost (CPU, ~2μs). The orchestrator never reads the artifact at all — it holds only lightweight handles.
 
-- **Output token reduction:** d instead of S per edit (95-99% fewer output tokens)
-- **Context flattening:** no conversation history accumulates — each edit reads only the current artifact (S), not all prior versions (k·S at edit k in a naive conversation)
+- **Output token reduction:** $d$ instead of $S$ per edit (95–99% fewer output tokens)
+- **Context flattening:** no conversation history accumulates — each edit reads only the current artifact ($S$), not all prior versions ($k \cdot S$ at edit $k$ in a naive conversation)
 - **Model asymmetry:** the maintain context can use a cheaper model, multiplying savings further
 
-**Concrete example** (2,000-token artifact, 30-token edit, r = p_out/p_in = 4x):
+**Concrete example** (2,000-token artifact, 30-token edit, $r = p_{\text{out}}/p_{\text{in}} = 4\text{x}$):
 
-| After N edits | Naive conversation | AAP | Total savings |
+| After $N$ edits | Naive conversation | AAP | Total savings |
 |---:|---:|---:|---:|
-| 1 | $0.071 | $0.039 | 45% |
-| 5 | $0.304 | $0.070 | 77% |
-| 10 | $0.763 | $0.107 | 86% |
+| 1 | \$0.071 | \$0.039 | 45% |
+| 5 | \$0.304 | \$0.070 | 77% |
+| 10 | \$0.763 | \$0.107 | 86% |
 
-At r = 1 (equal pricing), the same scenario yields ~49% savings after 10 edits. At r = 5, it reaches ~87%. The output token reduction is constant — what changes is how much of total cost it represents.
+At $r = 1$ (equal pricing), the same scenario yields ~49% savings after 10 edits. At $r = 5$, it reaches ~87%. The output token reduction is constant — what changes is how much of total cost it represents.
 
 ## AAP payload benchmarks
 
