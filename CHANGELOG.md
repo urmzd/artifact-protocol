@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.0 (2026-04-03)
+
+### Breaking Changes
+
+- **deps**: remove async runtime and streaming support ([58e7187](https://github.com/urmzd/agent-artifact-protocol/commit/58e7187ce63d45b116984ea0aee49783d2461620))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.9.2...v0.10.0)
+
+
 ## 0.9.2 (2026-04-03)
 
 ### Documentation
