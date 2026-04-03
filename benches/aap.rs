@@ -8,17 +8,17 @@ use std::path::PathBuf;
 
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 
-use aap::aap::{DiffOp, Envelope};
-use aap::apply::{apply_diff, TextResolver};
+use aap::aap::{EditOp, Envelope};
+use aap::apply::{apply_edit, TextResolver};
 
 // ── Fixture loading ────────────────────────────────────────────────────────
 
 struct Fixture {
     case: String,
     artifact: String,
-    diff_replace_ops: Vec<Vec<DiffOp>>,
-    diff_multi_ops: Vec<Vec<DiffOp>>,
-    diff_delete_ops: Vec<Vec<DiffOp>>,
+    diff_replace_ops: Vec<Vec<EditOp>>,
+    diff_multi_ops: Vec<Vec<EditOp>>,
+    diff_delete_ops: Vec<Vec<EditOp>>,
 }
 
 fn fixtures_dir() -> PathBuf {
@@ -41,12 +41,12 @@ fn load_fixture(case_dir: &str) -> Fixture {
             .collect()
     };
 
-    let parse_diff_ops = |envs: Vec<Envelope>| -> Vec<Vec<DiffOp>> {
+    let parse_diff_ops = |envs: Vec<Envelope>| -> Vec<Vec<EditOp>> {
         envs.into_iter()
             .map(|env| {
                 env.content
                     .into_iter()
-                    .map(|v| serde_json::from_value::<DiffOp>(v).expect("parse DiffOp"))
+                    .map(|v| serde_json::from_value::<EditOp>(v).expect("parse EditOp"))
                     .collect()
             })
             .collect()
@@ -166,7 +166,7 @@ fn bench_diff_replace(c: &mut Criterion) {
                 let scaled = scale_artifact(&f.artifact, scale);
                 let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
                 group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
-                    b.iter(|| apply_diff(&resolver, html, ops).unwrap())
+                    b.iter(|| apply_edit(&resolver, html, ops).unwrap())
                 });
             }
         }
@@ -189,7 +189,7 @@ fn bench_diff_multi(c: &mut Criterion) {
                 let scaled = scale_artifact(&f.artifact, scale);
                 let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
                 group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
-                    b.iter(|| apply_diff(&resolver, html, ops).unwrap())
+                    b.iter(|| apply_edit(&resolver, html, ops).unwrap())
                 });
             }
         }
@@ -212,7 +212,7 @@ fn bench_diff_delete(c: &mut Criterion) {
                 let scaled = scale_artifact(&f.artifact, scale);
                 let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
                 group.bench_with_input(BenchmarkId::from_parameter(&label), &scaled, |b, html| {
-                    b.iter(|| apply_diff(&resolver, html, ops).unwrap())
+                    b.iter(|| apply_edit(&resolver, html, ops).unwrap())
                 });
             }
         }
