@@ -98,7 +98,7 @@ At r = 1 (equal pricing), the same scenario yields ~49% savings after 10 edits. 
 
 ## AAP payload benchmarks
 
-Payload size and apply time for each [Agent-Artifact Protocol (AAP)](spec/aap.md) operation type, measured against an 8 KB HTML dashboard fixture. Regenerate with `cargo run --release --bin bench-table > benches/results.md`.
+Payload size and apply time for each [Agent-Artifact Protocol (AAP)](spec/aap.md) operation type, measured against an 8 KB HTML dashboard fixture.
 
 > **Note:** The "Payload savings" column measures **byte reduction** in the envelope payload — a proxy for output token reduction but not identical (tokenizers vary). Actual cost savings depend on the model's output/input price ratio; see [cost model](spec/aap.md#811-cost-model) for the full derivation.
 
