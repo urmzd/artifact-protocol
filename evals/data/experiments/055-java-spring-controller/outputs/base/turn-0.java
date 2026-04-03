@@ -1,154 +1,150 @@
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import lombok.Builder;
-import lombok.Data;
+package com.example.product.model;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
+
+public record ProductRequest(
+    @NotBlank(message = "Name is required") String name,
+    @NotBlank(message = "SKU is required") String sku,
+    @NotNull @Positive BigDecimal price
+) {}
+
+package com.example.product.model;
+
+import java.math.BigDecimal;
+
+public record ProductResponse(Long id, String name, String sku, BigDecimal price) {}
+
+package com.example.product.model;
+
+public record ProductSearchCriteria(String name, String sku, Integer page, Integer size, String sortBy) {}
+
+package com.example.product.model;
+
+import java.util.List;
+
+public record PagedResponse<T>(List<T> content, long totalElements, int page, int totalPages) {}
+
+package com.example.product.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    @Column(unique = true)
+    private String sku;
+    private java.math.BigDecimal price;
+}
+
+package com.example.product.repository;
+
+import com.example.product.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    @Query("SELECT p FROM Product p WHERE (:name IS NULL OR p.name LIKE %:name%) AND (:sku IS NULL OR p.sku = :sku)")
+    Page<Product> search(@Param("name") String name, @Param("sku") String sku, Pageable pageable);
+}
+
+package com.example.product.service;
+
+import com.example.product.entity.Product;
+import com.example.product.model.*;
+import com.example.product.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
-// --- DTOs ---
-
-@Data
-class ProductRequest {
-    private String name;
-    private String description;
-    private BigDecimal price;
-}
-
-@Data
-@Builder
-class ProductResponse {
-    private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-}
-
-@Data
-class ProductSearchCriteria {
-    private String name;
-    private BigDecimal minPrice;
-    private BigDecimal maxPrice;
-}
-
-@Data
-@Builder
-class PagedResponse<T> {
-    private List<T> content;
-    private int page;
-    private int size;
-    private long totalElements;
-}
-
-// --- Entity ---
-
-@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "products")
-@Data
-class Product {
-    @jakarta.persistence.Id
-    @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-}
-
-// --- Repository ---
-
-interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-    List<Product> findByNameContainingIgnoreCase(String name);
-}
-
-// --- Service ---
+import java.util.stream.Collectors;
 
 @Service
-class ProductService {
+@RequiredArgsConstructor
+public class ProductService {
     private final ProductRepository repository;
 
-    public ProductService(ProductRepository repository) {
-        this.repository = repository;
-    }
-
     @Cacheable(value = "products", key = "#id")
-    public ProductResponse getProduct(Long id) {
-        Product p = repository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        return mapToResponse(p);
+    public ProductResponse getById(Long id) {
+        Product p = repository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        return new ProductResponse(p.getId(), p.getName(), p.getSku(), p.getPrice());
     }
 
-    public PagedResponse<ProductResponse> search(ProductSearchCriteria criteria, int page, int size, String sort) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-        Specification<Product> spec = (root, query, cb) -> {
-            var predicates = cb.conjunction();
-            if (criteria.getName() != null) predicates = cb.and(predicates, cb.like(root.get("name"), "%" + criteria.getName() + "%"));
-            if (criteria.getMinPrice() != null) predicates = cb.and(predicates, cb.greaterThanOrEqualTo(root.get("price"), criteria.getMinPrice()));
-            return predicates;
-        };
-        Page<Product> paged = repository.findAll(spec, pageable);
-        return PagedResponse.<ProductResponse>builder()
-                .content(paged.getContent().stream().map(this::mapToResponse).toList())
-                .page(page).size(size).totalElements(paged.getTotalElements()).build();
+    public PagedResponse<ProductResponse> search(ProductSearchCriteria criteria) {
+        Pageable pageable = PageRequest.of(criteria.page() != null ? criteria.page() : 0, 
+                                          criteria.size() != null ? criteria.size() : 10, 
+                                          Sort.by(criteria.sortBy() != null ? criteria.sortBy() : "name"));
+        Page<Product> page = repository.search(criteria.name(), criteria.sku(), pageable);
+        return new PagedResponse<>(
+            page.getContent().stream().map(p -> new ProductResponse(p.getId(), p.getName(), p.getSku(), p.getPrice())).collect(Collectors.toList()),
+            page.getTotalElements(), page.getNumber(), page.getTotalPages()
+        );
     }
 
     @CacheEvict(value = "products", allEntries = true)
-    public ProductResponse create(ProductRequest request) {
-        Product p = new Product();
-        p.setName(request.getName());
-        p.setPrice(request.getPrice());
-        return mapToResponse(repository.save(p));
-    }
-
-    private ProductResponse mapToResponse(Product p) {
-        return ProductResponse.builder().id(p.getId()).name(p.getName()).price(p.getPrice()).build();
+    public ProductResponse create(ProductRequest req) {
+        Product p = new Product(null, req.name(), req.sku(), req.price());
+        p = repository.save(p);
+        return new ProductResponse(p.getId(), p.getName(), p.getSku(), p.getPrice());
     }
 }
 
-// --- Controller ---
+package com.example.product.controller;
+
+import com.example.product.model.*;
+import com.example.product.service.ProductService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/products")
-class ProductController {
+@RequiredArgsConstructor
+public class ProductController {
     private final ProductService service;
-
-    public ProductController(ProductService service) { this.service = service; }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> get(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getProduct(id));
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @GetMapping
-    public ResponseEntity<PagedResponse<ProductResponse>> search(
-            ProductSearchCriteria criteria,
-            @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "10") @Min(1) int size,
-            @RequestParam(defaultValue = "id") String sort) {
-        return ResponseEntity.ok(service.search(criteria, page, size, sort));
+    public ResponseEntity<PagedResponse<ProductResponse>> search(ProductSearchCriteria criteria) {
+        return ResponseEntity.ok(service.search(criteria));
     }
 
     @PostMapping
     public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+        return ResponseEntity.ok(service.create(request));
     }
 }
 
-// --- Exception Handling ---
+package com.example.product.exception;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-class GlobalExceptionHandler {
+public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleNotFound(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<String> handle(RuntimeException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
     }
 }
