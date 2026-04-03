@@ -1,0 +1,405 @@
+<html>
+<head>
+    <title>E-commerce Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* --- Navigation --- */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo h1 {
+            margin: 0;
+            font-size: 1.8em;
+            font-weight: 300;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            padding: 8px 10px;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+        }
+        .nav-links a:hover {
+            background-color: #34495e;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: white;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        .sign-out-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .sign-out-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* --- Main Content Area --- */
+        main {
+            padding: 30px;
+            flex-grow: 1;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* --- Stats Cards --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+        .stat-card h3 {
+            margin-top: 0;
+            font-size: 1.1em;
+            color: #7f8c8d;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+        .stat-card p {
+            font-size: 2.2em;
+            font-weight: 600;
+            margin: 5px 0 15px 0;
+        }
+        .trend {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        .trend span {
+            margin-left: 8px;
+            font-size: 1.2em;
+        }
+        .positive {
+            color: #2ecc71; /* Green */
+        }
+        .negative {
+            color: #e74c3c; /* Red */
+        }
+
+        /* --- Tables --- */
+        .table-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #ecf0f1;
+            color: #555;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tbody tr:hover {
+            background-color: #eaf5ff;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .badge-success { background-color: #eafaf1; color: #27ae60; }
+        .badge-warning { background-color: #fef9e7; color: #f39c12; }
+        .badge-danger { background-color: #faeaea; color: #c0392b; }
+        .badge-info { background-color: #ebf5fb; color: #3498db; }
+
+        /* --- Settings Form --- */
+        .settings-card {
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+        }
+        .toggle-group:first-child {
+            border-top: none;
+        }
+        /* Simple toggle switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .2s;
+            border-radius: 30px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .2s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2ecc71;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(30px);
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- Top Navigation Bar -->
+        <header id="nav">
+            <div class="logo">
+                <h1>AdminPanel Pro</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="#dashboard">Dashboard</a>
+                <a href="#products-table">Products</a>
+                <a href="#orders-table">Orders</a>
+                <a href="#settings">Settings</a>
+            </nav>
+            <div class="user-profile">
+                <div class="user-avatar" style="background-color: #9b59b6;">JD</div>
+                <span style="font-size: 1.1em;">Jane Doe</span>
+                <button class="sign-out-btn">Sign Out</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Section 1: Stats -->
+            <aap:section id="stats">
+                <h2>Overview Statistics</h2>
+                <div class="stats-grid">
+
+                    <!-- Stat Card 1: Revenue -->
+                    <div class="stat-card" style="border-left-color: #2ecc71;">
+                        <h3>Total Revenue</h3>
+                        <p>$124,580</p>
+                        <div class="trend positive">
+                            <span>&#9650;</span> +12.5% vs last month
+                        </div>
+                    </div>
+                    <!-- Stat Card 2: Orders -->
+                    <div class="stat-card" style="border-left-color: #3498db;">
+                        <h3>Total Orders</h3>
+                        <p>8,920</p>
+                        <div class="trend negative">
+                            <span>&#9660;</span> -1.1% vs last month
+                        </div>
+                    </div>
+                     <!-- Stat Card 3: Customers -->
+                    <div class="stat-card" style="border-left-color: #f39c12;">
+                        <h3>Customers</h3>
+                        <p>14,203</p>
+                        <div class="trend positive">
+                            <span>&#9650;</span> +4.8% vs last month
+                        </div>
+                    </div>
+                    <!-- Stat Card 4: Conversion Rate -->
+                    <div class="stat-card" style="border-left-color: #9b59b6;">
+                        <h3>Conversion Rate</h3>
+                        <p>3.12%</p>
+                         <div class="trend positive">
+                            <span>&#9650;</span> +0.4% vs last month
+                        </div>
+                    </div>
+                </div>
+            </aap:section>
+
+            <!-- Section 2: Products Table -->
+            <aap:section id="products-table">
+                <h2>Product Inventory</h2>
+                 <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>SKU</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Generating 60+ Rows -->
+                            <script>
+                                document.write('<tr><td>Wireless Mouse Pro</td><td>ACC-MS-001</td><td>$25.00</td><td>150</td><td>Electronics</td><td class="badge badge-success">Active</td><td><button style="margin-right: 5px; background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Edit</button><button style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button></td></tr>');
+                                document.write('<tr><td>Mechanical Keyboard RGB</td><td>ACC-KB-005</td><td>$99.99</td><td>85</td><td>Accessories</td><td class="badge badge-success">Active</td><td><button style="margin-right: 5px; background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Edit</button><button style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button></td></tr>');
+                                document.write('<tr><td>Noise Cancelling Headphones</td><td>ELC-HP-101</td><td>$199.00</td><td>210</td><td>Electronics</td><td class="badge badge-success">Active</td><td><button style="margin-right: 5px; background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Edit</button><button style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button></td></tr>');
+                                document.write('<tr><td>Organic Cotton T-Shirt</td><td>CLO-TS-003</td><td>$22.50</td><td>320</td><td>Apparel</td><td class="badge badge-success">Active</td><td><button style="margin-right: 5px; background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Edit</button><button style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button></td></tr>');
+                                document.write('<tr><td>Portable Charger 10K</td><td>ACC-PB-012</td><td>$45.00</td><td>300</td><td>Accessories</td><td class="badge badge-success">Active</td><td><button style="margin-right: 5px; background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Edit</button><button style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button></td></tr>');
+                                document.write('<tr><td>4K Monitor 27 inch</td><td>ELC-MN-27</td><td>$299.99</td><td><td style="font-weight: bold;">Out of Stock</td></tr>');
+                            
+                            // Generate 60 more rows to reach 66 total rows, simulating bulk data
+                            for (let i = 6; i < 66; i++) {
+                                const isSoldOut = (i % 7 === 0);
+                                const productName = `Product Alpha ${i}`;
+                                const productSku = `SKU${(i + 100).toString().padStart(4, '0')}`;
+                                const price = `\$${(Math.random() * 500 + 20).toFixed(2)}`;
+                                const availability = isSoldOut ? `Out of Stock` : `In Stock`;
+                                const row = `<tr><td>${productName}</td><td>${productSku}</td><td>${price}</td><td style="font-weight: ${isSoldOut ? 'bold' : 'normal'};">${availability}</td></tr>`;
+                                document.write(row);
+                            }
+                        </table>
+                    <style>
+                        /* Basic table styling to make the generated HTML readable */
+                        #productTable {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }
+                        #productTable th, #productTable td {
+                            border: 1px solid #dddddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        #productTable th {
+                            background-color: #f2f2f2;
+                        }
+                    </style>
+                </div>
+            </script>
+
+            <h2>Stock Status Overview</h2>
+            <p>Summary statistics would typically go here (e.g., 15 products in stock, 5 out of stock).</p>
+            <div style="display: flex; justify-content: space-around; padding: 20px; background-color: #e9f5ff; border-radius: 8px;">
+                <div style="text-align: center;">
+                    <h3 style="color: #28a745; margin: 0;">15</h3>
+                    <p>In Stock</p>
+                </div>
+                <div style="text-align: center;">
+                    <h3 style="color: #dc3545; margin: 0;">5</h3>
+                    <p>Out of Stock</p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+</html>
