@@ -25,6 +25,7 @@ packageRules:
       - ^@types/
     groupName: "@types packages"
     groupSlug: types
+    automerge: true
 
   - matchPackagePatterns:
       - ^typescript$

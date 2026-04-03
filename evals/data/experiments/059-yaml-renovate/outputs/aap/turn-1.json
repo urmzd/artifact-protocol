@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "renovate-config",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "package-testing-library"
+      },
+      "content": ",\n    {\n      \"groupName\": \"types\",\n      \"matchPackagePatterns\": [\"^@types/\"],\n      \"automerge\": true\n    }"
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "experiment_id": "059-yaml-renovate",
+  "model": "gemini-3.1-flash-lite-preview",
+  "provider": "google",
+  "timestamp": "2026-04-03T07:30:55.792189+00:00",
+  "format": "text/x-yaml",
+  "base_turn0": {
+    "input_tokens": 60,
+    "output_tokens": 219,
+    "latency_ms": 1960,
+    "artifact_bytes": 723,
+    "ttft_ms": 0,
+    "ttlt_ms": 1142,
+    "median_itl_ms": 127.87
+  },
+  "aap_turn0": {
+    "input_tokens": 399,
+    "output_tokens": 396,
+    "latency_ms": 2575,
+    "artifact_bytes": 1212,
+    "ttft_ms": 0,
+    "ttlt_ms": 1754,
+    "median_itl_ms": 112.39
+  },
+  "default_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add a packageRule that groups all @types/* packages into a single PR with autome",
+        "input_tokens": 301,
+        "output_tokens": 226,
+        "latency_ms": 1881,
+        "output_bytes": 743,
+        "ttft_ms": 0,
+        "ttlt_ms": 794,
+        "median_itl_ms": 82.54,
+        "failed": false,
+        "failure_reason": ""
+      },
+      {
+        "turn": 2,
+        "edit": "Update the schedule to run only on weekends and add a 'prConcurrentLimit' of 5",
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "latency_ms": 52,
+        "output_bytes": 0,
+        "ttft_ms": null,
+        "ttlt_ms": null,
+        "median_itl_ms": null,
+        "failed": true,
+        "failure_reason": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-3.1-flash-lite\\nPlease retry in 57.720221045s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.1-flash-lite'}, 'quotaValue': '15'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '57s'}]}}"
+      }
+    ],
+    "total_input_tokens": 301,
+    "total_output_tokens": 226,
+    "total_latency_ms": 1933
+  },
+  "aap_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add a packageRule that groups all @types/* packages into a single PR with autome",
+        "input_tokens": 1526,
+        "output_tokens": 115,
+        "latency_ms": 1608,
+        "output_bytes": 1321,
+        "ttft_ms": 0,
+        "ttlt_ms": 1,
+        "median_itl_ms": 1.63,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      },
+      {
+        "turn": 2,
+        "edit": "Update the schedule to run only on weekends and add a 'prConcurrentLimit' of 5",
+        "input_tokens": 1561,
+        "output_tokens": 124,
+        "latency_ms": 3068,
+        "output_bytes": 1365,
+        "ttft_ms": 0,
+        "ttlt_ms": 1,
+        "median_itl_ms": 1.75,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      }
+    ],
+    "total_input_tokens": 3087,
+    "total_output_tokens": 239,
+    "total_latency_ms": 4676,
+    "envelope_parse_rate": 1.0,
+    "apply_success_rate": 1.0
+  },
+  "comparison": {
+    "output_token_savings_pct": -5.8,
+    "input_token_savings_pct": -925.6,
+    "latency_savings_pct": -141.9
+  },
+  "token_table": {
+    "turns": [
+      {
+        "turn": 0,
+        "base_input": 60,
+        "base_output": 219,
+        "base_latency_ms": 1960,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 1142,
+        "base_median_itl_ms": 127.87,
+        "aap_input": 399,
+        "aap_output": 396,
+        "aap_latency_ms": 2575,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 1754,
+        "aap_median_itl_ms": 112.39
+      },
+      {
+        "turn": 1,
+        "base_input": 301,
+        "base_output": 226,
+        "base_latency_ms": 1881,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 794,
+        "base_median_itl_ms": 82.54,
+        "aap_input": 1526,
+        "aap_output": 115,
+        "aap_latency_ms": 1608,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 1,
+        "aap_median_itl_ms": 1.63,
+        "envelope_name": "edit",
+        "apply_ok": true
+      },
+      {
+        "turn": 2,
+        "base_input": 0,
+        "base_output": 0,
+        "base_latency_ms": 52,
+        "base_ttft_ms": null,
+        "base_ttlt_ms": null,
+        "base_median_itl_ms": null,
+        "aap_input": 1561,
+        "aap_output": 124,
+        "aap_latency_ms": 3068,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 1,
+        "aap_median_itl_ms": 1.75,
+        "envelope_name": "edit",
+        "apply_ok": true
+      }
+    ],
+    "totals": {
+      "base_input": 361,
+      "base_output": 445,
+      "base_combined": 806,
+      "aap_input": 3486,
+      "aap_output": 635,
+      "aap_combined": 4121,
+      "base_latency_ms": 3893,
+      "aap_latency_ms": 7251,
+      "output_savings_pct": -42.7,
+      "input_delta_pct": 865.7,
+      "combined_savings_pct": -411.3,
+      "latency_savings_pct": -86.3
+    }
+  },
+  "quality": {
+    "per_turn": [
+      {
+        "turn": 0,
+        "sequence_similarity": 0.1211,
+        "token_f1": 0.0172,
+        "base_char_count": 723,
+        "aap_char_count": 516,
+        "char_delta_pct": -28.6,
+        "lines_added": 29,
+        "lines_removed": 46,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 1,
+        "sequence_similarity": 0.1126,
+        "token_f1": 0.0317,
+        "base_char_count": 743,
+        "aap_char_count": 625,
+        "char_delta_pct": -15.9,
+        "lines_added": 34,
+        "lines_removed": 47,
+        "rouge_l": null,
+        "bleu": null
+      }
+    ],
+    "mean_sequence_similarity": 0.1169,
+    "mean_token_f1": 0.0244,
+    "mean_rouge_l": null,
+    "mean_bleu": null,
+    "judge_comparisons": null,
+    "mean_base_judge": null,
+    "mean_aap_judge": null
+  }
+}
