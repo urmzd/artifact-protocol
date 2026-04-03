@@ -1,5 +1,64 @@
 # Changelog
 
+## 0.7.0 (2026-04-03)
+
+### Breaking Changes
+
+- **apply**: consolidate engine to synthesize and edit operations ([d9183c7](https://github.com/urmzd/agent-artifact-protocol/commit/d9183c7fa4eca0dde519032541bed0f0a33aabe5))
+
+### Features
+
+- **agents**: add GitHub provider and Gemini concurrency limiting ([b1b027f](https://github.com/urmzd/agent-artifact-protocol/commit/b1b027f4576425561e424eb36d4b5e851827352f))
+
+### Documentation
+
+- **evals**: add AAP specification guide ([f204034](https://github.com/urmzd/agent-artifact-protocol/commit/f204034efaccb65f0867fc7b096874dde1109602))
+- **spec**: simplify protocol with unified target addressing and four envelope types ([e45f1b1](https://github.com/urmzd/agent-artifact-protocol/commit/e45f1b1b6ade0273cc9f511fb547317ad86de4b7))
+
+### Refactoring
+
+- **envelope**: remove direction field and rename operation to meta ([2acb3f8](https://github.com/urmzd/agent-artifact-protocol/commit/2acb3f8f49afcfd5f6169b8af19710da4ab5875d))
+- **aap**: rename Operation to Meta and remove direction field ([70068d0](https://github.com/urmzd/agent-artifact-protocol/commit/70068d03ee2efff06439fca3c13356be374e5199))
+- **cli**: add error handling and skip completed experiments ([dfce30f](https://github.com/urmzd/agent-artifact-protocol/commit/dfce30f43a588e7e42fbbc351018dccff742d395))
+- **aap**: rename Operation struct to Meta in Rust ([fad45fa](https://github.com/urmzd/agent-artifact-protocol/commit/fad45faa5618b205db545724200573d9d15a1efd))
+- **evals**: separate base and aap turn 0 flows in cli ([c58fcce](https://github.com/urmzd/agent-artifact-protocol/commit/c58fcce553375368c16ed1993d3d29db00b10db7))
+- **spec**: remove targets array from aap envelope example ([26c8a51](https://github.com/urmzd/agent-artifact-protocol/commit/26c8a5189126125c02e5720739a164d224510769))
+- **spec**: simplify artifact-envelope schema ([e531bb8](https://github.com/urmzd/agent-artifact-protocol/commit/e531bb8ec506b9cde8383a182f920ed05edaeb02))
+- **python**: simplify agents and update cli imports ([948b299](https://github.com/urmzd/agent-artifact-protocol/commit/948b299da10a7c245b609ba38ff60e1133d537c9))
+- **python**: update apply logic for new artifact format ([21140ed](https://github.com/urmzd/agent-artifact-protocol/commit/21140ede6f2fb43f3cdd89e791f314b95335a1f7))
+- **python**: update envelope generation for actual markers ([4cdc9ae](https://github.com/urmzd/agent-artifact-protocol/commit/4cdc9ae3e10be5f071f0d8ab62a664170930c89d))
+- **python**: align schema models with simplified protocol ([d449e0f](https://github.com/urmzd/agent-artifact-protocol/commit/d449e0f6864f7ad9d8aa4b88bfefb56f0a29ebab))
+- **ffi**: update Python bindings for artifact changes ([3e46c06](https://github.com/urmzd/agent-artifact-protocol/commit/3e46c062146f59392ecbb5bdea32b3e469ced8f0))
+- **apply**: align apply engine with simplified schema ([39852af](https://github.com/urmzd/agent-artifact-protocol/commit/39852af74dc1b64eabc9542b77de623267b9751a))
+- **aap**: update core data model for simplified protocol ([e57ab8d](https://github.com/urmzd/agent-artifact-protocol/commit/e57ab8df54947f57c13544e45a02e9f001fd3c87))
+- **schema**: simplify envelope types and remove obsolete fields ([13bff2e](https://github.com/urmzd/agent-artifact-protocol/commit/13bff2e5fc5eaf093f3fc4ed63338260735006dc))
+- **benches**: rename diff operations to edit ([1e3071d](https://github.com/urmzd/agent-artifact-protocol/commit/1e3071dab457cd78ae4d7a35c71693b16e38f104))
+- **python**: update envelope terminology to synthesize/edit ([7c5c5e1](https://github.com/urmzd/agent-artifact-protocol/commit/7c5c5e11d9445a466491620a20714c180e76921f))
+- **schema**: remove obsolete schema definitions ([a55e50b](https://github.com/urmzd/agent-artifact-protocol/commit/a55e50b4278b8f88365b7f4f1dce08cf0ca0ed5d))
+- **schema**: update artifact-envelope with new operation types ([1e78c01](https://github.com/urmzd/agent-artifact-protocol/commit/1e78c013d78d7d8259152b03c4f6d62d7434acc6))
+- **evals**: align Python implementation with simplified protocol ([b2bca0f](https://github.com/urmzd/agent-artifact-protocol/commit/b2bca0ffcd592a9d844be46c5dc34f74fe76e501))
+- **ffi**: update FFI bindings for simplified protocol ([6b41555](https://github.com/urmzd/agent-artifact-protocol/commit/6b415557a0d9e34d8d229ec669275cb72806513c))
+- **store**: align store layer with simplified protocol ([7c58d61](https://github.com/urmzd/agent-artifact-protocol/commit/7c58d611bfeaa5e6099d2653294f5b696533e950))
+- **markers**: update resolution for unified target marker format ([a2a09c8](https://github.com/urmzd/agent-artifact-protocol/commit/a2a09c863e6350804ced7bed7536edc993d95d7b))
+- **aap**: simplify protocol types to four envelope names and target addressing ([c87193e](https://github.com/urmzd/agent-artifact-protocol/commit/c87193e5026c34d9ade32a2074fd05c9db5534f1))
+
+### Miscellaneous
+
+- **evals**: add evaluation experiments 014-069 ([9b64ed3](https://github.com/urmzd/agent-artifact-protocol/commit/9b64ed30cfb5808d77284c08fa9efa4385e444c4))
+- **evals**: add evaluation experiments 002-013 and update 001 ([eaf2809](https://github.com/urmzd/agent-artifact-protocol/commit/eaf28095298ec4c31df2b6517f08be0658635c85))
+- **evals**: regenerate experiment 001 outputs and metrics ([8e3af0b](https://github.com/urmzd/agent-artifact-protocol/commit/8e3af0b2b99d4d7d91b5a7d4a26036968ed8c44e))
+- **evals**: update AAP prompt templates across all experiments ([28bd38a](https://github.com/urmzd/agent-artifact-protocol/commit/28bd38a61d8136997b4043505c81804ff2b42628))
+- **evals**: regenerate evaluation outputs for html-dashboard experiment ([4854180](https://github.com/urmzd/agent-artifact-protocol/commit/4854180edf54c1bb44b55b91fac55f5e7503ff0f))
+- **python**: rebuild AAP extension for updated protocol ([1758250](https://github.com/urmzd/agent-artifact-protocol/commit/17582509b878de1fe02d46007c74acf1aa2279db))
+- **benches**: rename diff operations to edit ([9c5b6b7](https://github.com/urmzd/agent-artifact-protocol/commit/9c5b6b71c473a39a5f4aa0d46352acabd8523eea))
+- **evals**: remove deprecated AAP section marker guidance ([1032b94](https://github.com/urmzd/agent-artifact-protocol/commit/1032b94f0aae572bf3e3176504ff49428da48e62))
+- **evals**: update evaluation data for protocol changes ([34c3d46](https://github.com/urmzd/agent-artifact-protocol/commit/34c3d461b842970b4b5e94801ade9a895b436eb9))
+- **deps**: update Cargo.lock for protocol refactor ([1350a40](https://github.com/urmzd/agent-artifact-protocol/commit/1350a4083eace3f00ce3e6c3151ad2266467cdec))
+- **bench**: update benchmarks for protocol changes ([5fbe35d](https://github.com/urmzd/agent-artifact-protocol/commit/5fbe35d76906a4fc4e18a44b1e166e725916fc12))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.6.0...v0.7.0)
+
+
 ## 0.6.0 (2026-04-03)
 
 ### Breaking Changes

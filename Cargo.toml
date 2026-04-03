@@ -1,6 +1,6 @@
 [package]
 name = "aap"
-version = "0.6.0"
+version = "0.7.0"
 edition = "2021"
 description = "Agent-Artifact Protocol — token-efficient artifact generation, updates, and streaming for LLMs"
 license = "Apache-2.0"
