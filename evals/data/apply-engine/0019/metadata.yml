@@ -1,0 +1,13 @@
+case_num: 19
+category: html-dashboard
+variant: dashboard for server monitoring
+format: text/html
+extension: .html
+filename: dashboard.html
+model: gemma4
+host: http://localhost:11434
+generated_at: 2026-04-03T03:38:40.259192+00:00
+artifact_bytes: 8060
+sections_expected: [nav, stats, content, footer]
+sections_found: [nav, stats, content]
+envelope_files: [diff-delete.jsonl, diff-multi.jsonl, diff-replace.jsonl, full.jsonl, section-multi.jsonl, section-single.jsonl, template-fill.jsonl]
