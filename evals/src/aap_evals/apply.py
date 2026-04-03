@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import re
 
-from .markers import markers_for, marker_style
+from .markers import markers_for
 
 # Try Rust FFI, fall back to pure Python
 try:
