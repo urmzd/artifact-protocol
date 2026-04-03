@@ -9,9 +9,9 @@
 | Prompt | Chars | ~Tokens |
 |---|---|---|
 | Base system | 94 | 23 |
-| AAP init system | 247 | 61 |
-| AAP maintain system | 857 | 214 |
-| **Protocol overhead** | | **~252 tokens** |
+| AAP init system | 230 | 57 |
+| AAP maintain system | 383 | 95 |
+| **Protocol overhead** | | **~129 tokens** |
 
 ## Turns
 
