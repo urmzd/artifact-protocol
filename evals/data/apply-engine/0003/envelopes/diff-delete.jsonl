@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0003","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"            text-align: center;"}}]}
-{"protocol":"aap/0.1","id":"artifact-0003","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                    <small>Review required immediately</small>"}}]}
