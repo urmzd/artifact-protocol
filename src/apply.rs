@@ -436,7 +436,7 @@ mod tests {
 
     #[test]
     fn test_apply_section_update() {
-        let base = "before\n<!-- section:stats -->\nold stats\n<!-- /section:stats -->\nafter";
+        let base = "before\n<aap:section id=\"stats\">\nold stats\n</aap:section>\nafter";
         let updates = vec![SectionUpdate {
             id: "stats".to_string(),
             content: "new stats".to_string(),
@@ -449,7 +449,7 @@ mod tests {
 
     #[test]
     fn test_apply_section_update_python() {
-        let base = "import os\n# region imports\nold imports\n# endregion imports\ncode";
+        let base = "import os\n<aap:section id=\"imports\">\nold imports\n</aap:section>\ncode";
         let updates = vec![SectionUpdate {
             id: "imports".to_string(),
             content: "import sys\nimport json".to_string(),
@@ -462,7 +462,7 @@ mod tests {
 
     #[test]
     fn test_apply_section_update_javascript() {
-        let base = "const a = 1;\n// #region utils\nold utils\n// #endregion utils\nconst b = 2;";
+        let base = "const a = 1;\n<aap:section id=\"utils\">\nold utils\n</aap:section>\nconst b = 2;";
         let updates = vec![SectionUpdate {
             id: "utils".to_string(),
             content: "function helper() {}".to_string(),
@@ -493,20 +493,20 @@ mod tests {
     #[test]
     fn test_assemble_manifest() {
         let skeleton =
-            "<html><!-- section:nav --><!-- /section:nav --><main><!-- section:body --><!-- /section:body --></main></html>";
+            "<html><aap:section id=\"nav\"></aap:section><main><aap:section id=\"body\"></aap:section></main></html>";
         let mut sections = HashMap::new();
         sections.insert("nav".to_string(), "<nav>Home</nav>".to_string());
         sections.insert("body".to_string(), "<h1>Hello</h1>".to_string());
         let result = assemble_manifest(skeleton, &sections, "text/html", None).unwrap();
         assert!(result.contains("<nav>Home</nav>"));
         assert!(result.contains("<h1>Hello</h1>"));
-        assert!(result.contains("<!-- section:nav -->"));
-        assert!(result.contains("<!-- /section:body -->"));
+        assert!(result.contains("<aap:section id=\"nav\">"));
+        assert!(result.contains("</aap:section>"));
     }
 
     #[test]
     fn test_assemble_manifest_python() {
-        let skeleton = "# region header\n# endregion header\n# region body\n# endregion body";
+        let skeleton = "<aap:section id=\"header\"></aap:section>\n<aap:section id=\"body\"></aap:section>";
         let mut sections = HashMap::new();
         sections.insert("header".to_string(), "import os".to_string());
         sections.insert("body".to_string(), "print('hello')".to_string());
@@ -518,7 +518,7 @@ mod tests {
 
     #[test]
     fn test_diff_with_section_target_python() {
-        let base = "# region config\nold_value = 1\n# endregion config\ncode";
+        let base = "<aap:section id=\"config\">\nold_value = 1\n</aap:section>\ncode";
         let ops = vec![DiffOp {
             op: OpType::Replace,
             target: Target {
