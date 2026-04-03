@@ -1,7 +1,7 @@
 """Deterministic envelope generation from artifact content.
 
 Envelopes are derived programmatically (no LLM) to guarantee correctness —
-edit search targets are real substrings, section IDs match actual markers.
+edit targets reference actual <aap:target id="..."> markers.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ import json
 import re
 from typing import Any
 
-from .markers import markers_for
+from .markers import extract_target_content
 
 
 def make_envelope(
@@ -27,69 +27,56 @@ def make_envelope(
     }
 
 
-# ── Edit targets ───────────────────────────────────────────────────────────
-
-
-def _extract_edit_targets(content: str, count: int = 8) -> list[str]:
-    """Pick non-empty, non-marker lines as edit search targets."""
-    candidates = []
-    for line in content.split("\n"):
-        stripped = line.strip()
-        if len(stripped) < 10 or len(stripped) > 200:
-            continue
-        if "section:" in stripped or "#region" in stripped or "#endregion" in stripped:
-            continue
-        if "region " in stripped and stripped.startswith("#"):
-            continue
-        if stripped in ("{", "}", "[", "]", "(", ")", "};", "],"):
-            continue
-        candidates.append(line.rstrip("\n"))
-
-    if not candidates:
-        return []
-    step = max(1, len(candidates) // count)
-    return [candidates[i] for i in range(0, len(candidates), step)][:count]
+# ── Edit helpers ───────────────────────────────────────────────────────────
 
 
 def _mutate_text(target: str) -> str:
-    """Create a deterministic replacement for an edit target."""
+    """Create a deterministic replacement for target content."""
     mutated = re.sub(r"\d+", lambda m: str(int(m.group()) + 42), target)
     if mutated != target:
         return mutated
     h = hashlib.md5(target.encode()).hexdigest()[:8]
-    return target.replace(target[:5], f"UPD{h}_")
+    return f"UPD{h}_{target}"
 
 
 # ── Edit envelopes (id-based targeting) ────────────────────────────────────
 
 
-def _edit_replace(content: str, aid: str, fmt: str) -> list[dict]:
-    targets = _extract_edit_targets(content, 4)
-    return [
-        make_envelope(aid, 2 + i, "edit", fmt, [
-            {"op": "replace", "target": {"type": "id", "value": t}, "content": _mutate_text(t)},
-        ])
-        for i, t in enumerate(targets)
-    ]
+def _edit_replace(content: str, aid: str, fmt: str, section_ids: list[str]) -> list[dict]:
+    """Generate replace operations targeting actual marker IDs."""
+    envs = []
+    for i, sid in enumerate(section_ids[:4]):
+        sc = extract_target_content(content, sid, fmt)
+        if sc is None:
+            continue
+        envs.append(make_envelope(aid, 2 + i, "edit", fmt, [
+            {"op": "replace", "target": {"type": "id", "value": sid}, "content": _mutate_text(sc.strip())},
+        ]))
+    return envs
 
 
-def _edit_delete(content: str, aid: str, fmt: str) -> list[dict]:
-    targets = _extract_edit_targets(content, 6)
-    return [
-        make_envelope(aid, 10 + i, "edit", fmt, [
-            {"op": "delete", "target": {"type": "id", "value": t}},
-        ])
-        for i, t in enumerate(targets[-2:])
-    ]
+def _edit_delete(content: str, aid: str, fmt: str, section_ids: list[str]) -> list[dict]:
+    """Generate delete operations targeting actual marker IDs."""
+    envs = []
+    for i, sid in enumerate(section_ids[-2:]):
+        sc = extract_target_content(content, sid, fmt)
+        if sc is None:
+            continue
+        envs.append(make_envelope(aid, 10 + i, "edit", fmt, [
+            {"op": "delete", "target": {"type": "id", "value": sid}},
+        ]))
+    return envs
 
 
-def _edit_multi(content: str, aid: str, fmt: str) -> list[dict]:
-    targets = _extract_edit_targets(content, 8)
-    if len(targets) < 3:
+def _edit_multi(content: str, aid: str, fmt: str, section_ids: list[str]) -> list[dict]:
+    """Generate multi-op replace targeting actual marker IDs."""
+    valid = [(sid, extract_target_content(content, sid, fmt)) for sid in section_ids]
+    valid = [(sid, sc) for sid, sc in valid if sc is not None]
+    if len(valid) < 3:
         return []
     ops = [
-        {"op": "replace", "target": {"type": "id", "value": t}, "content": _mutate_text(t)}
-        for t in targets[:3]
+        {"op": "replace", "target": {"type": "id", "value": sid}, "content": _mutate_text(sc.strip()[:100])}
+        for sid, sc in valid[:3]
     ]
     return [make_envelope(aid, 20, "edit", fmt, ops)]
 
@@ -165,14 +152,16 @@ def generate_all_envelopes(
         if envs:
             result["edit-pointer.jsonl"] = envs
     else:
-        envs = _edit_replace(content, artifact_id, fmt)
-        if envs:
-            result["edit-replace.jsonl"] = envs
-        envs = _edit_delete(content, artifact_id, fmt)
-        if envs:
-            result["edit-delete.jsonl"] = envs
-        envs = _edit_multi(content, artifact_id, fmt)
-        if envs:
-            result["edit-multi.jsonl"] = envs
+        valid_sids = [s for s in section_ids if extract_target_content(content, s, fmt) is not None]
+        if valid_sids:
+            envs = _edit_replace(content, artifact_id, fmt, valid_sids)
+            if envs:
+                result["edit-replace.jsonl"] = envs
+            envs = _edit_delete(content, artifact_id, fmt, valid_sids)
+            if envs:
+                result["edit-delete.jsonl"] = envs
+            envs = _edit_multi(content, artifact_id, fmt, valid_sids)
+            if envs:
+                result["edit-multi.jsonl"] = envs
 
     return result
