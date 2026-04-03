@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "project-configuration",
+  "version": 2,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "ruff-config"
+      },
+      "content": "line-length = 88\nselect = [\"E\", \"F\", \"I\", \"UP\", \"B\"]\ntarget-version = \"py312\""
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+<aap:target id="project-configuration">
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+<aap:target id="project-metadata">
+name = "dataforge"
+version = "0.1.0"
+description = "A powerful library for data transformation"
+authors = [{ name = "DataForge Maintainers", email = "maintainers@dataforge.io" }]
+license = "MIT"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+</aap:target>
+
+<aap:target id="dependencies">    "httpx>=0.24.0",
+    "polars>=0.19.0",
+    "pyarrow>=13.0.0",
+]
+</aap:target>
+
+[project.optional-dependencies]
+<aap:target id="optional-dependencies">dev = ["pytest", "ruff", "mypy"]
+docs = ["mkdocs", "mkdocstrings[python]"]
+perf = ["polars>=0.19.0", "pyarrow>=13.0.0"]
+</aap:target>
+
+[project.scripts]
+<aap:target id="entry-points">
+dataforge = "dataforge.cli:main"
+</aap:target>
+
+[tool.ruff]
+<aap:target id="ruff-config">
+line-length = 88
+select = ["E", "F", "I", "UP", "B"]
+</aap:target>
+
+[tool.mypy]
+<aap:target id="mypy-config">
+strict = true
+</aap:target>
+
+[tool.pytest.ini_options]
+<aap:target id="pytest-config">
+testpaths = ["tests"]
+markers = ["slow: marks tests as slow"]
+</aap:target>
+</aap:target>
