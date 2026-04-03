@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "rust-data-structures",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "trie"
+      },
+      "content": "    pub fn count_prefix(&self, prefix: &str) -> usize {\n        let mut curr = &self.root;\n        for c in prefix.chars() {\n            if let Some(node) = curr.children.get(&c) {\n                curr = node;\n            } else {\n                return 0;\n            }\n        }\n        self.count_recursive(curr)\n    }\n\n    fn count_recursive(&self, node: &TrieNode) -> usize {\n        let mut count = if node.is_end { 1 } else { 0 };\n        for child in node.children.values() {\n            count += self.count_recursive(child);\n        }\n        count\n    }\n"
+    }
+  ]
+}

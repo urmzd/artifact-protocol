@@ -1,0 +1,22 @@
+{
+  "protocol": "aap/0.1",
+  "id": "rust-data-structures",
+  "version": 1,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "lru-cache"
+      },
+      "content": "    pub fn get(&mut self, key: &K) -> Option<&V> {\n        self.map.get(key).map(|(v, _)| v)\n    }\n\n    pub fn get_or_insert<F>(&mut self, key: K, f: F) -> &V\n    where\n        F: FnOnce() -> V,\n        K: Clone,\n    {\n        if self.map.contains_key(&key) {\n            return self.get(&key).unwrap();\n        }\n        let value = f();\n        self.put(key.clone(), value);\n        self.get(&key).unwrap()\n    }\n\n    pub fn put(&mut self, key: K, value: V) {"
+    }
+  ]
+}

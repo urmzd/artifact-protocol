@@ -1,0 +1,276 @@
+{
+  "experiment_id": "043-rust-data-structures",
+  "model": "gemini-3.1-flash-lite-preview",
+  "provider": "google",
+  "timestamp": "2026-04-03T07:22:45.782263+00:00",
+  "format": "text/x-rust",
+  "base_turn0": {
+    "input_tokens": 118,
+    "output_tokens": 1506,
+    "latency_ms": 6645,
+    "artifact_bytes": 4344,
+    "ttft_ms": 0,
+    "ttlt_ms": 5472,
+    "median_itl_ms": 85.86
+  },
+  "aap_turn0": {
+    "input_tokens": 457,
+    "output_tokens": 973,
+    "latency_ms": 5462,
+    "artifact_bytes": 2923,
+    "ttft_ms": 0,
+    "ttlt_ms": 3895,
+    "median_itl_ms": 101.6
+  },
+  "default_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add a 'get_or_insert' method to the LRU Cache that takes a key and a closure, re",
+        "input_tokens": 1660,
+        "output_tokens": 258,
+        "latency_ms": 1554,
+        "output_bytes": 693,
+        "ttft_ms": 0,
+        "ttlt_ms": 896,
+        "median_itl_ms": 57.88,
+        "failed": false,
+        "failure_reason": ""
+      },
+      {
+        "turn": 2,
+        "edit": "Rewrite the Trie to support wildcard matching where '?' matches any single chara",
+        "input_tokens": 1941,
+        "output_tokens": 490,
+        "latency_ms": 2845,
+        "output_bytes": 1753,
+        "ttft_ms": 0,
+        "ttlt_ms": 2055,
+        "median_itl_ms": 88.12,
+        "failed": false,
+        "failure_reason": ""
+      },
+      {
+        "turn": 3,
+        "edit": "Add a new 'count_prefix' method to the Trie that returns how many inserted words",
+        "input_tokens": 2454,
+        "output_tokens": 427,
+        "latency_ms": 2437,
+        "output_bytes": 1301,
+        "ttft_ms": 0,
+        "ttlt_ms": 1529,
+        "median_itl_ms": 93.74,
+        "failed": false,
+        "failure_reason": ""
+      }
+    ],
+    "total_input_tokens": 6055,
+    "total_output_tokens": 1175,
+    "total_latency_ms": 6836
+  },
+  "aap_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add a 'get_or_insert' method to the LRU Cache that takes a key and a closure, re",
+        "input_tokens": 2117,
+        "output_tokens": 242,
+        "latency_ms": 1731,
+        "output_bytes": 2612,
+        "ttft_ms": 0,
+        "ttlt_ms": 3,
+        "median_itl_ms": 3.22,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      },
+      {
+        "turn": 2,
+        "edit": "Rewrite the Trie to support wildcard matching where '?' matches any single chara",
+        "input_tokens": 2015,
+        "output_tokens": 1178,
+        "latency_ms": 4990,
+        "output_bytes": 3552,
+        "ttft_ms": 0,
+        "ttlt_ms": 1,
+        "median_itl_ms": 1.35,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "synthesize"
+      },
+      {
+        "turn": 3,
+        "edit": "Add a new 'count_prefix' method to the Trie that returns how many inserted words",
+        "input_tokens": 2238,
+        "output_tokens": 241,
+        "latency_ms": 1669,
+        "output_bytes": 4116,
+        "ttft_ms": 0,
+        "ttlt_ms": 2,
+        "median_itl_ms": 2.51,
+        "failed": false,
+        "failure_reason": "",
+        "envelope_parsed": true,
+        "apply_succeeded": true,
+        "envelope_name": "edit"
+      }
+    ],
+    "total_input_tokens": 6370,
+    "total_output_tokens": 1661,
+    "total_latency_ms": 8390,
+    "envelope_parse_rate": 1.0,
+    "apply_success_rate": 1.0
+  },
+  "comparison": {
+    "output_token_savings_pct": -41.4,
+    "input_token_savings_pct": -5.2,
+    "latency_savings_pct": -22.7
+  },
+  "token_table": {
+    "turns": [
+      {
+        "turn": 0,
+        "base_input": 118,
+        "base_output": 1506,
+        "base_latency_ms": 6645,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 5472,
+        "base_median_itl_ms": 85.86,
+        "aap_input": 457,
+        "aap_output": 973,
+        "aap_latency_ms": 5462,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 3895,
+        "aap_median_itl_ms": 101.6
+      },
+      {
+        "turn": 1,
+        "base_input": 1660,
+        "base_output": 258,
+        "base_latency_ms": 1554,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 896,
+        "base_median_itl_ms": 57.88,
+        "aap_input": 2117,
+        "aap_output": 242,
+        "aap_latency_ms": 1731,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 3,
+        "aap_median_itl_ms": 3.22,
+        "envelope_name": "edit",
+        "apply_ok": true
+      },
+      {
+        "turn": 2,
+        "base_input": 1941,
+        "base_output": 490,
+        "base_latency_ms": 2845,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 2055,
+        "base_median_itl_ms": 88.12,
+        "aap_input": 2015,
+        "aap_output": 1178,
+        "aap_latency_ms": 4990,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 1,
+        "aap_median_itl_ms": 1.35,
+        "envelope_name": "synthesize",
+        "apply_ok": true
+      },
+      {
+        "turn": 3,
+        "base_input": 2454,
+        "base_output": 427,
+        "base_latency_ms": 2437,
+        "base_ttft_ms": 0,
+        "base_ttlt_ms": 1529,
+        "base_median_itl_ms": 93.74,
+        "aap_input": 2238,
+        "aap_output": 241,
+        "aap_latency_ms": 1669,
+        "aap_ttft_ms": 0,
+        "aap_ttlt_ms": 2,
+        "aap_median_itl_ms": 2.51,
+        "envelope_name": "edit",
+        "apply_ok": true
+      }
+    ],
+    "totals": {
+      "base_input": 6173,
+      "base_output": 2681,
+      "base_combined": 8854,
+      "aap_input": 6827,
+      "aap_output": 2634,
+      "aap_combined": 9461,
+      "base_latency_ms": 13481,
+      "aap_latency_ms": 13852,
+      "output_savings_pct": 1.8,
+      "input_delta_pct": 10.6,
+      "combined_savings_pct": -6.9,
+      "latency_savings_pct": -2.8
+    }
+  },
+  "quality": {
+    "per_turn": [
+      {
+        "turn": 0,
+        "sequence_similarity": 0.2144,
+        "token_f1": 0.6449,
+        "base_char_count": 4344,
+        "aap_char_count": 2754,
+        "char_delta_pct": -36.6,
+        "lines_added": 50,
+        "lines_removed": 104,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 1,
+        "sequence_similarity": 0.2066,
+        "token_f1": 0.2563,
+        "base_char_count": 693,
+        "aap_char_count": 2443,
+        "char_delta_pct": 252.5,
+        "lines_added": 85,
+        "lines_removed": 12,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 2,
+        "sequence_similarity": 0.1667,
+        "token_f1": 0.3581,
+        "base_char_count": 1753,
+        "aap_char_count": 3383,
+        "char_delta_pct": 93.0,
+        "lines_added": 103,
+        "lines_removed": 27,
+        "rouge_l": null,
+        "bleu": null
+      },
+      {
+        "turn": 3,
+        "sequence_similarity": 0.0796,
+        "token_f1": 0.3921,
+        "base_char_count": 1301,
+        "aap_char_count": 3947,
+        "char_delta_pct": 203.4,
+        "lines_added": 136,
+        "lines_removed": 41,
+        "rouge_l": null,
+        "bleu": null
+      }
+    ],
+    "mean_sequence_similarity": 0.1668,
+    "mean_token_f1": 0.4128,
+    "mean_rouge_l": null,
+    "mean_bleu": null,
+    "judge_comparisons": null,
+    "mean_base_judge": null,
+    "mean_aap_judge": null
+  }
+}
