@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.8.0 (2026-04-03)
+
+### Features
+
+- **runner**: create abstraction for experiment runners ([268d8f9](https://github.com/urmzd/agent-artifact-protocol/commit/268d8f97d07c343dda744f9a86bd303eb8eb2152))
+- **eval**: introduce models and metrics system ([b6c471e](https://github.com/urmzd/agent-artifact-protocol/commit/b6c471e75b89e70eabae88d3cf48345e3184d1f1))
+
+### Documentation
+
+- **evals**: add experiment results summary ([917af40](https://github.com/urmzd/agent-artifact-protocol/commit/917af40870ad3990503394e55ce501cf7f194d13))
+
+### Refactoring
+
+- **cli**: delegate to runner and eval services ([1be6d9d](https://github.com/urmzd/agent-artifact-protocol/commit/1be6d9d7c5d7b51912af18e155bdc7ef0f4d01cb))
+
+### Miscellaneous
+
+- **evals**: remove stale metrics from archived experiments ([dc749c9](https://github.com/urmzd/agent-artifact-protocol/commit/dc749c9508f8518b5711e4ec703b1f1c6b510788))
+- **evals**: update experiment metrics and outputs ([7f35ef9](https://github.com/urmzd/agent-artifact-protocol/commit/7f35ef903f27afdba89a04d7a18c489b2e4563ac))
+- **evals**: add evaluation results for all 88 experiments ([5a02d72](https://github.com/urmzd/agent-artifact-protocol/commit/5a02d727ad56b07ffa3c8dc56adab59f6a5baf09))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.7.0...v0.8.0)
+
+
 ## 0.7.0 (2026-04-03)
 
 ### Breaking Changes
