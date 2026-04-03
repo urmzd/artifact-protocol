@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:aap="https://aap.example.com/schema">
-  <channel>
-    <aap:target id="channel-metadata"><itunes:category text="Artificial Intelligence"/></aap:target>
-
-    <aap:target id="items-list"><category>Artificial Intelligence</category></aap:target>
-  </channel>
-</rss>
