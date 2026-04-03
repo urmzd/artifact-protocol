@@ -58,7 +58,7 @@ def generate(
     from .agents import create_model, generate_artifact
     from .categories import CATEGORIES
     from .envelopes import generate_all_envelopes
-    from .markers import extract_section_content
+    from .markers import extract_target_content
 
     llm = create_model(provider, model, host, fallback)
 
@@ -113,7 +113,7 @@ def generate(
 
         valid_sections = [
             s for s in cat.sections
-            if extract_section_content(content, s, cat.fmt) is not None
+            if extract_target_content(content, s, cat.fmt) is not None
         ]
 
         # metadata.yml

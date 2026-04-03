@@ -1,4 +1,8 @@
-"""Spec-compliant AAP Pydantic models — mirrors ../src/aap.rs."""
+"""Spec-compliant AAP Pydantic models — mirrors ../src/aap.rs.
+
+Four envelope types: synthesize (full generation), edit (targeted changes),
+handle (lightweight reference), handle_result (response from handle interaction).
+"""
 
 from __future__ import annotations
 
@@ -7,55 +11,49 @@ from typing import Annotated, Literal, Union
 from pydantic import BaseModel, Field
 
 
-# ── Content item types (per name discriminator) ───────────────────────────
+# ── Target definitions ────────────────────────────────────────────────────
 
 
-class DiffTarget(BaseModel):
-    """Addressing mode for diff operations. Exactly one field should be set."""
+class TargetDef(BaseModel):
+    """Named target in an artifact."""
 
-    search: str | None = None
-    section: str | None = None
-    lines: list[int] | None = None
-    offsets: list[int] | None = None
-    pointer: str | None = None
+    id: str
+    label: str | None = None
+
+
+class IdTarget(BaseModel):
+    """Target an <aap:target id="..."> marker by ID."""
+
+    type: Literal["id"]
+    value: str
+
+
+class PointerTarget(BaseModel):
+    """Target a value by JSON Pointer (RFC 6901)."""
+
+    type: Literal["pointer"]
+    value: str
+
+
+DiffTarget = Annotated[
+    Union[IdTarget, PointerTarget],
+    Field(discriminator="type"),
+]
 
 
 class DiffOp(BaseModel):
-    """A single diff operation."""
+    """A single edit operation."""
 
     op: Literal["replace", "insert_before", "insert_after", "delete"]
     target: DiffTarget
     content: str | None = None
 
 
-class SectionDef(BaseModel):
-    """Section definition within a full envelope."""
-
-    id: str
-    label: str | None = None
-    start_marker: str | None = None
-    end_marker: str | None = None
-
-
-class SectionUpdate(BaseModel):
-    """Replace a named section's content."""
-
-    id: str
-    content: str
-
-
-class FullContentItem(BaseModel):
-    """Content item for name=full."""
+class SynthesizeContentItem(BaseModel):
+    """Content item for name=synthesize."""
 
     body: str
-    sections: list[SectionDef] | None = None
-
-
-class TemplateContentItem(BaseModel):
-    """Content item for name=template."""
-
-    template: str
-    bindings: dict[str, str]
+    targets: list[TargetDef] | None = None
 
 
 # ── Operation metadata ────────────────────────────────────────────────────
@@ -74,51 +72,97 @@ class OperationMeta(BaseModel):
 # ── Typed envelope variants ───────────────────────────────────────────────
 
 
-class FullEnvelope(BaseModel):
-    """Envelope for name=full."""
+class SynthesizeEnvelope(BaseModel):
+    """Envelope for name=synthesize (full artifact generation)."""
 
     protocol: Literal["aap/0.1"] = "aap/0.1"
     id: str
     version: int
-    name: Literal["full"]
+    name: Literal["synthesize"]
     operation: OperationMeta = Field(default_factory=OperationMeta)
-    content: list[FullContentItem]
+    content: list[SynthesizeContentItem]
 
 
-class DiffEnvelope(BaseModel):
-    """Envelope for name=diff."""
+class EditEnvelope(BaseModel):
+    """Envelope for name=edit (targeted changes via id/pointer targeting)."""
 
     protocol: Literal["aap/0.1"] = "aap/0.1"
     id: str
     version: int
-    name: Literal["diff"]
+    name: Literal["edit"]
     operation: OperationMeta = Field(default_factory=OperationMeta)
     content: list[DiffOp]
 
 
-class SectionEnvelope(BaseModel):
-    """Envelope for name=section."""
+# ── Handle types ──────────────────────────────────────────────────────────
+
+
+class HandleContentItem(BaseModel):
+    """Content item for name=handle."""
+
+    sections: list[str]
+    token_count: int | None = None
+    state: str | None = None
+
+
+class HandleEnvelope(BaseModel):
+    """Envelope for name=handle (lightweight artifact reference)."""
 
     protocol: Literal["aap/0.1"] = "aap/0.1"
     id: str
     version: int
-    name: Literal["section"]
+    name: Literal["handle"]
     operation: OperationMeta = Field(default_factory=OperationMeta)
-    content: list[SectionUpdate]
+    content: list[HandleContentItem]
 
 
-class TemplateEnvelope(BaseModel):
-    """Envelope for name=template."""
+# ── Handle result types ───────────────────────────────────────────────────
+
+
+class TextResult(BaseModel):
+    """Free-form text response from handle interaction."""
+
+    type: Literal["text"]
+    body: str
+
+
+class EditResult(BaseModel):
+    """Edit confirmation from handle interaction."""
+
+    type: Literal["edit"]
+    status: str
+    changes: list[dict] = Field(default_factory=list)
+
+
+class ErrorResult(BaseModel):
+    """Error response from handle interaction."""
+
+    type: Literal["error"]
+    code: str
+    message: str
+
+
+HandleResultContentItem = Annotated[
+    Union[TextResult, EditResult, ErrorResult],
+    Field(discriminator="type"),
+]
+
+
+class HandleResultEnvelope(BaseModel):
+    """Envelope for name=handle_result (response from handle interaction)."""
 
     protocol: Literal["aap/0.1"] = "aap/0.1"
     id: str
     version: int
-    name: Literal["template"]
+    name: Literal["handle_result"]
     operation: OperationMeta = Field(default_factory=OperationMeta)
-    content: list[TemplateContentItem]
+    content: list[HandleResultContentItem]
+
+
+# ── Envelope union ────────────────────────────────────────────────────────
 
 
 Envelope = Annotated[
-    Union[FullEnvelope, DiffEnvelope, SectionEnvelope, TemplateEnvelope],
+    Union[SynthesizeEnvelope, EditEnvelope, HandleEnvelope, HandleResultEnvelope],
     Field(discriminator="name"),
 ]

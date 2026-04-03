@@ -13,6 +13,7 @@ dependencies = [
     "aiohttp>=3.11",
     "maturin>=1.8",
     "cffi",
+    "tenacity>=9.0",
 ]
 
 [project.scripts]

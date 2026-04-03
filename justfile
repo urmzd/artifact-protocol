@@ -10,7 +10,7 @@ bench:
 
 # Build Rust FFI and install into evals venv
 bind:
-    cd evals && uv sync && uv run maturin develop --manifest-path ../Cargo.toml -F python
+    cd evals && uv sync && uv run maturin develop --manifest-path ../Cargo.toml -F python && cp .venv/lib/python3.12/site-packages/aap/aap.cpython-*-darwin.so src/aap_evals/ 2>/dev/null || true
 
 # Generate benchmark corpus (artifacts + envelopes via LLM)
 generate count="0" model="" id="" provider="google" fallback="":
