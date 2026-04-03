@@ -261,3 +261,53 @@ pub struct ChunkFrame {
 fn is_false(b: &bool) -> bool {
     !b
 }
+
+/// Result status for edit operations.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum ResultStatus {
+    Applied,
+    Rejected,
+    Partial,
+    Conflict,
+}
+
+/// Description of a single change within a result.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChangeDescription {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub section_id: Option<String>,
+    pub description: String,
+}
+
+/// Content item for `name: "handle"`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HandleContentItem {
+    pub sections: Vec<SectionDef>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token_count: Option<u64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<ArtifactState>,
+}
+
+/// Content item for `name: "result"`.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ResultContentItem {
+    pub status: ResultStatus,
+    pub mode_used: Name,
+    pub changes: Vec<ChangeDescription>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tokens_used: Option<u64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rejection_reason: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub conflict_detail: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checksum: Option<String>,
+}
