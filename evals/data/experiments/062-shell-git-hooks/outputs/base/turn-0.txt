@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# 1. Check for trailing whitespace
+if git diff --check --cached --exit-code; then
+    echo "Trailing whitespace check passed."
+else
+    echo "Error: Trailing whitespace detected."
+    exit 1
+fi
+
+# 2. Check for large files (>5MB)
+LARGE_FILES=$(git diff --cached --name-only -z | xargs -0 ls -l | awk '$5 > 5242880 {print $9}')
+if [ -n "$LARGE_FILES" ]; then
+    echo "Error: The following files are larger than 5MB:"
+    echo "$LARGE_FILES"
+    exit 1
+fi
+
+# 3. Check for secrets/API keys (using a basic pattern search)
+# Looking for common patterns like AWS keys, private keys, or generic API tokens
+if git diff --cached | grep -qE "(AIza[0-9A-Za-z-_]{35}|xox[baprs]-([0-9a-zA-Z]{10,48})|-----BEGIN RSA PRIVATE KEY-----)"; then
+    echo "Error: Potential secret or API key detected in commit."
+    exit 1
+fi
+
+# 4. Run the project's linter
+# Replace 'npm run lint' with your project's specific command (e.g., flake8, eslint, ruff)
+if npm run lint; then
+    echo "Linting passed."
+else
+    echo "Error: Linting failed."
+    exit 1
+fi
+
+exit 0
