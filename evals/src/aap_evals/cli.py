@@ -274,6 +274,307 @@ def experiment(
     console.print(f"\n[green]Results appended to {output}[/green]")
 
 
+# ── run (conversation benchmark experiments) ──────────────────────────
+
+
+FORMAT_TO_EXT = {
+    "text/html": ".html",
+    "text/x-python": ".py",
+    "application/javascript": ".js",
+    "text/typescript": ".ts",
+    "application/json": ".json",
+    "text/x-yaml": ".yaml",
+    "text/x-rust": ".rs",
+    "text/x-go": ".go",
+    "text/css": ".css",
+    "application/x-sh": ".sh",
+    "text/markdown": ".md",
+    "image/svg+xml": ".svg",
+    "application/toml": ".toml",
+    "text/xml": ".xml",
+    "text/x-java": ".java",
+    "text/x-ruby": ".rb",
+    "application/sql": ".sql",
+}
+
+
+def _parse_experiment_format(readme_path: Path) -> tuple[str, str]:
+    """Extract format and extension from experiment README.md."""
+    text = readme_path.read_text()
+    for line in text.split("\n"):
+        if "**Format:**" in line:
+            # e.g. **Format:** text/html | **Size:** large | **Edits:** 4
+            fmt = line.split("**Format:**")[1].split("|")[0].strip()
+            ext = FORMAT_TO_EXT.get(fmt, ".txt")
+            return fmt, ext
+    return "text/html", ".html"
+
+
+def _find_turn_files(input_dir: Path) -> list[Path]:
+    """Find turn-N.md files sorted by turn number."""
+    turns = sorted(input_dir.glob("turn-*.md"), key=lambda p: int(p.stem.split("-")[1]))
+    return turns
+
+
+@app.command(name="run")
+def run_experiments(
+    experiments_dir: Annotated[Path, typer.Option(help="Experiments directory")] = DATA_DIR / "experiments",
+    provider: Annotated[str, typer.Option(help="LLM provider")] = "ollama",
+    model: Annotated[str, typer.Option(help="Model name")] = "gemma4",
+    host: Annotated[str, typer.Option(help="Ollama host")] = "http://localhost:11434",
+    count: Annotated[int, typer.Option(help="Max experiments (0 = all)")] = 0,
+    experiment_id: Annotated[str, typer.Option("--id", help="Run single experiment by prefix")] = "",
+) -> None:
+    """Run conversation benchmark experiments (base vs AAP flows)."""
+    import time
+    from datetime import datetime, timezone
+
+    from pydantic_ai import Agent
+
+    from .agents import clean_artifact, create_model
+    from .apply import apply_envelope
+    from .schema import Envelope
+
+    llm = create_model(provider, model, host)
+
+    # Find experiment directories
+    exp_dirs = sorted(
+        d for d in experiments_dir.iterdir()
+        if d.is_dir() and not d.name.startswith(".") and d.name != "EXPERIMENT.md"
+        and (d / "README.md").exists()
+    )
+
+    if experiment_id:
+        exp_dirs = [d for d in exp_dirs if d.name.startswith(experiment_id)]
+
+    if count > 0:
+        exp_dirs = exp_dirs[:count]
+
+    if not exp_dirs:
+        console.print("[red]No experiments found.[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"Running {len(exp_dirs)} experiment(s) with [bold]{model}[/bold]\n")
+
+    for exp_dir in exp_dirs:
+        exp_name = exp_dir.name
+        fmt, ext = _parse_experiment_format(exp_dir / "README.md")
+        console.print(f"[bold]{exp_name}[/bold] ({fmt})")
+
+        base_input = exp_dir / "inputs" / "base"
+        aap_input = exp_dir / "inputs" / "aap"
+        base_output = exp_dir / "outputs" / "base"
+        aap_output = exp_dir / "outputs" / "aap"
+        base_output.mkdir(parents=True, exist_ok=True)
+        aap_output.mkdir(parents=True, exist_ok=True)
+
+        # Read prompts
+        base_system = (base_input / "system.md").read_text().strip()
+        init_system = (aap_input / "init-system.md").read_text().strip()
+        maintain_system = (aap_input / "maintain-system.md").read_text().strip()
+        turn_files = _find_turn_files(base_input)
+
+        if not turn_files:
+            console.print("  [yellow]no turn files, skipping[/yellow]")
+            continue
+
+        turn_0_prompt = turn_files[0].read_text().strip()
+        edit_prompts = [(tf.stem, tf.read_text().strip()) for tf in turn_files[1:]]
+
+        metrics: dict = {
+            "experiment_id": exp_name,
+            "model": model,
+            "provider": provider,
+            "seed": 42,
+            "temperature": 0,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "format": fmt,
+        }
+
+        # ── Shared Turn 0 ────────────────────────────────────────────
+        base_agent: Agent[None, str] = Agent(llm, system_prompt=base_system)
+
+        t0 = time.perf_counter()
+        r = base_agent.run_sync(turn_0_prompt)
+        turn0_ms = int((time.perf_counter() - t0) * 1000)
+        turn0_usage = r.usage()
+        shared_artifact = clean_artifact(r.output)
+
+        # Save shared turn 0
+        (base_output / f"turn-0{ext}").write_text(shared_artifact)
+        (aap_output / f"turn-0{ext}").write_text(shared_artifact)
+
+        metrics["shared"] = {
+            "creation_input_tokens": turn0_usage.input_tokens,
+            "creation_output_tokens": turn0_usage.output_tokens,
+            "creation_latency_ms": turn0_ms,
+            "artifact_bytes": len(shared_artifact.encode()),
+        }
+
+        console.print(f"  turn-0: {turn0_usage.output_tokens} out tokens, {turn0_ms}ms")
+
+        # ── Base Flow (growing conversation) ──────────────────────────
+        base_turns = []
+        history = r.all_messages()
+        base_artifact = shared_artifact
+
+        for turn_name, edit_prompt in edit_prompts:
+            t0 = time.perf_counter()
+            r = base_agent.run_sync(edit_prompt, message_history=history)
+            ms = int((time.perf_counter() - t0) * 1000)
+            usage = r.usage()
+            history = r.all_messages()
+            base_artifact = clean_artifact(r.output)
+
+            turn_num = int(turn_name.split("-")[1])
+            (base_output / f"{turn_name}{ext}").write_text(base_artifact)
+
+            base_turns.append({
+                "turn": turn_num,
+                "edit": edit_prompt[:80],
+                "input_tokens": usage.input_tokens,
+                "output_tokens": usage.output_tokens,
+                "latency_ms": ms,
+                "output_bytes": len(base_artifact.encode()),
+            })
+
+            console.print(
+                f"  base {turn_name}: {usage.output_tokens} out, "
+                f"{usage.input_tokens} in, {ms}ms"
+            )
+
+        base_total_in = sum(t["input_tokens"] for t in base_turns)
+        base_total_out = sum(t["output_tokens"] for t in base_turns)
+        base_total_ms = sum(t["latency_ms"] for t in base_turns)
+
+        metrics["default_flow"] = {
+            "system_prompt_tokens": turn0_usage.input_tokens,
+            "per_turn": base_turns,
+            "total_input_tokens": base_total_in,
+            "total_output_tokens": base_total_out,
+            "total_latency_ms": base_total_ms,
+        }
+
+        # ── AAP Flow (stateless dispatch) ─────────────────────────────
+        maintain_agent: Agent[None, Envelope] = Agent(
+            llm,
+            system_prompt=maintain_system,
+            output_type=Envelope,
+        )
+
+        aap_turns = []
+        aap_artifact = shared_artifact
+        version = 1
+        parse_successes = 0
+        apply_successes = 0
+
+        for turn_name, edit_prompt in edit_prompts:
+            turn_num = int(turn_name.split("-")[1])
+            user_msg = (
+                f"## Current Artifact\n\n```\n{aap_artifact}\n```\n\n"
+                f"## Edit Instruction\n\n{edit_prompt}"
+            )
+
+            t0 = time.perf_counter()
+            parsed = False
+            succeeded = False
+            env_name = ""
+            envelope_json = ""
+
+            try:
+                r = maintain_agent.run_sync(user_msg)
+                ms = int((time.perf_counter() - t0) * 1000)
+                usage = r.usage()
+
+                envelope: Envelope = r.output
+                parsed = True
+                parse_successes += 1
+                env_name = envelope.name
+                envelope_json = envelope.model_dump_json(indent=2)
+
+                new_artifact = apply_envelope(
+                    aap_artifact, envelope.name, envelope.content, fmt,
+                )
+                succeeded = True
+                apply_successes += 1
+                aap_artifact = new_artifact
+                version += 1
+
+            except Exception as e:
+                ms = int((time.perf_counter() - t0) * 1000)
+                usage = type("U", (), {"input_tokens": 0, "output_tokens": 0})()
+                console.print(f"  [red]aap {turn_name} failed: {e}[/red]")
+
+            # Save outputs
+            if envelope_json:
+                (aap_output / f"{turn_name}.json").write_text(envelope_json)
+            (aap_output / f"{turn_name}{ext}").write_text(aap_artifact)
+
+            aap_turns.append({
+                "turn": turn_num,
+                "edit": edit_prompt[:80],
+                "input_tokens": usage.input_tokens,
+                "output_tokens": usage.output_tokens,
+                "latency_ms": ms,
+                "output_bytes": len(aap_artifact.encode()),
+                "envelope_parsed": parsed,
+                "apply_succeeded": succeeded,
+                "envelope_name": env_name,
+            })
+
+            status = "[green]ok[/green]" if succeeded else "[red]fail[/red]"
+            console.print(
+                f"  aap  {turn_name}: {usage.output_tokens} out, "
+                f"{usage.input_tokens} in, {ms}ms, {env_name} {status}"
+            )
+
+        num_edits = len(edit_prompts)
+        aap_total_in = sum(t["input_tokens"] for t in aap_turns)
+        aap_total_out = sum(t["output_tokens"] for t in aap_turns)
+        aap_total_ms = sum(t["latency_ms"] for t in aap_turns)
+
+        metrics["aap_flow"] = {
+            "system_prompt_tokens": 0,
+            "per_turn": aap_turns,
+            "total_input_tokens": aap_total_in,
+            "total_output_tokens": aap_total_out,
+            "total_latency_ms": aap_total_ms,
+            "envelope_parse_rate": parse_successes / num_edits if num_edits else 0,
+            "apply_success_rate": apply_successes / num_edits if num_edits else 0,
+        }
+
+        # ── Comparison ────────────────────────────────────────────────
+        out_savings = (
+            100 * (base_total_out - aap_total_out) / base_total_out
+            if base_total_out > 0 else 0
+        )
+        in_savings = (
+            100 * (base_total_in - aap_total_in) / base_total_in
+            if base_total_in > 0 else 0
+        )
+        latency_savings = (
+            100 * (base_total_ms - aap_total_ms) / base_total_ms
+            if base_total_ms > 0 else 0
+        )
+
+        metrics["comparison"] = {
+            "output_token_savings_pct": round(out_savings, 1),
+            "input_token_savings_pct": round(in_savings, 1),
+            "latency_savings_pct": round(latency_savings, 1),
+        }
+
+        # Write metrics
+        (exp_dir / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
+
+        tag = f"[green]{out_savings:.1f}% out savings[/green]" if out_savings > 0 else f"[red]{out_savings:.1f}%[/red]"
+        console.print(
+            f"  [bold]summary:[/bold] base={base_total_out} out | aap={aap_total_out} out | "
+            f"{tag} | parse={parse_successes}/{num_edits} apply={apply_successes}/{num_edits}\n"
+        )
+
+    console.print("[green]Done.[/green]")
+
+
 # ── report ─────────────────────────────────────────────────────────────
 
 
