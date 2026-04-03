@@ -1,0 +1,530 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    <aap:target id="feature-1">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-74.006, 40.7128]},
+      "properties": {
+        "name": "<aap:target id="name-1">New York</aap:target>",
+        "country": "USA",
+        "population": <aap:target id="pop-1">8400000</aap:target>,
+        "timezone": "America/New_York",
+        "elevation_m": 10,
+        "is_capital": false,
+        "continent": "North America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-2">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [139.6917, 35.6895]},
+      "properties": {
+        "name": "<aap:target id="name-2">Tokyo</aap:target>",
+        "country": "Japan",
+        "population": <aap:target id="pop-2">13960000</aap:target>,
+        "timezone": "Asia/Tokyo",
+        "elevation_m": 40,
+        "is_capital": true,
+        "continent": "Asia"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-3">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [2.3522, 48.8566]},
+      "properties": {
+        "name": "<aap:target id="name-3">Paris</aap:target>",
+        "country": "France",
+        "population": <aap:target id="pop-3">2161000</aap:target>,
+        "timezone": "Europe/Paris",
+        "elevation_m": 35,
+        "is_capital": true,
+        "continent": "Europe"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-4">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [151.2093, -33.8688]},
+      "properties": {
+        "name": "<aap:target id="name-4">Sydney</aap:target>",
+        "country": "Australia",
+        "population": <aap:target id="pop-4">5312000</aap:target>,
+        "timezone": "Australia/Sydney",
+        "elevation_m": 3,
+        "is_capital": false,
+        "continent": "Australia"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-5">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-46.6333, -23.5505]},
+      "properties": {
+        "name": "<aap:target id="name-5">São Paulo</aap:target>",
+        "country": "Brazil",
+        "population": <aap:target id="pop-5">12330000</aap:target>,
+        "timezone": "America/Sao_Paulo",
+        "elevation_m": 760,
+        "is_capital": false,
+        "continent": "South America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-6">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [77.1025, 28.7041]},
+      "properties": {
+        "name": "<aap:target id="name-6">Delhi</aap:target>",
+        "country": "India",
+        "population": <aap:target id="pop-6">32941000</aap:target>,
+        "timezone": "Asia/Kolkata",
+        "elevation_m": 213,
+        "is_capital": true,
+        "continent": "Asia"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-7">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-0.1278, 51.5074]},
+      "properties": {
+        "name": "<aap:target id="name-7">London</aap:target>",
+        "country": "UK",
+        "population": <aap:target id="pop-7">8982000</aap:target>,
+        "timezone": "Europe/London",
+        "elevation_m": 11,
+        "is_capital": true,
+        "continent": "Europe"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-8">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [37.6173, 55.7558]},
+      "properties": {
+        "name": "<aap:target id="name-8">Moscow</aap:target>",
+        "country": "Russia",
+        "population": <aap:target id="pop-8">12680000</aap:target>,
+        "timezone": "Europe/Moscow",
+        "elevation_m": 156,
+        "is_capital": true,
+        "continent": "Europe"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-9">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [18.4233, -33.9249]},
+      "properties": {
+        "name": "<aap:target id="name-9">Cape Town</aap:target>",
+        "country": "South Africa",
+        "population": <aap:target id="pop-9">4800000</aap:target>,
+        "timezone": "Africa/Johannesburg",
+        "elevation_m": 25,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-10">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-99.1332, 19.4326]},
+      "properties": {
+        "name": "<aap:target id="name-10">Mexico City</aap:target>",
+        "country": "Mexico",
+        "population": <aap:target id="pop-10">9200000</aap:target>,
+        "timezone": "America/Mexico_City",
+        "elevation_m": 2240,
+        "is_capital": true,
+        "continent": "North America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-11">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [116.4074, 39.9042]},
+      "properties": {
+        "name": "<aap:target id="name-11">Beijing</aap:target>",
+        "country": "China",
+        "population": <aap:target id="pop-11">21540000</aap:target>,
+        "timezone": "Asia/Shanghai",
+        "elevation_m": 44,
+        "is_capital": true,
+        "continent": "Asia"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-12">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [28.0473, -26.2041]},
+      "properties": {
+        "name": "<aap:target id="name-12">Johannesburg</aap:target>",
+        "country": "South Africa",
+        "population": <aap:target id="pop-12">5635000</aap:target>,
+        "timezone": "Africa/Johannesburg",
+        "elevation_m": 1753,
+        "is_capital": false,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-13">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [31.2357, 30.0444]},
+      "properties": {
+        "name": "<aap:target id="name-13">Cairo</aap:target>",
+        "country": "Egypt",
+        "population": <aap:target id="pop-13">10100000</aap:target>,
+        "timezone": "Africa/Cairo",
+        "elevation_m": 23,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-14">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [12.4964, 41.9028]},
+      "properties": {
+        "name": "<aap:target id="name-14">Rome</aap:target>",
+        "country": "Italy",
+        "population": <aap:target id="pop-14">2873000</aap:target>,
+        "timezone": "Europe/Rome",
+        "elevation_m": 21,
+        "is_capital": true,
+        "continent": "Europe"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-15">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-58.3816, -34.6037]},
+      "properties": {
+        "name": "<aap:target id="name-15">Buenos Aires</aap:target>",
+        "country": "Argentina",
+        "population": <aap:target id="pop-15">15000000</aap:target>,
+        "timezone": "America/Argentina/Buenos_Aires",
+        "elevation_m": 25,
+        "is_capital": true,
+        "continent": "South America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-16">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [103.8198, 1.3521]},
+      "properties": {
+        "name": "<aap:target id="name-16">Singapore</aap:target>",
+        "country": "Singapore",
+        "population": <aap:target id="pop-16">5686000</aap:target>,
+        "timezone": "Asia/Singapore",
+        "elevation_m": 15,
+        "is_capital": true,
+        "continent": "Asia"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-17">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [13.4050, 52.5200]},
+      "properties": {
+        "name": "<aap:target id="name-17">Berlin</aap:target>",
+        "country": "Germany",
+        "population": <aap:target id="pop-17">3769000</aap:target>,
+        "timezone": "Europe/Berlin",
+        "elevation_m": 34,
+        "is_capital": true,
+        "continent": "Europe"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-18">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-0.1960, 5.6037]},
+      "properties": {
+        "name": "<aap:target id="name-18">Accra</aap:target>",
+        "country": "Ghana",
+        "population": <aap:target id="pop-18">2514000</aap:target>,
+        "timezone": "Africa/Accra",
+        "elevation_m": 61,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-19">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [100.5018, 13.7563]},
+      "properties": {
+        "name": "<aap:target id="name-19">Bangkok</aap:target>",
+        "country": "Thailand",
+        "population": <aap:target id="pop-19">10539000</aap:target>,
+        "timezone": "Asia/Bangkok",
+        "elevation_m": 1,
+        "is_capital": true,
+        "continent": "Asia"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-20">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-79.3832, 43.6532]},
+      "properties": {
+        "name": "<aap:target id="name-20">Toronto</aap:target>",
+        "country": "Canada",
+        "population": <aap:target id="pop-20">2930000</aap:target>,
+        "timezone": "America/Toronto",
+        "elevation_m": 76,
+        "is_capital": false,
+        "continent": "North America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-21">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [23.7275, 37.9838]},
+      "properties": {
+        "name": "<aap:target id="name-21">Athens</aap:target>",
+        "country": "Greece",
+        "population": <aap:target id="pop-21">664000</aap:target>,
+        "timezone": "Europe/Athens",
+        "elevation_m": 20,
+        "is_capital": true,
+        "continent": "Europe"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-22">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [39.1963, 21.4858]},
+      "properties": {
+        "name": "<aap:target id="name-22">Jeddah</aap:target>",
+        "country": "Saudi Arabia",
+        "population": <aap:target id="pop-22">4697000</aap:target>,
+        "timezone": "Asia/Riyadh",
+        "elevation_m": 12,
+        "is_capital": false,
+        "continent": "Asia"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-23">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-122.4194, 37.7749]},
+      "properties": {
+        "name": "<aap:target id="name-23">San Francisco</aap:target>",
+        "country": "USA",
+        "population": <aap:target id="pop-23">873000</aap:target>,
+        "timezone": "America/Los_Angeles",
+        "elevation_m": 16,
+        "is_capital": false,
+        "continent": "North America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-24">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [32.5599, 15.5007]},
+      "properties": {
+        "name": "<aap:target id="name-24">Khartoum</aap:target>",
+        "country": "Sudan",
+        "population": <aap:target id="pop-24">5274000</aap:target>,
+        "timezone": "Africa/Khartoum",
+        "elevation_m": 381,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-25">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [114.1694, 22.3193]},
+      "properties": {
+        "name": "<aap:target id="name-25">Hong Kong,
+    <aap:target id="feature-26">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [3.3792, 6.5244]},
+      "properties": {
+        "name": "<aap:target id="name-26">Lagos</aap:target>",
+        "country": "Nigeria",
+        "population": <aap:target id="pop-26">15388000</aap:target>,
+        "timezone": "Africa/Lagos",
+        "elevation_m": 41,
+        "is_capital": false,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-27">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-66.9036, 10.4806]},
+      "properties": {
+        "name": "<aap:target id="name-27">Caracas</aap:target>",
+        "country": "Venezuela",
+        "population": <aap:target id="pop-27">2923000</aap:target>,
+        "timezone": "America/Caracas",
+        "elevation_m": 900,
+        "is_capital": true,
+        "continent": "South America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-28">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [18.4233, -33.9249]},
+      "properties": {
+        "name": "<aap:target id="name-28">Nairobi</aap:target>",
+        "country": "Kenya",
+        "population": <aap:target id="pop-28">4397000</aap:target>,
+        "timezone": "Africa/Nairobi",
+        "elevation_m": 1795,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-29">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-74.0721, 4.7110]},
+      "properties": {
+        "name": "<aap:target id="name-29">Bogotá</aap:target>",
+        "country": "Colombia",
+        "population": <aap:target id="pop-29">7743000</aap:target>,
+        "timezone": "America/Bogota",
+        "elevation_m": 2640,
+        "is_capital": true,
+        "continent": "South America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-30">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [47.5769, -18.8792]},
+      "properties": {
+        "name": "<aap:target id="name-30">Antananarivo</aap:target>",
+        "country": "Madagascar",
+        "population": <aap:target id="pop-30">1275000</aap:target>,
+        "timezone": "Indian/Antananarivo",
+        "elevation_m": 1276,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-31">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-77.0428, -12.0464]},
+      "properties": {
+        "name": "<aap:target id="name-31">Lima</aap:target>",
+        "country": "Peru",
+        "population": <aap:target id="pop-31">9674000</aap:target>,
+        "timezone": "America/Lima",
+        "elevation_m": 154,
+        "is_capital": true,
+        "continent": "South America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-32">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [32.5599, 15.5007]},
+      "properties": {
+        "name": "<aap:target id="name-32">Addis Ababa</aap:target>",
+        "country": "Ethiopia",
+        "population": <aap:target id="pop-32">3384000</aap:target>,
+        "timezone": "Africa/Addis_Ababa",
+        "elevation_m": 2355,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-33">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-70.6693, -33.4489]},
+      "properties": {
+        "name": "<aap:target id="name-33">Santiago</aap:target>",
+        "country": "Chile",
+        "population": <aap:target id="pop-33">6257000</aap:target>,
+        "timezone": "America/Santiago",
+        "elevation_m": 520,
+        "is_capital": true,
+        "continent": "South America"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-34">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [15.3101, -4.4419]},
+      "properties": {
+        "name": "<aap:target id="name-34">Kinshasa</aap:target>",
+        "country": "DR Congo",
+        "population": <aap:target id="pop-34">14343000</aap:target>,
+        "timezone": "Africa/Kinshasa",
+        "elevation_m": 240,
+        "is_capital": true,
+        "continent": "Africa"
+      }
+    }
+    </aap:target>,
+    <aap:target id="feature-35">
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [-56.0495, -15.6014]},
+      "properties": {
+        "name": "<aap:target id="name-35">Cuiabá</aap:target>",
+        "country": "Brazil",
+        "population": <aap:target id="pop-35">618000</aap:target>,
+        "timezone": "America/Cuiaba",
+        "elevation_m": 165,
+        "is_capital": false,
+        "continent": "South America"
+      }
+    }
+    </aap:target></aap:target>",
+        "country": "China",
+        "population": <aap:target id="pop-25">7500000</aap:target>,
+        "timezone": "Asia/Hong_Kong",
+        "elevation_m": 0,
+        "is_capital": false,
+        "continent": "Asia"
+      }
+    }
+    </aap:target>
+  ]
+}

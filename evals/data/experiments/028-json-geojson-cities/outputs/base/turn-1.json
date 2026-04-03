@@ -1,0 +1,55 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [3.3792, 6.5244] },
+      "properties": { "name": "Lagos", "country": "Nigeria", "population": 15388000, "timezone": "Africa/Lagos", "elevation_m": 41, "is_capital": false, "continent": "Africa" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [32.5825, 0.3476] },
+      "properties": { "name": "Kampala", "country": "Uganda", "population": 3652000, "timezone": "Africa/Kampala", "elevation_m": 1190, "is_capital": true, "continent": "Africa" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [36.8219, -1.2921] },
+      "properties": { "name": "Nairobi", "country": "Kenya", "population": 4397000, "timezone": "Africa/Nairobi", "elevation_m": 1795, "is_capital": true, "continent": "Africa" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-0.2597, 5.6037] },
+      "properties": { "name": "Accra", "country": "Ghana", "population": 2514000, "timezone": "Africa/Accra", "elevation_m": 61, "is_capital": true, "continent": "Africa" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [36.7833, -1.2833] },
+      "properties": { "name": "Addis Ababa", "country": "Ethiopia", "population": 5006000, "timezone": "Africa/Addis_Ababa", "elevation_m": 2355, "is_capital": true, "continent": "Africa" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-66.9036, 10.4806] },
+      "properties": { "name": "Caracas", "country": "Venezuela", "population": 2923000, "timezone": "America/Caracas", "elevation_m": 900, "is_capital": true, "continent": "South America" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-77.0428, -12.0464] },
+      "properties": { "name": "Lima", "country": "Peru", "population": 9752000, "timezone": "America/Lima", "elevation_m": 154, "is_capital": true, "continent": "South America" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-78.4678, -0.1807] },
+      "properties": { "name": "Quito", "country": "Ecuador", "population": 2011000, "timezone": "America/Guayaquil", "elevation_m": 2850, "is_capital": true, "continent": "South America" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-57.5759, -25.2637] },
+      "properties": { "name": "Asunción", "country": "Paraguay", "population": 525000, "timezone": "America/Asuncion", "elevation_m": 127, "is_capital": true, "continent": "South America" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-71.5167, -33.45] },
+      "properties": { "name": "Santiago", "country": "Chile", "population": 6254000, "timezone": "America/Santiago", "elevation_m": 520, "is_capital": true, "continent": "South America" }
+    }
+  ]
+}
