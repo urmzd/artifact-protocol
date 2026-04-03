@@ -46,8 +46,8 @@ The **Agent-Artifact Protocol (AAP)** is a portable, format-agnostic standard th
 | **Token budget** | Maximum token allocation for a generation |
 | **Flush point** | A semantically meaningful boundary where partial content can be rendered |
 | **Orchestrator** | Agent that manages artifacts via handles and projections — never holds full content |
-| **Init-agent** | Agent specialized for artifact creation — produces `name: "full"` or `name: "manifest"` envelopes |
-| **Maintain-agent** | Agent specialized for edits and summaries — produces diff/section/template/projection envelopes |
+| **Init context** | Secondary context specialized for artifact creation — produces `name: "full"` or `name: "manifest"` envelopes. May be an LLM call, agent, tool invocation, or any bounded execution context |
+| **Maintain context** | Secondary context specialized for edits and summaries — produces diff/section/template/projection envelopes. Requires only the current artifact revision and an instruction; can use cheaper or smaller models than the orchestrator |
 | **Apply engine** | Deterministic code that resolves envelope operations against stored artifacts (CPU, not LLM) |
 | **Entity state** | Lifecycle state of a managed artifact (`draft`, `published`, `archived`) |
 | **Advisory lock** | Non-mandatory lock hint to coordinate concurrent editors |
@@ -642,91 +642,116 @@ The final envelope (or final chunk frame) MUST include `operation.tokens_used` �
 When agents manage artifacts through conversation, three costs compound: **context bloat** (KV cache grows with edit history), **token waste** (content written twice — once to read, once to regenerate), and **hallucination** (agents "remember" content they no longer have in context). The Artifact Type Interface eliminates all three by defining a contract built on two principles:
 
 1. **The artifact is the only persistent state.** Between edits, everything is discarded — system prompts, intents, envelope operations. Only the artifact revision survives.
-2. **The AI dispatches; the CPU splices.** Agents produce envelope operations (diffs, section updates). The apply engine resolves them against the stored artifact deterministically, at zero token cost. Content is never written twice.
+2. **The AI dispatches; the CPU splices.** Envelope operations (diffs, section updates) are produced by a secondary context and resolved by the apply engine deterministically, at zero token cost. Content is never written twice.
 
-This contract is realized through a **two-agent topology** with distinct specializations:
+### Context Offloading
 
-- **Init-agent** — specialized for creation. Takes generation instructions, produces `name: "full"` or `name: "manifest"` envelopes with well-placed section markers. Runs once per artifact (or on re-initialization). After completion, context is discarded.
-- **Maintain-agent** — specialized for reading existing content and producing AAP envelopes. Has two output modes:
+The core architectural principle is **context offloading**: the orchestrator delegates artifact operations to **ephemeral secondary contexts** and remains completely unaware of artifact content. It provides a mechanism — a tool call, API, subprocess, or any invocable interface — through which operations are dispatched. The secondary context loads the artifact, processes the instruction, returns a result (a handle, projection, or envelope), and terminates. The orchestrator never sees the artifact body; it only sees the structured responses that come back through the mechanism it provided.
+
+This is the abstraction that saves context: the orchestrator can create artifacts (via init), ask questions about them (via projections), request edits (via intents), and receive confirmations (via results) — all without the artifact content ever entering its context window. Even initial generation is offloaded: the orchestrator passes creation instructions to an init context and receives a handle back. The mechanism is the boundary. Everything behind it is invisible to the orchestrator.
+
+Artifact storage is implementation-specific — the artifact can live anywhere (database, file system, object store, in-memory). What matters is that the secondary context can load it for the duration of an operation. The orchestrator holds only handles and operates through the mechanism.
+
+A secondary context is any ephemeral execution scope that is invoked with a bounded input (artifact + instruction), produces a structured output (an envelope), and terminates. The mechanism for invoking it can be anything:
+
+- A tool call that triggers an LLM inference with a fresh context window
+- A tool call to a different, cheaper model than the orchestrator
+- An API request to an external service
+- A subprocess or function invocation
+- The same model with different parameters (temperature, system prompt)
+
+The protocol defines two **roles** for these secondary contexts — what they do, not what they are:
+
+- **Init context** — specialized for creation. Takes generation instructions, produces `name: "full"` or `name: "manifest"` envelopes with well-placed section markers. Runs once per artifact (or on re-initialization). After completion, context is discarded.
+- **Maintain context** — specialized for reading existing content and producing AAP envelopes. Has two output modes:
   - **Edit:** receives artifact + edit intent → produces `name: "diff"`, `name: "section"`, or `name: "template"` envelopes
   - **Summarize:** receives artifact + summarize request → produces `name: "projection"` envelopes
   - Context per call: `[system prompt] + [artifact vN] + [instruction]`. Discarded after each call.
 - **Apply engine** — deterministic code (not an LLM). Receives envelopes, resolves them against stored artifacts (~2μs, 0 tokens), validates operations, stores new revisions.
 
-The init-agent and maintain-agent are separate because they have fundamentally different jobs. The init-agent is *generative* — it creates structure, places section boundaries, produces layout. The maintain-agent is *surgical* — it reads existing content and produces minimal diffs. Different system prompts, potentially different models, different temperature settings. Combining them into a single agent bloats both the system prompt and the context, increasing hallucination surface and cost without benefit.
+These roles are separate because they have fundamentally different computational requirements. The init context is *generative* — it creates structure, places section boundaries, produces layout. This benefits from more capable, larger models. The maintain context is *surgical* — it reads existing content and produces minimal structured diffs. This requires only high recall (find the right location in the artifact) and structured output (emit valid envelope JSON). Smaller, cheaper models excel at this constrained task.
+
+This asymmetry is where the second dimension of cost savings emerges. AAP reduces the *number* of output tokens (diffs instead of full regeneration), but context offloading also reduces the *cost per token* — the maintain context can run on a model that costs a fraction of what the orchestrator or init context uses. The two effects multiply: fewer tokens × cheaper tokens.
 
 ```
 Orchestrator (handles, projections, user conversation)
     │
-    ├── create ──→ Init-agent ──→ name:"full" envelope ──→ Apply engine ──→ Store ──→ name:"handle"
+    ├── create ──→ Init context ──→ name:"full" envelope ──→ Apply engine ──→ Store ──→ name:"handle"
     │
-    ├── summarize ──→ Maintain-agent ──→ name:"projection" envelope ──→ (returned to orchestrator)
+    ├── summarize ──→ Maintain context ──→ name:"projection" envelope ──→ (returned to orchestrator)
     │
-    └── edit ──→ Maintain-agent ──→ name:"diff" envelope ──→ Apply engine ──→ Store ──→ name:"result"
+    └── edit ──→ Maintain context ──→ name:"diff" envelope ──→ Apply engine ──→ Store ──→ name:"result"
 ```
+
+> **Non-normative note:** A common realization is two LLM agents with different system prompts, models, and temperature settings behind tool-call interfaces. But the architecture is not prescriptive about mechanism. Any implementation where the orchestrator provides a mechanism to dispatch operations to ephemeral secondary contexts — and those contexts operate on less data than the orchestrator holds — is compliant.
+
+Because the artifact is a concrete, standalone piece of content (an HTML file, a Python module, a config), it can also be interacted with directly — outside any orchestrator context. A user can open it in a browser, edit it by hand, or load it into a fresh LLM context for fine-tuning. This is particularly useful for iterative refinement: abandon the orchestrator, work with the artifact directly in a dedicated context, then resume protocol-managed operations by re-registering the modified artifact as a new version. The protocol's version chain accommodates this — a `name: "full"` envelope resets the chain without requiring continuity from the previous version.
 
 ### 8.1 Memory Model
 
-Each agent call is a **stateless dispatch** — an independent inference call with no conversation history. The artifact is the single source of truth.
+Each secondary context invocation is a **stateless dispatch** — an independent call with no conversation history. The artifact is the single source of truth.
 
-**Init-agent context (runs once):**
+**Init context (runs once):**
 
 ```
-[System prompt (creation-specialized)] + [Generation instructions]
+[Instructions (creation-specialized)] + [Generation prompt]
                     ↓ produces ↓
 [name:"full" envelope with section markers]
                     ↓ apply engine (CPU) ↓
 [Artifact v1] ← stored, context discarded
 ```
 
-**Maintain-agent context (runs per edit):**
+**Maintain context (runs per edit):**
 
 ```
-[System prompt (maintenance-specialized)] + [Artifact vN] + [Edit intent]
+[Instructions (maintenance-specialized)] + [Artifact vN] + [Edit intent]
                     ↓ produces ↓
 [name:"diff" envelope with operations]
                     ↓ apply engine (CPU) ↓
 [Artifact vN+1] ← sole survivor, context discarded
 ```
 
-**Maintain-agent context (runs per summarize):**
+**Maintain context (runs per summarize):**
 
 ```
-[System prompt (maintenance-specialized)] + [Artifact vN] + ["Summarize: structure"]
+[Instructions (maintenance-specialized)] + [Artifact vN] + ["Summarize: structure"]
                     ↓ produces ↓
-[name:"projection" envelope] ← returned to orchestrator, agent context discarded
+[name:"projection" envelope] ← returned to orchestrator, context discarded
 ```
 
-In every case: system prompt is re-injected next time. Intent is discarded. Envelope operations are consumed by the apply engine and discarded. Previous edits never existed in the current context. Only the artifact persists.
+In every case: instructions are re-injected next time. Intent is discarded. Envelope operations are consumed by the apply engine and discarded. Previous edits never existed in the current context. Only the artifact persists.
 
 **Normative requirements:**
 
-- Implementations MUST NOT accumulate edit history in any agent's context
-- Each agent call MUST start with a fresh context
-- The maintain-agent MUST produce envelope operations (`diff`, `section`, or `template`) on edits — the apply engine resolves them against the stored artifact
-- The maintain-agent SHOULD NOT produce `name: "full"` envelopes on edits — this defeats the model by writing content tokens twice
-- The init-agent SHOULD produce artifacts with section markers ([Section 5.1](#51-section-first-generation-recommended)) to enable efficient subsequent edits
+- The orchestrator MUST expose a mechanism (tool calls, API dispatch, or equivalent) through which it can operate on artifact handles — creating, editing, summarizing, and reading artifacts via secondary context invocations
+- Implementations MUST NOT accumulate edit history in any secondary context
+- Each invocation MUST start with a fresh context
+- The maintain context MUST produce envelope operations (`diff`, `section`, or `template`) on edits — the apply engine resolves them against the stored artifact
+- The maintain context SHOULD NOT produce `name: "full"` envelopes on edits — this defeats the model by writing content tokens twice
+- The init context SHOULD produce artifacts with section markers ([Section 5.1](#51-section-first-generation-recommended)) to enable efficient subsequent edits
 - The artifact content is the single source of truth, not conversation memory
 
 #### 8.1.1 Cost Model
 
-**Per-edit cost (maintain-agent):**
+**Per-edit cost (maintain context):**
 
 | Component | Input tokens | Output tokens | Persists? |
 |---|---|---|---|
-| System prompt | ~fixed | — | No (re-injected each call) |
+| Instructions | ~fixed | — | No (re-injected each call) |
 | Artifact revision | ~artifact_size | — | **Yes** (as vN+1 after apply) |
 | Edit intent | ~small | — | No |
 | Envelope operations | — | ~50-500 (diff) | No (consumed by apply engine) |
-| **Total per edit** | **system + artifact + intent** | **~50-500** | **artifact only** |
+| **Total per edit** | **instructions + artifact + intent** | **~50-500** | **artifact only** |
 
 Compare the naive approach: `~artifact_size` input + `~artifact_size` output + growing conversation history per edit. Output tokens are 3-5× more expensive than input tokens, so the reduction from `~artifact_size` output to `~50-500` output is where the savings concentrate.
+
+When the maintain context runs on a cheaper model than the orchestrator, the savings multiply further. The per-token cost of the maintain context's output can be a fraction of the orchestrator's — a small model that excels at recall and structured output is often sufficient for producing diffs against content it can see in full. The total cost reduction is: (fewer output tokens) × (lower cost per token).
 
 > **Non-normative note:** The ~50-500 output token estimate is derived from hand-crafted envelope benchmarks (Appendix B). AI-generated envelopes from natural language intents may produce larger diffs or fall back to section-mode rewrites when a targeted diff would suffice. Implementations SHOULD track actual output token counts via the audit log to calibrate expectations.
 
 #### 8.1.2 Amortization
 
-The initial creation (init-agent, `name: "full"`) is the most expensive operation — full output tokens to produce the artifact with section markers. This is a one-time investment that makes every subsequent edit cheap:
+The initial creation (init context, `name: "full"`) is the most expensive operation — full output tokens to produce the artifact with section markers. This is a one-time investment that makes every subsequent edit cheap:
 
 | | Initial create | Edit 1 | Edit 2 | ... | Edit N | Total output |
 |---|---|---|---|---|---|---|
@@ -737,14 +762,14 @@ Where S = artifact size in output tokens. Break-even: **one edit**. After a sing
 
 #### 8.1.3 Anti-Hallucination Properties
 
-The architecture structurally reduces hallucination through role separation:
+The architecture structurally reduces hallucination through context separation:
 
 - The **orchestrator** never sees full artifact content. It holds only handles and projections. It can describe *intent* but cannot hallucinate *content* it has never seen.
-- The **init-agent** produces content from instructions — hallucination risk is inherent to generation, but its context is clean.
-- The **maintain-agent** sees the *actual current revision*, injected fresh from storage. It produces diffs against real content, not imagined content.
+- The **init context** produces content from instructions — hallucination risk is inherent to generation, but its context is clean.
+- The **maintain context** sees the *actual current revision*, injected fresh from storage. It produces diffs against real content, not imagined content.
 - The **apply engine** is deterministic code. It either applies the operations correctly or returns an error.
 
-> **Non-normative note:** The maintain-agent *can* still hallucinate envelope operations — for example, targeting a search string that doesn't exist. However, the risk is structurally lower because: (1) the context contains *only* the artifact and the instruction; (2) the apply engine validates operations deterministically; (3) the artifact is always smaller than a full conversation thread. Implementations SHOULD track hallucination rates via the audit log. See [Section 8.5.4](#854-error-recovery) for the recommended recovery flow.
+> **Non-normative note:** The maintain context *can* still hallucinate envelope operations — for example, targeting a search string that doesn't exist. However, the risk is structurally lower because: (1) the context contains *only* the artifact and the instruction; (2) the apply engine validates operations deterministically; (3) the artifact is always smaller than a full conversation thread. Implementations SHOULD track hallucination rates via the audit log. See [Section 8.5.4](#854-error-recovery) for the recommended recovery flow.
 
 ### 8.2 Handle (`name: "handle"`)
 
@@ -790,7 +815,7 @@ A **projection** is an envelope containing a compact, structured summary of an a
 | `statistics` | Numerical metrics: token count, section count, word count, timestamps | ~50-100 tokens (fixed) |
 | `full_summary` | Combined `structure` + `content_summary` | 15-25% |
 
-> **Non-normative note:** `structure` and `statistics` projections can be computed deterministically by parsing section markers and counting tokens — no inference call required. `content_summary`, `change_summary`, and `full_summary` require an inference call via the maintain-agent. Implementations SHOULD prefer CPU-computable projections when the orchestrator only needs structural information.
+> **Non-normative note:** `structure` and `statistics` projections can be computed deterministically by parsing section markers and counting tokens — no inference call required. `content_summary`, `change_summary`, and `full_summary` require an inference call via the maintain context. Implementations SHOULD prefer CPU-computable projections when the orchestrator only needs structural information.
 
 **Content item schema:**
 
@@ -837,7 +862,7 @@ When a projection is stale, the orchestrator SHOULD request a `change_summary` p
 
 ### 8.4 Edit Intent and Edit Result
 
-The edit delegation pattern separates **intent** from **execution**. The orchestrator formulates *what* should change; the maintain-agent — with the actual content in context — decides *how* and produces the minimal envelope operations.
+The edit delegation pattern separates **intent** from **execution**. The orchestrator formulates *what* should change; the maintain context — with the actual content in context — decides *how* and produces the minimal envelope operations.
 
 #### 8.4.1 Intent (`name: "intent"`)
 
@@ -851,7 +876,7 @@ The edit delegation pattern separates **intent** from **execution**. The orchest
 | `priority` | string | no | `"completeness"`, `"brevity"`, `"fidelity"` |
 | `idempotency_key` | string | no | Client-supplied key to prevent duplicate execution |
 
-The `intent` field SHOULD be self-contained: any data the maintain-agent needs that is not present in the artifact itself SHOULD be included in the intent text.
+The `intent` field SHOULD be self-contained: any data the maintain context needs that is not present in the artifact itself SHOULD be included in the intent text.
 
 Multiple intents can be batched in a single envelope for parallel processing:
 
@@ -878,7 +903,7 @@ Multiple intents can be batched in a single envelope for parallel processing:
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `status` | string | YES | `"applied"`, `"rejected"`, `"partial"`, `"conflict"` |
-| `mode_used` | string | YES | Operation name the maintain-agent selected |
+| `mode_used` | string | YES | Operation name the maintain context selected |
 | `changes` | array | YES | Summary of what changed (per-change: `section_id`, `description`) |
 | `tokens_used` | integer | no | Output tokens consumed (the envelope operations, not the artifact) |
 | `rejection_reason` | string | no | Why the edit was rejected |
@@ -918,7 +943,7 @@ On `conflict`, the orchestrator SHOULD: request a `change_summary` projection to
 #### 8.4.3 Conflict Resolution Flow
 
 ```
-Orchestrator                        Store / Maintain-agent
+Orchestrator                        Store / Maintain context
     |                                       |
     |── name:"intent" (version=5) ─────────▶|
     |                                       |── stored is v7 ──▶ conflict
@@ -929,24 +954,24 @@ Orchestrator                        Store / Maintain-agent
     |                                       |
     |── name:"intent" (version=7) ─────────▶|
     |                                       |── inject artifact v7 + intent
-    |                                       |── maintain-agent produces diff
+    |                                       |── maintain context produces diff
     |                                       |── apply engine → v8
     |◀── name:"result" (status: applied) ───|
 ```
 
 #### 8.4.4 Error Recovery
 
-When the maintain-agent hallucinates a bad diff — for example, targeting a search string that doesn't exist — the apply engine rejects the operation. The result envelope returns `status: "rejected"` with a `rejection_reason`.
+When the maintain context hallucinates a bad diff — for example, targeting a search string that doesn't exist — the apply engine rejects the operation. The result envelope returns `status: "rejected"` with a `rejection_reason`.
 
 **Recommended recovery flow:**
 
 1. Orchestrator reads the `rejection_reason`
 2. Orchestrator requests a `content_summary` projection of the relevant section
 3. Orchestrator reformulates the intent with more specific context from the projection
-4. Retry with the maintain-agent
-5. If repeated failures, escalate to re-initialization: archive the current artifact and call the init-agent
+4. Retry with the maintain context
+5. If repeated failures, escalate to re-initialization: archive the current artifact and call the init context
 
-> **Restructuring:** When an artifact's section topology is fundamentally inadequate, the recommended approach is to archive the existing artifact and create a new one via the init-agent. The init-agent's instructions MAY include a projection of the old artifact for continuity. There is no in-place restructuring operation — restructuring is creation.
+> **Restructuring:** When an artifact's section topology is fundamentally inadequate, the recommended approach is to archive the existing artifact and create a new one via the init context. The init context's instructions MAY include a projection of the old artifact for continuity. There is no in-place restructuring operation — restructuring is creation.
 
 ### 8.5 Audit (`name: "audit"`)
 
@@ -1192,13 +1217,13 @@ Implementations declare their conformance level. Each level is a superset of the
 
 ### Application Profile: Managed Artifacts
 
-Levels 0-4 above are **wire-format conformance** — they define which data shapes an implementation can parse and produce. The Managed Artifacts profile is **architectural conformance** — it defines how agents interact with artifacts at runtime via the two-agent topology described in [Section 8](#8-artifact-type-interface). It requires Level 4 as a prerequisite.
+Levels 0-4 above are **wire-format conformance** — they define which data shapes an implementation can parse and produce. The Managed Artifacts profile is **architectural conformance** — it defines how secondary contexts interact with artifacts at runtime via the context-offloading architecture described in [Section 8](#8-artifact-type-interface). It requires Level 4 as a prerequisite.
 
 - Level 4, plus:
 - MUST implement the Artifact Type Interface ([Section 8](#8-artifact-type-interface)): create, read, summarize, edit, audit
-- MUST support the two-agent topology: init-agent for creation, maintain-agent for edits and summarization
-- MUST support the stateless dispatch memory model — no edit history accumulates in any agent's context
-- The maintain-agent MUST produce `diff`, `section`, or `template` envelopes, not `full`, on edits
+- MUST support context offloading: init context for creation, maintain context for edits and summarization. The orchestrator MUST provide a mechanism (tool calls, API dispatch, subprocess invocation, or equivalent) for secondary contexts to operate on artifacts
+- MUST support the stateless dispatch memory model — no edit history accumulates in any secondary context
+- The maintain context MUST produce `diff`, `section`, or `template` envelopes, not `full`, on edits
 - MUST support all five control-plane envelope types: `handle`, `projection`, `intent`, `result`, `audit`
 - MUST support all four result status codes: `applied`, `rejected`, `partial`, `conflict`
 - MUST produce audit entries for every operation, including failures
