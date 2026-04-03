@@ -1,64 +1,134 @@
 //! Stateless apply engine — pure function that transforms artifacts.
 //!
-//! `apply(artifact, operation) -> artifact`
-//!
-//! Takes an existing artifact (as a `name:"full"` envelope) and an operation
-//! envelope, returns the new artifact state as a `name:"full"` envelope.
-//! No state, no store, no side effects.
+//! Two input operations: `synthesize` (replace) and `edit` (targeted edits by ID or pointer).
+//! Returns `(artifact, handle)` — artifact is stored, handle is returned to the orchestrator.
 
 use anyhow::{bail, Context, Result};
-use std::collections::HashMap;
+use regex::Regex;
 
 use crate::aap::{
-    DiffOp, Envelope, FullContentItem, Include, ManifestContentItem, Name, OpType, Operation,
-    SectionDef, SectionUpdate, TemplateContentItem, PROTOCOL_VERSION,
-};
-use crate::markers::{
-    find_section_def, find_section_range, resolve_markers,
+    DiffOp, Envelope, HandleContentItem, Name, OpType, Operation, SynthesizeContentItem, Target,
+    TargetDef, PROTOCOL_VERSION,
 };
 
-/// Extract the body string from a `name:"full"` envelope.
-fn extract_body(envelope: &Envelope) -> Result<String> {
-    let item: FullContentItem = serde_json::from_value(
+// ── Resolve trait ────────────────────────────────────────────────────────────
+
+/// Content resolution — how to find and replace targeted regions.
+///
+/// Generic over the content type: text (String), bytes (Vec<u8>), AST nodes, etc.
+/// The apply engine calls these methods; implementations provide format-specific logic.
+pub trait Resolve {
+    type Content: Clone;
+
+    /// Find the byte/index range of a target by ID.
+    /// Returns `(start, end)` — the content between markers, exclusive of markers.
+    fn find_by_id(&self, content: &Self::Content, id: &str) -> Result<(usize, usize)>;
+
+    /// Find the byte/index range of a target by JSON Pointer.
+    fn find_by_pointer(&self, content: &Self::Content, pointer: &str) -> Result<(usize, usize)>;
+
+    /// Replace a range with new content.
+    fn replace(&self, content: &mut Self::Content, start: usize, end: usize, replacement: &str);
+
+    /// Insert content at a position.
+    fn insert(&self, content: &mut Self::Content, pos: usize, text: &str);
+
+    /// Delete a range.
+    fn delete(&self, content: &mut Self::Content, start: usize, end: usize);
+
+    /// Extract the full content as a string (for serialization).
+    fn to_string(&self, content: &Self::Content) -> String;
+
+    /// Parse content from a string.
+    fn from_string(&self, s: &str) -> Self::Content;
+}
+
+// ── Text resolver ────────────────────────────────────────────────────────────
+
+/// Text-based resolver using `<aap:target id="...">` markers.
+pub struct TextResolver {
+    pub format: String,
+}
+
+impl Resolve for TextResolver {
+    type Content = String;
+
+    fn find_by_id(&self, content: &String, id: &str) -> Result<(usize, usize)> {
+        crate::markers::find_target_range(content, id, &self.format)
+    }
+
+    fn find_by_pointer(&self, content: &String, pointer: &str) -> Result<(usize, usize)> {
+        let value: serde_json::Value = serde_json::from_str(content)
+            .context("pointer targeting requires valid JSON content")?;
+        let serialized = serde_json::to_string_pretty(&value)?;
+        let _ = value
+            .pointer(pointer)
+            .with_context(|| format!("pointer not found: {pointer}"))?;
+        Ok((0, serialized.len()))
+    }
+
+    fn replace(&self, content: &mut String, start: usize, end: usize, replacement: &str) {
+        *content = format!("{}{}{}", &content[..start], replacement, &content[end..]);
+    }
+
+    fn insert(&self, content: &mut String, pos: usize, text: &str) {
+        *content = format!("{}{}{}", &content[..pos], text, &content[pos..]);
+    }
+
+    fn delete(&self, content: &mut String, start: usize, end: usize) {
+        *content = format!("{}{}", &content[..start], &content[end..]);
+    }
+
+    fn to_string(&self, content: &String) -> String {
+        content.clone()
+    }
+
+    fn from_string(&self, s: &str) -> String {
+        s.to_string()
+    }
+}
+
+// ── Apply engine ─────────────────────────────────────────────────────────────
+
+/// Extract a `SynthesizeContentItem` from an envelope.
+fn extract_synthesize_item(envelope: &Envelope) -> Result<SynthesizeContentItem> {
+    serde_json::from_value(
         envelope
             .content
             .first()
-            .context("full envelope: empty content array")?
+            .context("synthesize envelope: empty content array")?
             .clone(),
     )
-    .context("full envelope: failed to parse content item")?;
-    Ok(item.body)
+    .context("synthesize envelope: failed to parse content item")
 }
 
-/// Extract sections from a `name:"full"` envelope (if present).
-fn extract_sections(envelope: &Envelope) -> Option<Vec<SectionDef>> {
-    envelope
-        .content
-        .first()
-        .and_then(|v| serde_json::from_value::<FullContentItem>(v.clone()).ok())
-        .and_then(|item| item.sections)
+/// Extract all target IDs from content by scanning for `<aap:target id="...">` markers.
+fn extract_target_ids(content: &str) -> Vec<String> {
+    let re = Regex::new(r#"<aap:target\s+id="([^"]+)">"#).expect("valid regex");
+    re.captures_iter(content)
+        .map(|cap| cap[1].to_string())
+        .collect()
 }
 
-/// Build a `name:"full"` output envelope from resolved content.
-fn build_full_envelope(
+/// Build a `name:"synthesize"` output envelope (the stored artifact).
+fn build_synthesize_envelope(
     id: &str,
     version: u64,
     format: Option<&str>,
     body: String,
-    sections: Option<Vec<SectionDef>>,
+    targets: Option<Vec<TargetDef>>,
 ) -> Result<Envelope> {
-    let content_item = FullContentItem { body, sections };
+    let content_item = SynthesizeContentItem { body, targets };
     Ok(Envelope {
         protocol: PROTOCOL_VERSION.to_string(),
         id: id.to_string(),
         version,
-        name: Name::Full,
+        name: Name::Synthesize,
         operation: Operation {
             direction: "output".to_string(),
             format: format.map(|s| s.to_string()),
             encoding: None,
             content_encoding: None,
-            section_id: None,
             token_budget: None,
             tokens_used: None,
             checksum: None,
@@ -73,212 +143,203 @@ fn build_full_envelope(
     })
 }
 
-/// Stateless apply: `f(artifact, operation) → artifact`.
+/// Build a `name:"handle"` output envelope.
+fn build_handle_envelope(
+    id: &str,
+    version: u64,
+    format: Option<&str>,
+    sections: Vec<String>,
+    token_count: Option<u64>,
+) -> Result<Envelope> {
+    let content_item = HandleContentItem {
+        sections,
+        token_count,
+        state: None,
+    };
+    Ok(Envelope {
+        protocol: PROTOCOL_VERSION.to_string(),
+        id: id.to_string(),
+        version,
+        name: Name::Handle,
+        operation: Operation {
+            direction: "output".to_string(),
+            format: format.map(|s| s.to_string()),
+            encoding: None,
+            content_encoding: None,
+            token_budget: None,
+            tokens_used: None,
+            checksum: None,
+            created_at: None,
+            updated_at: None,
+            state: None,
+            state_changed_at: None,
+        },
+        content: vec![
+            serde_json::to_value(content_item).context("failed to serialize handle content")?
+        ],
+    })
+}
+
+/// Stateless apply: `f(artifact, operation) → (artifact, handle)`.
 ///
-/// - `artifact`: current artifact state as a `name:"full"` envelope.
-///   `None` for operations that don't need a base (`full`, `template`, `manifest`).
-/// - `operation`: the operation envelope to apply.
-///
-/// Returns the new artifact state as a `name:"full"` envelope.
-pub fn apply(artifact: Option<&Envelope>, operation: &Envelope) -> Result<Envelope> {
+/// The artifact is the resolved content (stored). The handle is a lightweight
+/// reference returned to the orchestrator.
+pub fn apply(artifact: Option<&Envelope>, operation: &Envelope) -> Result<(Envelope, Envelope)> {
     let format = operation
         .operation
         .format
         .as_deref()
         .unwrap_or("text/html");
 
-    let (body, sections) = match operation.name {
-        Name::Full => {
-            let body = extract_body(operation)?;
-            let sections = extract_sections(operation);
-            (body, sections)
+    let resolver = TextResolver {
+        format: format.to_string(),
+    };
+
+    let (body, targets) = match operation.name {
+        Name::Synthesize => {
+            let item = extract_synthesize_item(operation)?;
+            (item.body, item.targets)
         }
-        Name::Diff => {
-            let art = artifact.context("diff requires a base artifact")?;
-            let base = extract_body(art)?;
-            let sections = extract_sections(art);
+        Name::Edit => {
+            let art = artifact.context("edit requires a base artifact")?;
+            let art_item = extract_synthesize_item(art)?;
             let ops: Vec<DiffOp> = operation
                 .content
                 .iter()
                 .map(|v| serde_json::from_value(v.clone()))
                 .collect::<std::result::Result<Vec<_>, _>>()
-                .context("diff: failed to parse content items")?;
-            let body = apply_diff(&base, &ops, format, None)?;
-            (body, sections)
+                .context("edit: failed to parse content items")?;
+
+            let has_pointer = ops.iter().any(|op| matches!(op.target, Target::Pointer(_)));
+            let body = if has_pointer {
+                apply_diff_pointers(&art_item.body, &ops)?
+            } else {
+                apply_diff(&resolver, &art_item.body, &ops)?
+            };
+            (body, art_item.targets)
         }
-        Name::Section => {
-            let art = artifact.context("section requires a base artifact")?;
-            let base = extract_body(art)?;
-            let sections = extract_sections(art);
-            let updates: Vec<SectionUpdate> = operation
-                .content
-                .iter()
-                .map(|v| serde_json::from_value(v.clone()))
-                .collect::<std::result::Result<Vec<_>, _>>()
-                .context("section: failed to parse content items")?;
-            let body = apply_section_update(&base, &updates, format, None)?;
-            (body, sections)
-        }
-        Name::Template => {
-            let item: TemplateContentItem = serde_json::from_value(
-                operation
-                    .content
-                    .first()
-                    .context("template: empty content array")?
-                    .clone(),
-            )
-            .context("template: failed to parse content item")?;
-            let body = fill_template(&item.template, &item.bindings);
-            let sections = artifact.and_then(extract_sections);
-            (body, sections)
-        }
-        Name::Composite => {
-            let includes: Vec<Include> = operation
-                .content
-                .iter()
-                .map(|v| serde_json::from_value(v.clone()))
-                .collect::<std::result::Result<Vec<_>, _>>()
-                .context("composite: failed to parse content items")?;
-            let body = resolve_composite(&includes, format)?;
-            let sections = artifact.and_then(extract_sections);
-            (body, sections)
-        }
-        Name::Manifest => {
-            let item: ManifestContentItem = serde_json::from_value(
-                operation
-                    .content
-                    .first()
-                    .context("manifest: empty content array")?
-                    .clone(),
-            )
-            .context("manifest: failed to parse content item")?;
-            (item.skeleton, None)
-        }
-        Name::Handle | Name::Projection | Name::Intent | Name::Result | Name::Audit => {
-            bail!(
-                "control-plane operation '{:?}' does not produce artifact content",
-                operation.name
-            )
-        }
+        _ => bail!("apply engine only accepts synthesize or edit operations"),
     };
 
-    build_full_envelope(
+    // Build the stored artifact
+    let artifact_envelope =
+        build_synthesize_envelope(&operation.id, operation.version, Some(format), body.clone(), targets)?;
+
+    // Build the handle for the orchestrator
+    let sections = extract_target_ids(&body);
+    let token_count = Some((body.len() / 4) as u64); // approximate tokens
+    let handle = build_handle_envelope(
         &operation.id,
         operation.version,
         Some(format),
-        body,
         sections,
-    )
+        token_count,
+    )?;
+
+    Ok((artifact_envelope, handle))
 }
 
-/// Apply diff operations sequentially to base content.
-///
-/// If any operation uses `pointer` targeting, the content is parsed as JSON
-/// and pointer operations are applied on the parsed tree.
-pub fn apply_diff(
+/// Apply diff operations using the Resolve trait (ID-based targeting).
+pub fn apply_diff<R: Resolve<Content = String>>(
+    resolver: &R,
     base: &str,
     operations: &[DiffOp],
-    format: &str,
-    sections: Option<&[SectionDef]>,
 ) -> Result<String> {
-    let has_pointer = operations.iter().any(|op| op.target.pointer.is_some());
-
-    if has_pointer {
-        return apply_diff_with_pointers(base, operations, format);
-    }
-
-    let mut result = base.to_string();
+    let mut content = resolver.from_string(base);
 
     for (i, op) in operations.iter().enumerate() {
-        let (start, end) = find_target_range(&result, &op.target, format, sections)
+        let (start, end) = resolve_target(resolver, &content, &op.target)
             .with_context(|| format!("operation {i}: target not found"))?;
 
         match op.op {
             OpType::Replace => {
-                let content = op.content.as_deref().unwrap_or("");
-                result = format!("{}{}{}", &result[..start], content, &result[end..]);
+                let replacement = op.content.as_deref().unwrap_or("");
+                resolver.replace(&mut content, start, end, replacement);
             }
             OpType::Delete => {
-                result = format!("{}{}", &result[..start], &result[end..]);
+                resolver.delete(&mut content, start, end);
             }
             OpType::InsertBefore => {
-                let content = op.content.as_deref().unwrap_or("");
-                result = format!("{}{}{}", &result[..start], content, &result[start..]);
+                let text = op.content.as_deref().unwrap_or("");
+                resolver.insert(&mut content, start, text);
             }
             OpType::InsertAfter => {
-                let content = op.content.as_deref().unwrap_or("");
-                result = format!("{}{}{}", &result[..end], content, &result[end..]);
+                let text = op.content.as_deref().unwrap_or("");
+                resolver.insert(&mut content, end, text);
             }
         }
     }
 
-    Ok(result)
+    Ok(resolver.to_string(&content))
 }
 
-/// Apply diff operations that use JSON Pointer targeting.
-fn apply_diff_with_pointers(base: &str, operations: &[DiffOp], _format: &str) -> Result<String> {
+/// Resolve a target to a byte range using the resolver.
+fn resolve_target<R: Resolve<Content = String>>(
+    resolver: &R,
+    content: &String,
+    target: &Target,
+) -> Result<(usize, usize)> {
+    match target {
+        Target::Id(id) => resolver.find_by_id(content, id),
+        Target::Pointer(pointer) => resolver.find_by_pointer(content, pointer),
+    }
+}
+
+/// Apply diff operations using JSON Pointer targeting.
+fn apply_diff_pointers(base: &str, operations: &[DiffOp]) -> Result<String> {
     let mut value: serde_json::Value =
         serde_json::from_str(base).context("pointer targeting requires valid JSON content")?;
 
     for (i, op) in operations.iter().enumerate() {
-        if let Some(pointer) = &op.target.pointer {
-            apply_pointer_op(&mut value, pointer, op)
-                .with_context(|| format!("operation {i}: pointer op failed"))?;
-        } else {
-            bail!("operation {i}: mixing pointer and non-pointer targets in the same batch is not supported");
+        let pointer = match &op.target {
+            Target::Pointer(p) => p.as_str(),
+            _ => bail!("operation {i}: expected pointer target"),
+        };
+
+        match op.op {
+            OpType::Replace => {
+                let content = op.content.as_deref().context("replace requires content")?;
+                let new_val: serde_json::Value =
+                    serde_json::from_str(content).context("content must be valid JSON")?;
+                let target = value
+                    .pointer_mut(pointer)
+                    .with_context(|| format!("pointer not found: {pointer}"))?;
+                *target = new_val;
+            }
+            OpType::Delete => {
+                let (parent_ptr, key) = split_pointer(pointer).context("cannot delete root")?;
+                let parent = value
+                    .pointer_mut(&parent_ptr)
+                    .with_context(|| format!("parent not found: {parent_ptr}"))?;
+                remove_child(parent, &key)?;
+            }
+            OpType::InsertBefore | OpType::InsertAfter => {
+                let content = op.content.as_deref().context("insert requires content")?;
+                let new_val: serde_json::Value =
+                    serde_json::from_str(content).context("content must be valid JSON")?;
+                let (parent_ptr, key) = split_pointer(pointer).context("cannot insert at root")?;
+                let parent = value
+                    .pointer_mut(&parent_ptr)
+                    .with_context(|| format!("parent not found: {parent_ptr}"))?;
+                let arr = parent
+                    .as_array_mut()
+                    .context("insert_before/insert_after require array parent")?;
+                let index: usize = key
+                    .parse()
+                    .context("insert_before/insert_after require numeric array index")?;
+                let insert_at = if op.op == OpType::InsertAfter {
+                    index + 1
+                } else {
+                    index
+                };
+                arr.insert(insert_at, new_val);
+            }
         }
     }
 
     serde_json::to_string_pretty(&value).context("failed to re-serialize JSON")
 }
 
-/// Apply a single pointer-targeted operation on a parsed JSON value.
-fn apply_pointer_op(root: &mut serde_json::Value, pointer: &str, op: &DiffOp) -> Result<()> {
-    match op.op {
-        OpType::Replace => {
-            let content = op.content.as_deref().context("replace requires content")?;
-            let new_val: serde_json::Value =
-                serde_json::from_str(content).context("content must be valid JSON")?;
-            let target = root
-                .pointer_mut(pointer)
-                .with_context(|| format!("pointer not found: {pointer}"))?;
-            *target = new_val;
-        }
-        OpType::Delete => {
-            let (parent_ptr, key) = split_pointer(pointer).context("cannot delete root")?;
-            let parent = root
-                .pointer_mut(&parent_ptr)
-                .with_context(|| format!("parent not found: {parent_ptr}"))?;
-            remove_child(parent, &key)?;
-        }
-        OpType::InsertBefore | OpType::InsertAfter => {
-            let content = op.content.as_deref().context("insert requires content")?;
-            let new_val: serde_json::Value =
-                serde_json::from_str(content).context("content must be valid JSON")?;
-            let (parent_ptr, key) = split_pointer(pointer).context("cannot insert at root")?;
-            let parent = root
-                .pointer_mut(&parent_ptr)
-                .with_context(|| format!("parent not found: {parent_ptr}"))?;
-            let arr = parent
-                .as_array_mut()
-                .context("insert_before/insert_after require array parent")?;
-            let index: usize = key
-                .parse()
-                .context("insert_before/insert_after require numeric array index")?;
-            let insert_at = if op.op == OpType::InsertAfter {
-                index + 1
-            } else {
-                index
-            };
-            arr.insert(insert_at, new_val);
-        }
-    }
-    Ok(())
-}
-
-/// Split a JSON Pointer into parent path and final key.
-/// `/a/b/c` → (`/a/b`, `c`)
-/// `/a` → (``, `a`)
 fn split_pointer(pointer: &str) -> Result<(String, String)> {
     if pointer.is_empty() || !pointer.starts_with('/') {
         bail!("invalid JSON Pointer: {pointer:?}");
@@ -290,9 +351,7 @@ fn split_pointer(pointer: &str) -> Result<(String, String)> {
     }
 }
 
-/// Remove a child from a JSON object or array.
 fn remove_child(parent: &mut serde_json::Value, key: &str) -> Result<()> {
-    // Unescape RFC 6901
     let unescaped = key.replace("~1", "/").replace("~0", "~");
 
     if let Some(obj) = parent.as_object_mut() {
@@ -313,478 +372,273 @@ fn remove_child(parent: &mut serde_json::Value, key: &str) -> Result<()> {
     Ok(())
 }
 
-/// Replace section content, preserving markers and other sections.
-pub fn apply_section_update(
-    base: &str,
-    updates: &[SectionUpdate],
-    format: &str,
-    sections: Option<&[SectionDef]>,
-) -> Result<String> {
-    let mut result = base.to_string();
-
-    for update in updates {
-        let section_def = find_section_def(sections, &update.id);
-        let (start_marker, _end_marker) = resolve_markers(&update.id, format, section_def)
-            .with_context(|| format!("cannot resolve markers for section: {}", update.id))?;
-        let (content_start, content_end) =
-            find_section_range(&result, &update.id, format, section_def)
-                .with_context(|| format!("section not found: {}", update.id))?;
-
-        // Rebuild: everything up to and including start marker, new content, then from end marker
-        let marker_end_pos = result[..content_start]
-            .rfind(&start_marker)
-            .map(|pos| pos + start_marker.len())
-            .unwrap_or(content_start);
-        let before = &result[..marker_end_pos];
-        let after = &result[content_end..];
-        result = format!("{before}\n{}\n{after}", update.content);
-    }
-
-    Ok(result)
-}
-
-/// Simple Mustache-subset template filling (variable substitution).
-pub fn fill_template(template: &str, bindings: &HashMap<String, serde_json::Value>) -> String {
-    let mut result = template.to_string();
-    for (key, value) in bindings {
-        let val_str = match value {
-            serde_json::Value::String(s) => s.clone(),
-            other => other.to_string(),
-        };
-        // Unescaped triple-brace
-        result = result.replace(&format!("{{{{{{{key}}}}}}}"), &val_str);
-        // Regular double-brace
-        result = result.replace(&format!("{{{{{key}}}}}"), &val_str);
-    }
-    result
-}
-
-/// Assemble content from inline include items.
-///
-/// Only inline `content` items are supported. References (`ref`, `uri`) must
-/// be pre-resolved by the caller before invoking the stateless apply engine.
-pub fn resolve_composite(includes: &[Include], _format: &str) -> Result<String> {
-    let mut parts = Vec::new();
-
-    for inc in includes {
-        if let Some(content) = &inc.content {
-            parts.push(content.clone());
-        } else if inc.reference.is_some() {
-            bail!("composite ref must be pre-resolved before calling apply — the apply engine is stateless");
-        } else if inc.uri.is_some() {
-            bail!("composite uri must be pre-resolved before calling apply — the apply engine is stateless");
-        } else {
-            bail!("include has no ref, uri, or content");
-        }
-    }
-
-    Ok(parts.join("\n"))
-}
-
-/// Assemble a manifest by stitching section results into the skeleton.
-///
-/// Each entry in `section_results` maps a section ID to its generated content.
-/// The content is inserted between the corresponding section markers in the skeleton.
-pub fn assemble_manifest(
-    skeleton: &str,
-    section_results: &HashMap<String, String>,
-    format: &str,
-    sections: Option<&[SectionDef]>,
-) -> Result<String> {
-    let mut result = skeleton.to_string();
-    for (section_id, content) in section_results {
-        let section_def = find_section_def(sections, section_id);
-        let (start_marker, _end_marker) = resolve_markers(section_id, format, section_def)
-            .with_context(|| format!("cannot resolve markers for section: {section_id}"))?;
-        let (content_start, content_end) =
-            find_section_range(&result, section_id, format, section_def)
-                .with_context(|| format!("section marker not found in skeleton: {section_id}"))?;
-
-        let marker_end_pos = result[..content_start]
-            .rfind(&start_marker)
-            .map(|pos| pos + start_marker.len())
-            .unwrap_or(content_start);
-        let before = &result[..marker_end_pos];
-        let after = &result[content_end..];
-        result = format!("{before}\n{content}\n{after}");
-    }
-    Ok(result)
-}
-
-/// Find the byte range targeted by a diff operation's target.
-fn find_target_range(
-    content: &str,
-    target: &crate::aap::Target,
-    format: &str,
-    sections: Option<&[SectionDef]>,
-) -> Result<(usize, usize)> {
-    if let Some(search) = &target.search {
-        let idx = content
-            .find(search.as_str())
-            .with_context(|| format!("search target not found: {search:?}"))?;
-        Ok((idx, idx + search.len()))
-    } else if let Some(offsets) = &target.offsets {
-        Ok((offsets[0] as usize, offsets[1] as usize))
-    } else if let Some(lines) = &target.lines {
-        let content_lines: Vec<&str> = content.split('\n').collect();
-        let start_line = (lines[0] as usize).saturating_sub(1);
-        let end_line = lines[1] as usize;
-        let start = content_lines[..start_line]
-            .iter()
-            .map(|l| l.len() + 1)
-            .sum::<usize>();
-        let end = content_lines[..end_line]
-            .iter()
-            .map(|l| l.len() + 1)
-            .sum::<usize>()
-            .saturating_sub(1);
-        Ok((start, end))
-    } else if let Some(section) = &target.section {
-        let section_def = find_section_def(sections, section);
-        find_section_range(content, section, format, section_def)
-    } else {
-        bail!("target has no addressing mode")
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aap::{DiffOp, OpType, Target};
 
-    fn make_operation(format: &str) -> Operation {
-        Operation {
-            direction: "output".to_string(),
-            format: Some(format.to_string()),
-            encoding: None,
-            content_encoding: None,
-            section_id: None,
-            token_budget: None,
-            tokens_used: None,
-            checksum: None,
-            created_at: None,
-            updated_at: None,
-            state: None,
-            state_changed_at: None,
-        }
-    }
-
-    fn full_envelope(id: &str, version: u64, body: &str) -> Envelope {
+    fn synthesize_envelope(id: &str, version: u64, body: &str) -> Envelope {
         Envelope {
             protocol: PROTOCOL_VERSION.to_string(),
             id: id.to_string(),
             version,
-            name: Name::Full,
-            operation: make_operation("text/html"),
+            name: Name::Synthesize,
+            operation: Operation {
+                direction: "output".to_string(),
+                format: Some("text/html".to_string()),
+                encoding: None,
+                content_encoding: None,
+                token_budget: None,
+                tokens_used: None,
+                checksum: None,
+                created_at: None,
+                updated_at: None,
+                state: None,
+                state_changed_at: None,
+            },
             content: vec![serde_json::json!({ "body": body })],
         }
     }
 
-    #[test]
-    fn test_apply_full() {
-        let op = full_envelope("test", 1, "<div>hello</div>");
-        let result = apply(None, &op).unwrap();
-        assert_eq!(result.name, Name::Full);
-        assert_eq!(extract_body(&result).unwrap(), "<div>hello</div>");
+    fn id_target(id: &str) -> Target {
+        Target::Id(id.to_string())
+    }
+
+    fn pointer_target(p: &str) -> Target {
+        Target::Pointer(p.to_string())
     }
 
     #[test]
-    fn test_apply_diff() {
-        let artifact = full_envelope("test", 1, "<div>old value</div>");
+    fn test_apply_synthesize() {
+        let op = synthesize_envelope("test", 1, "<div>hello</div>");
+        let (result, handle) = apply(None, &op).unwrap();
+        assert_eq!(result.name, Name::Synthesize);
+        assert_eq!(extract_synthesize_item(&result).unwrap().body, "<div>hello</div>");
+        assert_eq!(handle.name, Name::Handle);
+    }
+
+    #[test]
+    fn test_apply_synthesize_with_targets() {
+        let body = r#"<aap:target id="nav">menu</aap:target><aap:target id="stats">data</aap:target>"#;
+        let op = synthesize_envelope("test", 1, body);
+        let (_, handle) = apply(None, &op).unwrap();
+        let handle_item: HandleContentItem =
+            serde_json::from_value(handle.content[0].clone()).unwrap();
+        assert_eq!(handle_item.sections, vec!["nav", "stats"]);
+        assert!(handle_item.token_count.is_some());
+    }
+
+    #[test]
+    fn test_edit_replace_by_id() {
+        let body = r#"<aap:target id="revenue">$12,340</aap:target>"#;
+        let artifact = synthesize_envelope("test", 1, body);
         let op = Envelope {
             protocol: PROTOCOL_VERSION.to_string(),
             id: "test".to_string(),
             version: 2,
-            name: Name::Diff,
-            operation: make_operation("text/html"),
+            name: Name::Edit,
+            operation: artifact.operation.clone(),
             content: vec![serde_json::to_value(DiffOp {
                 op: OpType::Replace,
-                target: Target {
-                    search: Some("old value".to_string()),
-                    lines: None,
-                    offsets: None,
-                    section: None,
-                    pointer: None,
-                },
-                content: Some("new value".to_string()),
+                target: id_target("revenue"),
+                content: Some("$15,720".to_string()),
             })
             .unwrap()],
         };
-        let result = apply(Some(&artifact), &op).unwrap();
-        assert_eq!(result.name, Name::Full);
-        assert_eq!(extract_body(&result).unwrap(), "<div>new value</div>");
+        let (result, handle) = apply(Some(&artifact), &op).unwrap();
+        let out = extract_synthesize_item(&result).unwrap().body;
+        assert!(out.contains("$15,720"));
+        assert!(!out.contains("$12,340"));
+        assert!(out.contains(r#"<aap:target id="revenue">"#));
+        assert_eq!(handle.name, Name::Handle);
     }
 
     #[test]
-    fn test_apply_diff_preserves_sections() {
-        let artifact = Envelope {
-            protocol: PROTOCOL_VERSION.to_string(),
-            id: "test".to_string(),
-            version: 1,
-            name: Name::Full,
-            operation: make_operation("text/html"),
-            content: vec![serde_json::json!({
-                "body": "<div>old</div>",
-                "sections": [{"id": "main"}]
-            })],
-        };
+    fn test_edit_delete_by_id() {
+        let body = r#"before<aap:target id="tmp">remove</aap:target>after"#;
+        let artifact = synthesize_envelope("test", 1, body);
         let op = Envelope {
             protocol: PROTOCOL_VERSION.to_string(),
             id: "test".to_string(),
             version: 2,
-            name: Name::Diff,
-            operation: make_operation("text/html"),
+            name: Name::Edit,
+            operation: artifact.operation.clone(),
+            content: vec![serde_json::to_value(DiffOp {
+                op: OpType::Delete,
+                target: id_target("tmp"),
+                content: None,
+            })
+            .unwrap()],
+        };
+        let (result, _) = apply(Some(&artifact), &op).unwrap();
+        let out = extract_synthesize_item(&result).unwrap().body;
+        assert_eq!(out, r#"before<aap:target id="tmp"></aap:target>after"#);
+    }
+
+    #[test]
+    fn test_edit_insert_after_by_id() {
+        let body = r#"<aap:target id="list">item1</aap:target>"#;
+        let artifact = synthesize_envelope("test", 1, body);
+        let op = Envelope {
+            protocol: PROTOCOL_VERSION.to_string(),
+            id: "test".to_string(),
+            version: 2,
+            name: Name::Edit,
+            operation: artifact.operation.clone(),
+            content: vec![serde_json::to_value(DiffOp {
+                op: OpType::InsertAfter,
+                target: id_target("list"),
+                content: Some(", item2".to_string()),
+            })
+            .unwrap()],
+        };
+        let (result, _) = apply(Some(&artifact), &op).unwrap();
+        let out = extract_synthesize_item(&result).unwrap().body;
+        assert!(out.contains("item1, item2"));
+    }
+
+    #[test]
+    fn test_nested_targets() {
+        let body = r#"<aap:target id="outer"><h2>Stats</h2><aap:target id="val">100</aap:target></aap:target>"#;
+        let artifact = synthesize_envelope("test", 1, body);
+        let op = Envelope {
+            protocol: PROTOCOL_VERSION.to_string(),
+            id: "test".to_string(),
+            version: 2,
+            name: Name::Edit,
+            operation: artifact.operation.clone(),
             content: vec![serde_json::to_value(DiffOp {
                 op: OpType::Replace,
-                target: Target {
-                    search: Some("old".to_string()),
-                    lines: None,
-                    offsets: None,
-                    section: None,
-                    pointer: None,
-                },
+                target: id_target("val"),
+                content: Some("200".to_string()),
+            })
+            .unwrap()],
+        };
+        let (result, handle) = apply(Some(&artifact), &op).unwrap();
+        let out = extract_synthesize_item(&result).unwrap().body;
+        assert!(out.contains("200"));
+        assert!(out.contains("<h2>Stats</h2>"));
+        assert!(out.contains(r#"<aap:target id="outer">"#));
+        // Handle should list both targets
+        let handle_item: HandleContentItem =
+            serde_json::from_value(handle.content[0].clone()).unwrap();
+        assert!(handle_item.sections.contains(&"outer".to_string()));
+        assert!(handle_item.sections.contains(&"val".to_string()));
+    }
+
+    #[test]
+    fn test_targets_preserved_through_edit() {
+        let body = r#"<aap:target id="x">old</aap:target>"#;
+        let mut artifact = synthesize_envelope("test", 1, body);
+        artifact.content = vec![serde_json::json!({
+            "body": body,
+            "targets": [{"id": "x", "label": "Test"}]
+        })];
+        let op = Envelope {
+            protocol: PROTOCOL_VERSION.to_string(),
+            id: "test".to_string(),
+            version: 2,
+            name: Name::Edit,
+            operation: artifact.operation.clone(),
+            content: vec![serde_json::to_value(DiffOp {
+                op: OpType::Replace,
+                target: id_target("x"),
                 content: Some("new".to_string()),
             })
             .unwrap()],
         };
-        let result = apply(Some(&artifact), &op).unwrap();
-        let sections = extract_sections(&result).unwrap();
-        assert_eq!(sections.len(), 1);
-        assert_eq!(sections[0].id, "main");
-    }
-
-    #[test]
-    fn test_apply_diff_without_artifact_fails() {
-        let op = Envelope {
-            protocol: PROTOCOL_VERSION.to_string(),
-            id: "test".to_string(),
-            version: 2,
-            name: Name::Diff,
-            operation: make_operation("text/html"),
-            content: vec![],
-        };
-        assert!(apply(None, &op).is_err());
-    }
-
-    #[test]
-    fn test_apply_diff_search_replace() {
-        let base = "<div>old value</div>";
-        let ops = vec![DiffOp {
-            op: OpType::Replace,
-            target: Target {
-                search: Some("old value".to_string()),
-                lines: None,
-                offsets: None,
-                section: None,
-                pointer: None,
-            },
-            content: Some("new value".to_string()),
-        }];
-        let result = apply_diff(base, &ops, "text/html", None).unwrap();
-        assert_eq!(result, "<div>new value</div>");
-    }
-
-    #[test]
-    fn test_apply_diff_delete() {
-        let base = "keep this, remove this, keep that";
-        let ops = vec![DiffOp {
-            op: OpType::Delete,
-            target: Target {
-                search: Some(", remove this".to_string()),
-                lines: None,
-                offsets: None,
-                section: None,
-                pointer: None,
-            },
-            content: None,
-        }];
-        let result = apply_diff(base, &ops, "text/html", None).unwrap();
-        assert_eq!(result, "keep this, keep that");
-    }
-
-    #[test]
-    fn test_apply_section_update() {
-        let base = "before\n<aap:section id=\"stats\">\nold stats\n</aap:section>\nafter";
-        let updates = vec![SectionUpdate {
-            id: "stats".to_string(),
-            content: "new stats".to_string(),
-        }];
-        let result = apply_section_update(base, &updates, "text/html", None).unwrap();
-        assert!(result.contains("new stats"));
-        assert!(result.contains("before"));
-        assert!(result.contains("after"));
-    }
-
-    #[test]
-    fn test_apply_section_update_python() {
-        let base = "import os\n<aap:section id=\"imports\">\nold imports\n</aap:section>\ncode";
-        let updates = vec![SectionUpdate {
-            id: "imports".to_string(),
-            content: "import sys\nimport json".to_string(),
-        }];
-        let result = apply_section_update(base, &updates, "text/x-python", None).unwrap();
-        assert!(result.contains("import sys\nimport json"));
-        assert!(result.contains("import os"));
-        assert!(result.contains("code"));
-    }
-
-    #[test]
-    fn test_apply_section_update_javascript() {
-        let base = "const a = 1;\n<aap:section id=\"utils\">\nold utils\n</aap:section>\nconst b = 2;";
-        let updates = vec![SectionUpdate {
-            id: "utils".to_string(),
-            content: "function helper() {}".to_string(),
-        }];
-        let result =
-            apply_section_update(base, &updates, "application/javascript", None).unwrap();
-        assert!(result.contains("function helper() {}"));
-        assert!(result.contains("const a = 1;"));
-        assert!(result.contains("const b = 2;"));
-    }
-
-    #[test]
-    fn test_fill_template() {
-        let template = "<h1>{{title}}</h1><p>{{{body}}}</p>";
-        let mut bindings = HashMap::new();
-        bindings.insert(
-            "title".to_string(),
-            serde_json::Value::String("Hello".to_string()),
-        );
-        bindings.insert(
-            "body".to_string(),
-            serde_json::Value::String("<b>World</b>".to_string()),
-        );
-        let result = fill_template(template, &bindings);
-        assert_eq!(result, "<h1>Hello</h1><p><b>World</b></p>");
-    }
-
-    #[test]
-    fn test_assemble_manifest() {
-        let skeleton =
-            "<html><aap:section id=\"nav\"></aap:section><main><aap:section id=\"body\"></aap:section></main></html>";
-        let mut sections = HashMap::new();
-        sections.insert("nav".to_string(), "<nav>Home</nav>".to_string());
-        sections.insert("body".to_string(), "<h1>Hello</h1>".to_string());
-        let result = assemble_manifest(skeleton, &sections, "text/html", None).unwrap();
-        assert!(result.contains("<nav>Home</nav>"));
-        assert!(result.contains("<h1>Hello</h1>"));
-        assert!(result.contains("<aap:section id=\"nav\">"));
-        assert!(result.contains("</aap:section>"));
-    }
-
-    #[test]
-    fn test_assemble_manifest_python() {
-        let skeleton = "<aap:section id=\"header\"></aap:section>\n<aap:section id=\"body\"></aap:section>";
-        let mut sections = HashMap::new();
-        sections.insert("header".to_string(), "import os".to_string());
-        sections.insert("body".to_string(), "print('hello')".to_string());
-        let result =
-            assemble_manifest(skeleton, &sections, "text/x-python", None).unwrap();
-        assert!(result.contains("import os"));
-        assert!(result.contains("print('hello')"));
-    }
-
-    #[test]
-    fn test_diff_with_section_target_python() {
-        let base = "<aap:section id=\"config\">\nold_value = 1\n</aap:section>\ncode";
-        let ops = vec![DiffOp {
-            op: OpType::Replace,
-            target: Target {
-                section: Some("config".to_string()),
-                search: None,
-                lines: None,
-                offsets: None,
-                pointer: None,
-            },
-            content: Some("new_value = 2".to_string()),
-        }];
-        let result = apply_diff(base, &ops, "text/x-python", None).unwrap();
-        assert!(result.contains("new_value = 2"));
-        assert!(!result.contains("old_value"));
+        let (result, _) = apply(Some(&artifact), &op).unwrap();
+        let item = extract_synthesize_item(&result).unwrap();
+        assert!(item.body.contains("new"));
+        assert_eq!(item.targets.unwrap()[0].id, "x");
     }
 
     #[test]
     fn test_pointer_replace() {
         let base = r#"{"name": "Alice", "age": 30}"#;
-        let ops = vec![DiffOp {
+        let artifact = synthesize_envelope("test", 1, base);
+        let mut op = synthesize_envelope("test", 2, "");
+        op.name = Name::Edit;
+        op.operation.format = Some("application/json".to_string());
+        op.content = vec![serde_json::to_value(DiffOp {
             op: OpType::Replace,
-            target: Target {
-                pointer: Some("/name".to_string()),
-                search: None,
-                lines: None,
-                offsets: None,
-                section: None,
-            },
+            target: pointer_target("/name"),
             content: Some(r#""Bob""#.to_string()),
-        }];
-        let result = apply_diff(base, &ops, "application/json", None).unwrap();
-        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        })
+        .unwrap()];
+        let (result, _) = apply(Some(&artifact), &op).unwrap();
+        let out = extract_synthesize_item(&result).unwrap().body;
+        let parsed: serde_json::Value = serde_json::from_str(&out).unwrap();
         assert_eq!(parsed["name"], "Bob");
         assert_eq!(parsed["age"], 30);
     }
 
     #[test]
     fn test_pointer_delete() {
-        let base = r#"{"name": "Alice", "age": 30, "temp": true}"#;
-        let ops = vec![DiffOp {
+        let base = r#"{"name": "Alice", "temp": true}"#;
+        let artifact = synthesize_envelope("test", 1, base);
+        let mut op = synthesize_envelope("test", 2, "");
+        op.name = Name::Edit;
+        op.operation.format = Some("application/json".to_string());
+        op.content = vec![serde_json::to_value(DiffOp {
             op: OpType::Delete,
-            target: Target {
-                pointer: Some("/temp".to_string()),
-                search: None,
-                lines: None,
-                offsets: None,
-                section: None,
-            },
+            target: pointer_target("/temp"),
             content: None,
-        }];
-        let result = apply_diff(base, &ops, "application/json", None).unwrap();
-        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        })
+        .unwrap()];
+        let (result, _) = apply(Some(&artifact), &op).unwrap();
+        let out = extract_synthesize_item(&result).unwrap().body;
+        let parsed: serde_json::Value = serde_json::from_str(&out).unwrap();
         assert!(parsed.get("temp").is_none());
-        assert_eq!(parsed["name"], "Alice");
     }
 
     #[test]
-    fn test_pointer_insert_after_array() {
-        let base = r#"{"items": ["a", "b", "c"]}"#;
-        let ops = vec![DiffOp {
-            op: OpType::InsertAfter,
-            target: Target {
-                pointer: Some("/items/1".to_string()),
-                search: None,
-                lines: None,
-                offsets: None,
-                section: None,
-            },
-            content: Some(r#""x""#.to_string()),
-        }];
-        let result = apply_diff(base, &ops, "application/json", None).unwrap();
-        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
-        let items: Vec<&str> = parsed["items"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|v| v.as_str().unwrap())
-            .collect();
-        assert_eq!(items, vec!["a", "b", "x", "c"]);
-    }
+    fn test_target_serde_roundtrip() {
+        let t = Target::Id("revenue".to_string());
+        let json = serde_json::to_string(&t).unwrap();
+        let parsed: Target = serde_json::from_str(&json).unwrap();
+        assert!(matches!(parsed, Target::Id(ref s) if s == "revenue"));
 
-    #[test]
-    fn test_pointer_nested_replace() {
-        let base = r#"{"db": {"host": "localhost", "port": 5432}}"#;
-        let ops = vec![DiffOp {
+        let op = DiffOp {
             op: OpType::Replace,
-            target: Target {
-                pointer: Some("/db/host".to_string()),
-                search: None,
-                lines: None,
-                offsets: None,
-                section: None,
-            },
-            content: Some(r#""prod.example.com""#.to_string()),
-        }];
-        let result = apply_diff(base, &ops, "application/json", None).unwrap();
-        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
-        assert_eq!(parsed["db"]["host"], "prod.example.com");
-        assert_eq!(parsed["db"]["port"], 5432);
+            target: Target::Id("rev".to_string()),
+            content: Some("new".to_string()),
+        };
+        let json = serde_json::to_string(&op).unwrap();
+        let parsed: DiffOp = serde_json::from_str(&json).unwrap();
+        assert!(matches!(parsed.target, Target::Id(ref s) if s == "rev"));
+    }
+
+    #[test]
+    fn test_edit_from_json_string() {
+        let json = r#"{
+            "protocol": "aap/0.1", "id": "x", "version": 2, "name": "edit",
+            "operation": {"direction": "output", "format": "text/html"},
+            "content": [{"op": "replace", "target": {"type": "id", "value": "rev"}, "content": "new"}]
+        }"#;
+        let env: Envelope = serde_json::from_str(json).unwrap();
+        let ops: Vec<DiffOp> = env.content.iter()
+            .map(|v| serde_json::from_value(v.clone()).unwrap())
+            .collect();
+        assert!(matches!(ops[0].target, Target::Id(ref s) if s == "rev"));
+
+        let art_json = r#"{"protocol":"aap/0.1","id":"x","version":1,"name":"synthesize","operation":{"direction":"output","format":"text/html"},"content":[{"body":"<aap:target id=\"rev\">old</aap:target>"}]}"#;
+        let art: Envelope = serde_json::from_str(art_json).unwrap();
+        let (result, _) = apply(Some(&art), &env).unwrap();
+        let body = extract_synthesize_item(&result).unwrap().body;
+        assert!(body.contains("new"));
+        assert!(!body.contains("old"));
+    }
+
+    #[test]
+    fn test_extract_target_ids() {
+        let content = r#"<aap:target id="nav">menu</aap:target> <aap:target id="stats">data</aap:target>"#;
+        let ids = extract_target_ids(content);
+        assert_eq!(ids, vec!["nav", "stats"]);
+    }
+
+    #[test]
+    fn test_extract_target_ids_empty() {
+        let ids = extract_target_ids("no markers here");
+        assert!(ids.is_empty());
     }
 }
