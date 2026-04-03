@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from pathlib import Path
 from typing import Annotated
 
 import typer
+from pydantic_ai.models import Model
 from rich.console import Console
 from rich.table import Table
 
@@ -125,14 +127,171 @@ def _build_token_table(metrics: dict) -> dict:
     }
 
 
+async def _run_single_experiment(
+    llm: Model,
+    provider_name: str,
+    model_name: str,
+    exp_dir: Path,
+    flow: str,
+    skip_eval: bool,
+) -> bool:
+    """Run a single experiment (base vs AAP flows). Returns True on success."""
+    from datetime import datetime, timezone
+
+    from .eval.metrics import score_experiment
+    from .runner.aap import run_aap_flow, run_aap_turn0
+    from .runner.base import run_base_flow, run_base_turn0
+
+    exp_name = exp_dir.name
+    fmt, ext = _parse_experiment_format(exp_dir / "README.md")
+
+    if (exp_dir / "metrics.json").exists():
+        console.print(f"[dim]{exp_name} — already done, skipping[/dim]")
+        return True
+
+    console.print(f"[bold]{exp_name}[/bold] ({fmt}) via [cyan]{provider_name}[/cyan]")
+    try:
+        base_input = exp_dir / "inputs" / "base"
+        base_output = exp_dir / "outputs" / "base"
+        aap_output = exp_dir / "outputs" / "aap"
+        base_output.mkdir(parents=True, exist_ok=True)
+        aap_output.mkdir(parents=True, exist_ok=True)
+
+        base_system = (base_input / "system.md").read_text().strip()
+        init_system = base_system + "\n\n" + AAP_SPEC
+        maintain_system = base_system + "\n\n" + AAP_SPEC
+        turn_files = _find_turn_files(base_input)
+
+        if not turn_files:
+            console.print(f"  [yellow]{exp_name}: no turn files, skipping[/yellow]")
+            return True
+
+        turn_0_prompt = turn_files[0].read_text().strip()
+        edit_prompts = [(tf.stem, tf.read_text().strip()) for tf in turn_files[1:]]
+
+        metrics: dict = {
+            "experiment_id": exp_name,
+            "model": model_name,
+            "provider": provider_name,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "format": fmt,
+        }
+
+        # ── Turn 0 ───────────────────────────────────────────────
+        history = []
+        base_art = ""
+        aap_art = ""
+
+        if flow in ("base", "both"):
+            base_art, history, bt0 = await run_base_turn0(llm, base_system, turn_0_prompt, base_output, ext)
+            metrics["base_turn0"] = bt0
+            ttft = f", ttft={bt0['ttft_ms']}ms" if bt0.get('ttft_ms') is not None else ""
+            console.print(f"  [{provider_name}] {exp_name} base turn-0: {bt0['output_tokens']} out, {bt0['latency_ms']}ms{ttft}")
+
+        if flow in ("aap", "both"):
+            aap_art, at0 = await run_aap_turn0(llm, init_system, turn_0_prompt, aap_output, ext)
+            metrics["aap_turn0"] = at0
+            ttft = f", ttft={at0['ttft_ms']}ms" if at0.get('ttft_ms') is not None else ""
+            console.print(f"  [{provider_name}] {exp_name} aap  turn-0: {at0['output_tokens']} out, {at0['latency_ms']}ms{ttft}")
+
+        # ── Base flow ─────────────────────────────────────────────
+        if flow in ("base", "both") and edit_prompts:
+            base_results, base_final = await run_base_flow(llm, base_system, history, edit_prompts, base_output, ext)
+            base_total_out = sum(r.output_tokens for r in base_results)
+            base_total_in = sum(r.input_tokens for r in base_results)
+            base_total_ms = sum(r.latency_ms for r in base_results)
+
+            metrics["default_flow"] = {
+                "per_turn": [r.model_dump() for r in base_results],
+                "total_input_tokens": base_total_in,
+                "total_output_tokens": base_total_out,
+                "total_latency_ms": base_total_ms,
+            }
+
+            for r in base_results:
+                ttft = f", ttft={r.ttft_ms}ms" if r.ttft_ms is not None else ""
+                console.print(f"  [{provider_name}] {exp_name} base turn-{r.turn}: {r.output_tokens} out, {r.input_tokens} in, {r.latency_ms}ms{ttft}")
+
+        # ── AAP flow ──────────────────────────────────────────────
+        parse_ok = 0
+        apply_ok = 0
+        num_edits = 0
+        if flow in ("aap", "both") and edit_prompts:
+            aap_results, aap_final = await run_aap_flow(llm, maintain_system, aap_art, edit_prompts, fmt, aap_output, ext)
+            aap_total_out = sum(r.output_tokens for r in aap_results)
+            aap_total_in = sum(r.input_tokens for r in aap_results)
+            aap_total_ms = sum(r.latency_ms for r in aap_results)
+            parse_ok = sum(1 for r in aap_results if r.envelope_parsed)
+            apply_ok = sum(1 for r in aap_results if r.apply_succeeded)
+            num_edits = len(aap_results)
+
+            metrics["aap_flow"] = {
+                "per_turn": [r.model_dump() for r in aap_results],
+                "total_input_tokens": aap_total_in,
+                "total_output_tokens": aap_total_out,
+                "total_latency_ms": aap_total_ms,
+                "envelope_parse_rate": parse_ok / num_edits if num_edits else 0,
+                "apply_success_rate": apply_ok / num_edits if num_edits else 0,
+            }
+
+            for r in aap_results:
+                status = "[green]ok[/green]" if r.apply_succeeded else "[red]fail[/red]"
+                ttft = f", ttft={r.ttft_ms}ms" if r.ttft_ms is not None else ""
+                console.print(
+                    f"  [{provider_name}] {exp_name} aap  turn-{r.turn}: {r.output_tokens} out, {r.input_tokens} in, "
+                    f"{r.latency_ms}ms{ttft}, {r.envelope_name} {status}"
+                )
+
+        # ── Comparison + token table ──────────────────────────────
+        if "default_flow" in metrics and "aap_flow" in metrics:
+            bo = metrics["default_flow"]["total_output_tokens"]
+            ao = metrics["aap_flow"]["total_output_tokens"]
+            bi = metrics["default_flow"]["total_input_tokens"]
+            ai = metrics["aap_flow"]["total_input_tokens"]
+            bms = metrics["default_flow"]["total_latency_ms"]
+            ams = metrics["aap_flow"]["total_latency_ms"]
+
+            metrics["comparison"] = {
+                "output_token_savings_pct": round(100 * (bo - ao) / bo, 1) if bo else 0,
+                "input_token_savings_pct": round(100 * (bi - ai) / bi, 1) if bi else 0,
+                "latency_savings_pct": round(100 * (bms - ams) / bms, 1) if bms else 0,
+            }
+            metrics["token_table"] = _build_token_table(metrics)
+
+            out_sav = metrics["comparison"]["output_token_savings_pct"]
+            tag = f"[green]{out_sav:.1f}% out savings[/green]" if out_sav > 0 else f"[red]{out_sav:.1f}%[/red]"
+            console.print(
+                f"  [{provider_name}] [bold]{exp_name} summary:[/bold] base={bo} out | aap={ao} out | "
+                f"{tag} | parse={parse_ok}/{num_edits} apply={apply_ok}/{num_edits}\n"
+            )
+
+        # ── Quality eval ──────────────────────────────────────────
+        if not skip_eval and base_output.exists() and aap_output.exists():
+            quality = score_experiment(base_output, aap_output, ext)
+            if quality.per_turn:
+                metrics["quality"] = quality.model_dump()
+                console.print(
+                    f"  [{provider_name}] {exp_name} [dim]quality: seq_sim={quality.mean_sequence_similarity:.3f} "
+                    f"token_f1={quality.mean_token_f1:.3f}[/dim]"
+                )
+
+        (exp_dir / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
+        return True
+
+    except Exception as e:
+        console.print(f"  [{provider_name}] [red]{exp_name} FAILED: {e}[/red]\n")
+        return False
+
+
 # ── run ───────────────────────────────────────────────────────────────────
 
 
 @app.command(name="run")
 def run_experiments(
     experiments_dir: Annotated[Path, typer.Option(help="Experiments directory")] = DATA_DIR / "experiments",
-    provider: Annotated[str, typer.Option(help="LLM provider")] = "google",
-    model: Annotated[str, typer.Option(help="Model name")] = "",
+    provider: Annotated[str, typer.Option(help="LLM provider (single)")] = "google",
+    providers: Annotated[str, typer.Option(help="Comma-separated providers for parallel execution")] = "",
+    model: Annotated[str, typer.Option(help="Model name (applies to single --provider only)")] = "",
     host: Annotated[str, typer.Option(help="Ollama host")] = "http://localhost:11434",
     fallback: Annotated[str, typer.Option(help="Fallback provider")] = "",
     count: Annotated[int, typer.Option(help="Max experiments (0=all)")] = 0,
@@ -140,17 +299,44 @@ def run_experiments(
     flow: Annotated[str, typer.Option(help="Which flow: base, aap, both")] = "both",
     skip_eval: Annotated[bool, typer.Option(help="Skip quality eval")] = False,
 ) -> None:
-    """Run conversation benchmark experiments (base vs AAP flows)."""
-    import time
-    from datetime import datetime, timezone
+    """Run conversation benchmark experiments (base vs AAP flows).
 
-    from .agents import create_model
-    from .eval.metrics import score_experiment
-    from .runner.aap import run_aap_flow, run_aap_turn0
-    from .runner.base import run_base_flow, run_base_turn0
+    Use --providers for parallel execution across multiple free-tier providers:
+        aap-evals run --providers google,groq,github
+    """
+    asyncio.run(_run_experiments_async(
+        experiments_dir, provider, providers, model, host, fallback,
+        count, experiment_id, flow, skip_eval,
+    ))
 
-    llm = create_model(provider, model, host, fallback)
 
+async def _run_experiments_async(
+    experiments_dir: Path,
+    provider: str,
+    providers: str,
+    model: str,
+    host: str,
+    fallback: str,
+    count: int,
+    experiment_id: str,
+    flow: str,
+    skip_eval: bool,
+) -> None:
+    from .agents import PROVIDER_DEFAULTS, create_model
+
+    # ── Build provider list ───────────────────────────────────────────
+    if providers:
+        provider_list = [p.strip() for p in providers.split(",") if p.strip()]
+    else:
+        provider_list = [provider]
+
+    models: list[tuple[str, Model]] = []
+    for prov in provider_list:
+        m = model if len(provider_list) == 1 else ""
+        llm = create_model(prov, m, host, fallback)
+        models.append((prov, llm))
+
+    # ── Collect experiment dirs ───────────────────────────────────────
     exp_dirs = sorted(
         d for d in experiments_dir.iterdir()
         if d.is_dir() and not d.name.startswith(".") and d.name != "EXPERIMENT.md"
@@ -164,148 +350,59 @@ def run_experiments(
         console.print("[red]No experiments found.[/red]")
         raise typer.Exit(1)
 
-    console.print(f"Running {len(exp_dirs)} experiment(s) with [bold]{model or provider}[/bold]\n")
+    provider_labels = ", ".join(f"{p} ({PROVIDER_DEFAULTS.get(p, '?')})" for p in provider_list)
+    console.print(
+        f"Running {len(exp_dirs)} experiment(s) across {len(models)} provider(s): "
+        f"[bold]{provider_labels}[/bold]\n"
+    )
 
-    for exp_dir in exp_dirs:
-        exp_name = exp_dir.name
-        fmt, ext = _parse_experiment_format(exp_dir / "README.md")
+    # ── Sequential (single provider) ─────────────────────────────────
+    if len(models) == 1:
+        prov_name, llm = models[0]
+        m_name = model or PROVIDER_DEFAULTS.get(prov_name, "")
+        for exp_dir in exp_dirs:
+            await _run_single_experiment(llm, prov_name, m_name, exp_dir, flow, skip_eval)
+        console.print("[green]Done.[/green]")
+        return
 
-        if (exp_dir / "metrics.json").exists():
-            console.print(f"[dim]{exp_name} — already done, skipping[/dim]")
-            continue
+    # ── Parallel (multiple providers) ─────────────────────────────────
+    # Round-robin assign experiments to providers, then gather per-provider
+    # queues so each provider's rate limit is respected sequentially while
+    # different providers run concurrently.
+    provider_queues: dict[str, list[tuple[Path, Model, str]]] = {p: [] for p, _ in models}
+    model_map = {p: llm for p, llm in models}
+    for i, exp_dir in enumerate(exp_dirs):
+        prov_name = provider_list[i % len(provider_list)]
+        m_name = PROVIDER_DEFAULTS.get(prov_name, "")
+        provider_queues[prov_name].append((exp_dir, model_map[prov_name], m_name))
 
-        console.print(f"[bold]{exp_name}[/bold] ({fmt})")
-        try:
-            base_input = exp_dir / "inputs" / "base"
-            base_output = exp_dir / "outputs" / "base"
-            aap_output = exp_dir / "outputs" / "aap"
-            base_output.mkdir(parents=True, exist_ok=True)
-            aap_output.mkdir(parents=True, exist_ok=True)
+    async def _run_provider_queue(prov_name: str, queue: list[tuple[Path, Model, str]]) -> tuple[int, int]:
+        ok, fail = 0, 0
+        for exp_dir, llm, m_name in queue:
+            if await _run_single_experiment(llm, prov_name, m_name, exp_dir, flow, skip_eval):
+                ok += 1
+            else:
+                fail += 1
+        return ok, fail
 
-            base_system = (base_input / "system.md").read_text().strip()
-            init_system = base_system + "\n\n" + AAP_SPEC
-            maintain_system = base_system + "\n\n" + AAP_SPEC
-            turn_files = _find_turn_files(base_input)
+    results = await asyncio.gather(*(
+        _run_provider_queue(prov_name, queue)
+        for prov_name, queue in provider_queues.items()
+        if queue
+    ))
 
-            if not turn_files:
-                console.print("  [yellow]no turn files, skipping[/yellow]")
-                continue
-
-            turn_0_prompt = turn_files[0].read_text().strip()
-            edit_prompts = [(tf.stem, tf.read_text().strip()) for tf in turn_files[1:]]
-
-            metrics: dict = {
-                "experiment_id": exp_name,
-                "model": model,
-                "provider": provider,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "format": fmt,
-            }
-
-            # ── Turn 0 ───────────────────────────────────────────────
-            if flow in ("base", "both"):
-                base_art, history, bt0 = run_base_turn0(llm, base_system, turn_0_prompt, base_output, ext)
-                metrics["base_turn0"] = bt0
-                ttft = f", ttft={bt0['ttft_ms']}ms" if bt0.get('ttft_ms') is not None else ""
-                console.print(f"  base turn-0: {bt0['output_tokens']} out, {bt0['latency_ms']}ms{ttft}")
-
-            if flow in ("aap", "both"):
-                aap_art, at0 = run_aap_turn0(llm, init_system, turn_0_prompt, aap_output, ext)
-                metrics["aap_turn0"] = at0
-                ttft = f", ttft={at0['ttft_ms']}ms" if at0.get('ttft_ms') is not None else ""
-                console.print(f"  aap  turn-0: {at0['output_tokens']} out, {at0['latency_ms']}ms{ttft}")
-
-            # ── Base flow ─────────────────────────────────────────────
-            if flow in ("base", "both") and edit_prompts:
-                base_results, base_final = run_base_flow(llm, base_system, history, edit_prompts, base_output, ext)
-                base_total_out = sum(r.output_tokens for r in base_results)
-                base_total_in = sum(r.input_tokens for r in base_results)
-                base_total_ms = sum(r.latency_ms for r in base_results)
-
-                metrics["default_flow"] = {
-                    "per_turn": [r.model_dump() for r in base_results],
-                    "total_input_tokens": base_total_in,
-                    "total_output_tokens": base_total_out,
-                    "total_latency_ms": base_total_ms,
-                }
-
-                for r in base_results:
-                    ttft = f", ttft={r.ttft_ms}ms" if r.ttft_ms is not None else ""
-                    console.print(f"  base turn-{r.turn}: {r.output_tokens} out, {r.input_tokens} in, {r.latency_ms}ms{ttft}")
-
-            # ── AAP flow ──────────────────────────────────────────────
-            if flow in ("aap", "both") and edit_prompts:
-                aap_results, aap_final = run_aap_flow(llm, maintain_system, aap_art, edit_prompts, fmt, aap_output, ext)
-                aap_total_out = sum(r.output_tokens for r in aap_results)
-                aap_total_in = sum(r.input_tokens for r in aap_results)
-                aap_total_ms = sum(r.latency_ms for r in aap_results)
-                parse_ok = sum(1 for r in aap_results if r.envelope_parsed)
-                apply_ok = sum(1 for r in aap_results if r.apply_succeeded)
-                num_edits = len(aap_results)
-
-                metrics["aap_flow"] = {
-                    "per_turn": [r.model_dump() for r in aap_results],
-                    "total_input_tokens": aap_total_in,
-                    "total_output_tokens": aap_total_out,
-                    "total_latency_ms": aap_total_ms,
-                    "envelope_parse_rate": parse_ok / num_edits if num_edits else 0,
-                    "apply_success_rate": apply_ok / num_edits if num_edits else 0,
-                }
-
-                for r in aap_results:
-                    status = "[green]ok[/green]" if r.apply_succeeded else "[red]fail[/red]"
-                    ttft = f", ttft={r.ttft_ms}ms" if r.ttft_ms is not None else ""
-                    console.print(
-                        f"  aap  turn-{r.turn}: {r.output_tokens} out, {r.input_tokens} in, "
-                        f"{r.latency_ms}ms{ttft}, {r.envelope_name} {status}"
-                    )
-
-            # ── Comparison + token table ──────────────────────────────
-            if "default_flow" in metrics and "aap_flow" in metrics:
-                bo = metrics["default_flow"]["total_output_tokens"]
-                ao = metrics["aap_flow"]["total_output_tokens"]
-                bi = metrics["default_flow"]["total_input_tokens"]
-                ai = metrics["aap_flow"]["total_input_tokens"]
-                bms = metrics["default_flow"]["total_latency_ms"]
-                ams = metrics["aap_flow"]["total_latency_ms"]
-
-                metrics["comparison"] = {
-                    "output_token_savings_pct": round(100 * (bo - ao) / bo, 1) if bo else 0,
-                    "input_token_savings_pct": round(100 * (bi - ai) / bi, 1) if bi else 0,
-                    "latency_savings_pct": round(100 * (bms - ams) / bms, 1) if bms else 0,
-                }
-                metrics["token_table"] = _build_token_table(metrics)
-
-                out_sav = metrics["comparison"]["output_token_savings_pct"]
-                tag = f"[green]{out_sav:.1f}% out savings[/green]" if out_sav > 0 else f"[red]{out_sav:.1f}%[/red]"
-                console.print(
-                    f"  [bold]summary:[/bold] base={bo} out | aap={ao} out | "
-                    f"{tag} | parse={parse_ok}/{num_edits} apply={apply_ok}/{num_edits}\n"
-                )
-
-            # ── Quality eval ──────────────────────────────────────────
-            if not skip_eval and base_output.exists() and aap_output.exists():
-                quality = score_experiment(base_output, aap_output, ext)
-                if quality.per_turn:
-                    metrics["quality"] = quality.model_dump()
-                    console.print(
-                        f"  [dim]quality: seq_sim={quality.mean_sequence_similarity:.3f} "
-                        f"token_f1={quality.mean_token_f1:.3f}[/dim]"
-                    )
-
-            (exp_dir / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
-
-        except Exception as e:
-            console.print(f"  [red]EXPERIMENT FAILED: {e}[/red]\n")
-            continue
-
-    console.print("[green]Done.[/green]")
+    succeeded = sum(ok for ok, _ in results)
+    failed = sum(fail for _, fail in results)
+    console.print(
+        f"\n[green]Done.[/green] {succeeded} succeeded, {failed} failed "
+        f"across {len(models)} providers."
+    )
 
 
 # ── eval ──────────────────────────────────────────────────────────────────
 
 
-@app.command(name="eval")
+@app.command(name="score")
 def eval_experiments(
     experiments_dir: Annotated[Path, typer.Option(help="Experiments directory")] = DATA_DIR / "experiments",
     use_ragas: Annotated[bool, typer.Option(help="Use ragas for ROUGE-L and BLEU")] = False,
@@ -480,6 +577,23 @@ def evaluate(
     force: Annotated[bool, typer.Option(help="Re-evaluate even if eval.json exists")] = False,
 ) -> None:
     """Evaluate output quality — text metrics and optional LLM-as-judge."""
+    asyncio.run(_evaluate_async(
+        experiments_dir, provider, model, host, experiment_id,
+        use_ragas, judge, count, force,
+    ))
+
+
+async def _evaluate_async(
+    experiments_dir: Path,
+    provider: str,
+    model: str,
+    host: str,
+    experiment_id: str,
+    use_ragas: bool,
+    judge: bool,
+    count: int,
+    force: bool,
+) -> None:
     from .eval import run_eval
 
     judge_model = None
@@ -499,7 +613,6 @@ def evaluate(
             and any(aap.glob("turn-1*"))
         )
 
-    # Find experiment directories with actual output files
     exp_dirs = sorted(
         d for d in experiments_dir.iterdir()
         if d.is_dir() and not d.name.startswith(".")
@@ -508,10 +621,8 @@ def evaluate(
 
     if experiment_id:
         exp_dirs = [d for d in exp_dirs if d.name.startswith(experiment_id)]
-
     if count > 0:
         exp_dirs = exp_dirs[:count]
-
     if not exp_dirs:
         console.print("[red]No experiments with outputs found.[/red]")
         raise typer.Exit(1)
@@ -537,7 +648,7 @@ def evaluate(
         fmt, ext = _parse_experiment_format(exp_dir / "README.md")
 
         try:
-            quality = run_eval(exp_dir, ext, use_ragas, judge_model)
+            quality = await run_eval(exp_dir, ext, use_ragas, judge_model)
             eval_file.write_text(quality.model_dump_json(indent=2) + "\n")
 
             row = [
