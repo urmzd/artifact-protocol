@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aap.dev/schemas/entity-metadata.json",
+  "$id": "https://urmzd.com/schemas/gap/entity-metadata.json",
   "title": "Entity Metadata",
   "description": "Ownership and organizational metadata for managed artifacts",
   "type": "object",

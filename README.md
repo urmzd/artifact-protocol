@@ -1,8 +1,8 @@
-# aap
+# gap
 
 > **Warning**: This project is `v0` — the protocol, schemas, and APIs are subject to breaking changes without notice until a formal release.
 
-An open standard for token-efficient artifact updates and streaming — the **[Agent-Artifact Protocol (AAP)](spec/aap.md)**. The protocol defines how LLMs can declare, diff, and reprovision text artifacts with minimal token expenditure — 90-99% output token reduction per update, translating to 43-86% total cost savings depending on the model's pricing (see [cost model](spec/aap.md#811-cost-model)).
+An open standard for token-efficient artifact updates and streaming — the **[Generative Artifact Protocol (GAP)](spec/gap.md)**. The protocol defines how LLMs can declare, diff, and reprovision text artifacts with minimal token expenditure — 90-99% output token reduction per update, translating to 43-86% total cost savings depending on the model's pricing (see [cost model](spec/gap.md#811-cost-model)).
 
 Includes a Rust reference implementation of the **apply engine** — a stateless, deterministic function that resolves protocol envelopes into artifact content — plus a Python evaluation framework for measuring token efficiency against real LLM runs.
 
@@ -15,10 +15,10 @@ Includes a Rust reference implementation of the **apply engine** — a stateless
 ```
 LLM ──produces──▶ envelope ──apply──▶ (artifact, handle)
                                  ▲
-                           aap (stateless, ~2μs)
+                           gap (stateless, ~2μs)
 ```
 
-> AAP produces text artifacts; rendering is a consumer responsibility.
+> GAP produces text artifacts; rendering is a consumer responsibility.
 
 ## Apply engine
 
@@ -32,8 +32,8 @@ It takes the current artifact (if any) and an operation envelope, and returns th
 
 | Envelope | Direction | Description |
 |---|---|---|
-| **synthesize** | input | Complete artifact content (baseline or reset) with `<aap:target>` markers |
-| **edit** | input | Targeted changes via ID (`<aap:target>` markers) or JSON Pointer |
+| **synthesize** | input | Complete artifact content (baseline or reset) with `<gap:target>` markers |
+| **edit** | input | Targeted changes via ID (`<gap:target>` markers) or JSON Pointer |
 | **handle** | output | Lightweight reference returned after every synthesize or edit |
 
 The function is pure — no I/O, no state, no side effects. This makes it portable: embed it in browsers (via WASM), IDEs, CLI tools, or service backends.
@@ -65,17 +65,17 @@ just bench
 | `just test` | Run Rust unit tests |
 | `just bench` | Rust criterion micro-benchmarks (apply engine speed) |
 | `just generate [count] [model]` | Generate benchmark corpus (artifacts + envelopes via Ollama) |
-| `just experiment [count] [model]` | Run baseline vs AAP experiment (LLM quality eval) |
-| `just run [count] [model] [id]` | Run conversation benchmark experiments (base vs AAP flows) |
+| `just experiment [count] [model]` | Run baseline vs GAP experiment (LLM quality eval) |
+| `just run [count] [model] [id]` | Run conversation benchmark experiments (base vs GAP flows) |
 | `just report` | Generate experiment report (markdown) |
 
 ## Evals
 
-The `evals/` directory contains an evaluation framework that measures AAP's token efficiency and envelope reliability against real LLM runs. See [`evals/README.md`](evals/README.md) for details.
+The `evals/` directory contains an evaluation framework that measures GAP's token efficiency and envelope reliability against real LLM runs. See [`evals/README.md`](evals/README.md) for details.
 
 ## Cost model
 
-AAP saves tokens by replacing full artifact regeneration with small diff envelopes. The savings are real but **LLM-dependent** — they vary with the model's tokenizer, output/input price ratio, and whether a cheaper model handles diffs. See the [full derivation in the spec](spec/aap.md#811-cost-model).
+GAP saves tokens by replacing full artifact regeneration with small diff envelopes. The savings are real but **LLM-dependent** — they vary with the model's tokenizer, output/input price ratio, and whether a cheaper model handles diffs. See the [full derivation in the spec](spec/gap.md#811-cost-model).
 
 **The mechanism:** the maintain context reads the full artifact ($S$ input tokens) and produces an edit envelope ($d$ output tokens, where $d$ is typically 1–5% of $S$). The apply engine resolves the edit at zero token cost (CPU, ~2μs). The orchestrator never reads the artifact at all — it holds only lightweight handles.
 
@@ -85,7 +85,7 @@ AAP saves tokens by replacing full artifact regeneration with small diff envelop
 
 **Concrete example** (2,000-token artifact, 30-token edit, $r = p_{\text{out}}/p_{\text{in}} = 4\text{x}$):
 
-| After $N$ edits | Naive conversation | AAP | Total savings |
+| After $N$ edits | Naive conversation | GAP | Total savings |
 |---:|---:|---:|---:|
 | 1 | \$0.071 | \$0.039 | 45% |
 | 5 | \$0.304 | \$0.070 | 77% |
@@ -93,11 +93,11 @@ AAP saves tokens by replacing full artifact regeneration with small diff envelop
 
 At $r = 1$ (equal pricing), the same scenario yields ~49% savings after 10 edits. At $r = 5$, it reaches ~87%. The output token reduction is constant — what changes is how much of total cost it represents.
 
-## AAP payload benchmarks
+## GAP payload benchmarks
 
-Payload size and apply time for each [Agent-Artifact Protocol (AAP)](spec/aap.md) envelope type, measured against an 8 KB HTML dashboard fixture.
+Payload size and apply time for each [Generative Artifact Protocol (GAP)](spec/gap.md) envelope type, measured against an 8 KB HTML dashboard fixture.
 
-> **Note:** The "Payload savings" column measures **byte reduction** in the envelope payload — a proxy for output token reduction but not identical (tokenizers vary). Actual cost savings depend on the model's output/input price ratio; see [cost model](spec/aap.md#711-cost-model) for the full derivation.
+> **Note:** The "Payload savings" column measures **byte reduction** in the envelope payload — a proxy for output token reduction but not identical (tokenizers vary). Actual cost savings depend on the model's output/input price ratio; see [cost model](spec/gap.md#711-cost-model) for the full derivation.
 
 <!-- embed-src src="benches/results.md" -->
 | Envelope | Scenario | Payload | % of Full | Payload savings | Apply Time |

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aap.dev/schemas/artifact.json",
+  "$id": "https://urmzd.com/schemas/gap/artifact.json",
   "title": "Artifact",
   "description": "The actual content being managed — a standalone object, not an envelope.",
   "type": "object",

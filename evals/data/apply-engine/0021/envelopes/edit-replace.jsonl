@@ -1,4 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0021","version":2,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"<!DOCTYPE html>"},"content":"UPDfe364450_TYPE html>"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0021","version":3,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"            padding: 20px;"},"content":"            padding: 62px;"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0021","version":4,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"        .priority-badge {"},"content":"UPD3cbd2720_   .priority-badge {"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0021","version":5,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"                    <div class=\"ticket-item\">"},"content":"UPD8f837c7c_UPD8f837c7c_UPD8f837c7c_UPD8f837c7c_<div class=\"ticket-item\">"}],"meta":{"format":"text/html"}}

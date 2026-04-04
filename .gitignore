@@ -1,6 +1,8 @@
 /target
 *.sock
+*.so
 .DS_Store
+.venv/
 __pycache__/
 *.pyc
 assets/inputs/

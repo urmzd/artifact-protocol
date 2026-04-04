@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #1e3c72;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            background-color: #2a5298;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #1e3c72;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .stat-cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background-color: #eaf2f8;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #2a5298;
+        }
+        .stat-card h3 {
+            margin: 0 0 5px;
+            font-size: 1em;
+            color: #555;
+        }
+        .stat-card p {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1e3c72;
+            margin: 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .data-table th {
+            background-color: #f1f4f7;
+            color: #333;
+            font-weight: 600;
+        }
+        .data-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <p>E-commerce Insights Platform</p>
+    </header>
+
+    <nav>
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
+            <p style="font-size: 1.2em; color: white;">Dashboard</p>
+            <div>
+                <a href="#" style="color: white; text-decoration: none; margin-right: 20px;">Orders</a>
+                <a href="#" style="color: white; text-decoration: none; margin-right: 20px;">Products</a>
+                <a href="#" style="color: white; text-decoration: none;">Users</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container main-content">
+
+        <gap:target id="stats">
+            <h2>Key Performance Indicators (KPIs)</h2>
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <p>$45,230.50</p>
+                </div>
+                <div class="stat-card">
+                    <h3>New Orders</h3>
+                    <p>1,245</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Conversion Rate</h3>
+                    <p>3.8%</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg. Customer Value</h3>
+                    <p>$55.90</p>
+                </div>
+            </div>
+        </gap:target>
+
+        <gap:target id="content">
+            <h2>Recent Orders Overview</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Total Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ORD9012</td>
+                        <td>Alice Johnson</td>
+                        <td>$120.50</td>
+                        <td>2024-07-28</td>
+                        <td style="color: green; font-weight: bold;">Shipped</td>
+                    </tr>
+                    <tr>
+                        <td>ORD9011</td>
+                        <td>Robert Smith</td>
+                        <td>$45.99</td>
+                        <td>2024-07-28</td>
+                        <td style="color: orange; font-weight: bold;">Processing</td>
+                    </tr>
+                    <tr>
+                        <td>ORD9010</td>
+                        <td>Emily Carter</td>
+                        <td>$310.00</td>
+                        <td>2024-07-27</td>
+                        <td style="color: red; font-weight: bold;">Failed</td>
+                    </tr>
+                    <tr>
+                        <td>ORD9009</td>
+                        <td>David Lee</td>
+                        <td>$88.15</td>
+                        <td>2024-07-27</td>
+                        <td style="color: green; font-weight: bold;">Delivered</td>
+                    </tr>
+                    <tr>
+                        <td>ORD9008</td>
+                        <td>Olivia Martinez</td>
+                        <td>$22.75</td>
+                        <td>2024-07-26</td>
+                        <td style="color: orange; font-weight: bold;">Awaiting Payment</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 style="margin-top: 30px;">Top Selling Products</h2>
+            <div class="stat-cards" style="flex-direction: column;">
+                <div class="stat-card" style="text-align: left;">
+                    <h3 style="display: inline-block; width: 70%;">Premium Wireless Mouse</h3>
+                    <p>$450 (Units Sold: 45)</p>
+                </div>
+                <div class="stat-card" style="text-align: left;">
+                    <h3 style="display: inline-block; width: 70%;">Ergonomic Keyboard Cover</h3>
+                    <p>$150 (Units Sold: 62)</p>
+                </div>
+                <div class="stat-card" style="text-align: left;">
+                    <h3 style="display: inline-block; width: 70%;">USB-C Charging Cable (3-Pack)</h3>
+                    <p>$350 (Units Sold: 110)</p>
+                </div>
+            </div>
+        </gap:target>
+
+        <gap:target id="activity">
+            <h2>Recent User Activity Log</h2>
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>September 30, 2024</strong> - User <span style="color: #2a5298;">Jane Doe</span> updated shipping address for Order #ORD9012.
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>September 30, 2024</strong> - <span style="color: red; font-weight: bold;">System Alert:</span> Low stock warning for 'Blue Widget X'. Threshold: 10 units.
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <strong>September 29, 2024</strong> - Admin <span style="color: #555;">Michael Chen</span> created a new product listing: 'Smart Lighting Kit'.
+                </li>
+                <li style="padding: 10px 0;">
+                    <strong>September 29, 2024</strong> - Customer <span style="color: #2a5298;">Tom Wilson</span> initiated a chat support request regarding return policy.
+                </li>
+            </ul>
+        </gap:target>
+
+    </div>
+
+    <gap:target id="footer">
+        <footer>
+            <p>&copy; 2024 E-Commerce Admin Panel. Powered by Acme Solutions.<br>Dashboard Version 2.1.0</p>
+        </footer>
+    </gap:target>
+
+</body>
+</html>

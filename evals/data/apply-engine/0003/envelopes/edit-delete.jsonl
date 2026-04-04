@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0003","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                <div class=\"stat-grid\">"}}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0003","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                        <button style=\"background-color: var(--success-color); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;\">Details</button>"}}],"meta":{"format":"text/html"}}

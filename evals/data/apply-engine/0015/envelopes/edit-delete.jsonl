@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0015","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"            <!-- Sidebar content (if any) would go here, but keeping structure focused on main/aside for clarity -->"}}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0015","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                                    <th>Progress</th>"}}],"meta":{"format":"text/html"}}

@@ -1,6 +1,6 @@
-"""Compare semantic similarity between base and AAP artifacts.
+"""Compare semantic similarity between base and GAP artifacts.
 
-For turn 0 (creation), the base and AAP flows produce artifacts independently.
+For turn 0 (creation), the base and GAP flows produce artifacts independently.
 This script measures how similar they are — structural diff, embeddings cosine
 similarity, or LLM-as-judge evaluation.
 
@@ -20,15 +20,15 @@ def main():
 
     experiments_dir = Path(sys.argv[1])
 
-    # Find experiments with both base and AAP turn-0 outputs
+    # Find experiments with both base and GAP turn-0 outputs
     pairs = []
     for exp_dir in sorted(experiments_dir.iterdir()):
         if not exp_dir.is_dir():
             continue
         base_outputs = list((exp_dir / "outputs" / "base").glob("turn-0.*"))
-        aap_outputs = list((exp_dir / "outputs" / "aap").glob("turn-0.*"))
-        if base_outputs and aap_outputs:
-            pairs.append((base_outputs[0], aap_outputs[0]))
+        gap_outputs = list((exp_dir / "outputs" / "gap").glob("turn-0.*"))
+        if base_outputs and gap_outputs:
+            pairs.append((base_outputs[0], gap_outputs[0]))
 
     if not pairs:
         print("No paired outputs found. Run experiments first.", file=sys.stderr)

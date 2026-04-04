@@ -1,0 +1,2 @@
+{"protocol":"gap/0.1","id":"artifact-0020","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"        <div class=\"stat-card stat-pipeline\" style=\"border-left-color: #ffc107;\">"}}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0020","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                    <div class=\"deal-item\">"}}],"meta":{"format":"text/html"}}

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics Dashboard</title>
+</head>
+<body style="font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #f4f7f6; color: #333; line-height: 1.6;">
+
+    <div style="min-height: 100vh; display: flex; flex-direction: column;">
+        <!-- Header / Navigation Bar -->
+        <div style="background-color: #fff; padding: 20px 30px; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <span style="font-size: 24px; font-weight: 600; color: #333;">Dashboard</span>
+                <span style="margin: 0 5px; color: #888;">&nbsp;&gt;&nbsp;</span>
+                <span style="color: #555;">Analytics Overview</span>
+            </div>
+            <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px; background-color: #f9f9f9; font-size: 14px; color: #555;">
+                <span style="margin-right: 8px;">📅</span>
+                <span>2023-01-01 - 2023-01-31</span>
+                <span style="margin-left: 8px;">▼</span>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div style="flex-grow: 1; padding: 30px; display: flex; flex-direction: column; gap: 30px;">
+
+            <!-- KPI Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+
+                <div style="background-color: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: space-between;">
+                    <span style="font-size: 16px; color: #777; margin-bottom: 10px;">Page Views</span>
+                    <span style="font-size: 36px; font-weight: 700; color: #333; margin-bottom: 5px;">1,234,567</span>
+                    <span style="font-size: 14px; color: #28a745;">▲ 12.3% <span style="color: #999;">vs. last period</span></span>
+                </div>
+
+                <div style="background-color: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: space-between;">
+                    <span style="font-size: 16px; color: #777; margin-bottom: 10px;">Unique Visitors</span>
+                    <span style="font-size: 36px; font-weight: 700; color: #333; margin-bottom: 5px;">876,543</span>
+                    <span style="font-size: 14px; color: #28a745;">▲ 9.8% <span style="color: #999;">vs. last period</span></span>
+                </div>
+
+                <div style="background-color: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: space-between;">
+                    <span style="font-size: 16px; color: #777; margin-bottom: 10px;">Bounce Rate</span>
+                    <span style="font-size: 36px; font-weight: 700; color: #e74c3c; margin-bottom: 5px;">45.1%</span>
+                    <span style="font-size: 14px; color: #e74c3c;">▼ 2.1% <span style="color: #999;">vs. last period</span></span>
+                </div>
+
+                <div style="background-color: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: space-between;">
+                    <span style="font-size: 16px; color: #777; margin-bottom: 10px;">Avg. Session Duration</span>
+                    <span style="font-size: 36px; font-weight: 700; color: #333; margin-bottom: 5px;">00:03:45</span>
+                    <span style="font-size: 14px; color: #28a745;">▲ 1.5% <span style="color: #999;">vs. last period</span></span>
+                </div>
+
+            </div>
+
+            <!-- Two-column layout for tables/lists -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; flex-wrap: wrap;">
+                <!-- Adjust grid-template-columns for smaller screens -->
+                <style>
+                    @media (max-width: 992px) {
+                        div[style*="grid-template-columns: 2fr 1fr"] {
+                            grid-template-columns: 1fr !important;
+                        }
+                    }
+                </style>
+
+                <!-- Traffic Sources Table -->
+                <div style="background-color: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                    <h3 style="margin-top: 0; margin-bottom: 20px; color: #333; font-size: 20px; font-weight: 600;">Traffic Sources</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+                            <thead style="background-color: #f8f8f8;">
+                                <tr>
+                                    <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600;">Source</th>
+                                    <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600;">Medium</th>
+                                    <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600; text-align: right;">Sessions</th>
+                                    <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600; text-align: right;">Bounce Rate</th>
+                                    <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600; text-align: right;">Conversions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Google</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">254,123</td><td style="padding: 12px 15px; text-align: right;">38.1%</td><td style="padding: 12px 15px; text-align: right;">12,543</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Direct</td><td style="padding: 12px 15px;">(none)</td><td style="padding: 12px 15px; text-align: right;">187,901</td><td style="padding: 12px 15px; text-align: right;">25.5%</td><td style="padding: 12px 15px; text-align: right;">9,876</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Bing</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">45,678</td><td style="padding: 12px 15px; text-align: right;">42.3%</td><td style="padding: 12px 15px; text-align: right;">1,567</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Facebook</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">38,112</td><td style="padding: 12px 15px; text-align: right;">65.8%</td><td style="padding: 12px 15px; text-align: right;">987</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">LinkedIn</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">22,456</td><td style="padding: 12px 15px; text-align: right;">58.2%</td><td style="padding: 12px 15px; text-align: right;">543</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Yahoo</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">18,765</td><td style="padding: 12px 15px; text-align: right;">40.0%</td><td style="padding: 12px 15px; text-align: right;">456</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Twitter</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">15,321</td><td style="padding: 12px 15px; text-align: right;">71.1%</td><td style="padding: 12px 15px; text-align: right;">321</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">DuckDuckGo</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">12,987</td><td style="padding: 12px 15px; text-align: right;">35.6%</td><td style="padding: 12px 15px; text-align: right;">287</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Pinterest</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">10,123</td><td style="padding: 12px 15px; text-align: right;">68.5%</td><td style="padding: 12px 15px; text-align: right;">213</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Reddit</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">8,976</td><td style="padding: 12px 15px; text-align: right;">75.0%</td><td style="padding: 12px 15px; text-align: right;">154</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Email Newsletter</td><td style="padding: 12px 15px;">email</td><td style="padding: 12px 15px; text-align: right;">7,543</td><td style="padding: 12px 15px; text-align: right;">30.1%</td><td style="padding: 12px 15px; text-align: right;">450</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteA.com</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">6,234</td><td style="padding: 12px 15px; text-align: right;">50.2%</td><td style="padding: 12px 15px; text-align: right;">180</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Instagram</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">5,876</td><td style="padding: 12px 15px; text-align: right;">69.2%</td><td style="padding: 12px 15px; text-align: right;">110</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Google Ads</td><td style="padding: 12px 15px;">cpc</td><td style="padding: 12px 15px; text-align: right;">4,987</td><td style="padding: 12px 15px; text-align: right;">48.9%</td><td style="padding: 12px 15px; text-align: right;">250</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">YouTube</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">4,321</td><td style="padding: 12px 15px; text-align: right;">62.0%</td><td style="padding: 12px 15px; text-align: right;">75</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">NewsSiteB.net</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">3,876</td><td style="padding: 12px 15px; text-align: right;">55.5%</td><td style="padding: 12px 15px; text-align: right;">90</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteC.org</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">3,123</td><td style="padding: 12px 15px; text-align: right;">49.1%</td><td style="padding: 12px 15px; text-align: right;">120</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Baidu</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">2,987</td><td style="padding: 12px 15px; text-align: right;">41.7%</td><td style="padding: 12px 15px; text-align: right;">60</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">VKontakte</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">2,543</td><td style="padding: 12px 15px; text-align: right;">70.0%</td><td style="padding: 12px 15px; text-align: right;">45</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Yandex</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">2,123</td><td style="padding: 12px 15px; text-align: right;">39.5%</td><td style="padding: 12px 15px; text-align: right;">55</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Newsletter Campaign 1</td><td style="padding: 12px 15px;">email</td><td style="padding: 12px 15px; text-align: right;">1,876</td><td style="padding: 12px 15px; text-align: right;">28.0%</td><td style="padding: 12px 15px; text-align: right;">150</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteD.co</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">1,654</td><td style="padding: 12px 15px; text-align: right;">52.8%</td><td style="padding: 12px 15px; text-align: right;">80</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Google Display Network</td><td style="padding: 12px 15px;">display</td><td style="padding: 12px 15px; text-align: right;">1,432</td><td style="padding: 12px 15px; text-align: right;">78.1%</td><td style="padding: 12px 15px; text-align: right;">30</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Affiliate Partner 1</td><td style="padding: 12px 15px;">affiliate</td><td style="padding: 12px 15px; text-align: right;">1,210</td><td style="padding: 12px 15px; text-align: right;">45.0%</td><td style="padding: 12px 15px; text-align: right;">110</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Blog Post A</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">1,000</td><td style="padding: 12px 15px; text-align: right;">33.3%</td><td style="padding: 12px 15px; text-align: right;">95</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Medium.com</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">980</td><td style="padding: 12px 15px; text-align: right;">56.7%</td><td style="padding: 12px 15px; text-align: right;">20</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Telegram</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">870</td><td style="padding: 12px 15px; text-align: right;">67.0%</td><td style="padding: 12px 15px; text-align: right;">15</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteE.io</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">765</td><td style="padding: 12px 15px; text-align: right;">48.0%</td><td style="padding: 12px 15px; text-align: right;">40</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Partnership Blog</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">650</td><td style="padding: 12px 15px; text-align: right;">37.5%</td><td style="padding: 12px 15px; text-align: right;">60</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Quora</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">540</td><td style="padding: 12px 15px; text-align: right;">60.0%</td><td style="padding: 12px 15px; text-align: right;">10</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Newsletter Campaign 2</td><td style="padding: 12px 15px;">email</td><td style="padding: 12px 15px; text-align: right;">430</td><td style="padding: 12px 15px; text-align: right;">29.0%</td><td style="padding: 12px 15px; text-align: right;">50</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteF.com</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">320</td><td style="padding: 12px 15px; text-align: right;">51.2%</td><td style="padding: 12px 15px; text-align: right;">25</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">TikTok</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">210</td><td style="padding: 12px 15px; text-align: right;">80.0%</td><td style="padding: 12px 15px; text-align: right;">5</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Affiliate Partner 2</td><td style="padding: 12px 15px;">affiliate</td><td style="padding: 12px 15px; text-align: right;">150</td><td style="padding: 12px 15px; text-align: right;">40.0%</td><td style="padding: 12px 15px; text-align: right;">18</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Google Discover</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">100</td><td style="padding: 12px 15px; text-align: right;">35.0%</td><td style="padding: 12px 15px; text-align: right;">12</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Partnership Newsletter</td><td style="padding: 12px 15px;">email</td><td style="padding: 12px 15px; text-align: right;">90</td><td style="padding: 12px 15px; text-align: right;">27.0%</td><td style="padding: 12px 15px; text-align: right;">10</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Bing Ads</td><td style="padding: 12px 15px;">cpc</td><td style="padding: 12px 15px; text-align: right;">80</td><td style="padding: 12px 15px; text-align: right;">50.0%</td><td style="padding: 12px 15px; text-align: right;">8</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Article Share G</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">70</td><td style="padding: 12px 15px; text-align: right;">65.0%</td><td style="padding: 12px 15px; text-align: right;">3</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteG.net</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">60</td><td style="padding: 12px 15px; text-align: right;">45.0%</td><td style="padding: 12px 15px; text-align: right;">5</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Custom Campaign X</td><td style="padding: 12px 15px;">campaign</td><td style="padding: 12px 15px; text-align: right;">50</td><td style="padding: 12px 15px; text-align: right;">30.0%</td><td style="padding: 12px 15px; text-align: right;">7</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteH.org</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">45</td><td style="padding: 12px 15px; text-align: right;">53.0%</td><td style="padding: 12px 15px; text-align: right;">4</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Ad Campaign Y</td><td style="padding: 12px 15px;">cpc</td><td style="padding: 12px 15px; text-align: right;">40</td><td style="padding: 12px 15px; text-align: right;">60.0%</td><td style="padding: 12px 15px; text-align: right;">2</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteI.com</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">35</td><td style="padding: 12px 15px; text-align: right;">48.0%</td><td style="padding: 12px 15px; text-align: right;">3</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Guest Post A</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">30</td><td style="padding: 12px 15px; text-align: right;">32.0%</td><td style="padding: 12px 15px; text-align: right;">6</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Forum Post B</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">28</td><td style="padding: 12px 15px; text-align: right;">72.0%</td><td style="padding: 12px 15px; text-align: right;">1</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteJ.io</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">25</td><td style="padding: 12px 15px; text-align: right;">55.0%</td><td style="padding: 12px 15px; text-align: right;">2</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Affiliate Partner 3</td><td style="padding: 12px 15px;">affiliate</td><td style="padding: 12px 15px; text-align: right;">22</td><td style="padding: 12px 15px; text-align: right;">42.0%</td><td style="padding: 12px 15px; text-align: right;">4</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Newsletter Campaign 3</td><td style="padding: 12px 15px;">email</td><td style="padding: 12px 15px; text-align: right;">20</td><td style="padding: 12px 15px; text-align: right;">25.0%</td><td style="padding: 12px 15px; text-align: right;">5</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteK.com</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">18</td><td style="padding: 12px 15px; text-align: right;">60.0%</td><td style="padding: 12px 15px; text-align: right;">1</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">PR Release Z</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">15</td><td style="padding: 12px 15px; text-align: right;">38.0%</td><td style="padding: 12px 15px; text-align: right;">3</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Internal Link A</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">12</td><td style="padding: 12px 15px; text-align: right;">20.0%</td><td style="padding: 12px 15px; text-align: right;">2</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Other Search</td><td style="padding: 12px 15px;">organic</td><td style="padding: 12px 15px; text-align: right;">10</td><td style="padding: 12px 15px; text-align: right;">45.0%</td><td style="padding: 12px 15px; text-align: right;">1</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Other Social</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">8</td><td style="padding: 12px 15px; text-align: right;">70.0%</td><td style="padding: 12px 15px; text-align: right;">0</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteL.net</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">7</td><td style="padding: 12px 15px; text-align: right;">50.0%</td><td style="padding: 12px 15px; text-align: right;">1</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Dark Social Link</td><td style="padding: 12px 15px;">social</td><td style="padding: 12px 15px; text-align: right;">5</td><td style="padding: 12px 15px; text-align: right;">85.0%</td><td style="padding: 12px 15px; text-align: right;">0</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Direct Mail Q</td><td style="padding: 12px 15px;">direct_mail</td><td style="padding: 12px 15px; text-align: right;">4</td><td style="padding: 12px 15px; text-align: right;">30.0%</td><td style="padding: 12px 15px; text-align: right;">1</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">ReferralSiteM.org</td><td style="padding: 12px 15px;">referral</td><td style="padding: 12px 15px; text-align: right;">3</td><td style="padding: 12px 15px; text-align: right;">60.0%</td><td style="padding: 12px 15px; text-align: right;">0</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Email Signature</td><td style="padding: 12px 15px;">email</td><td style="padding: 12px 15px; text-align: right;">2</td><td style="padding: 12px 15px; text-align: right;">20.0%</td><td style="padding: 12px 15px; text-align: right;">0</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Bookmark</td><td style="padding: 12px 15px;">direct</td><td style="padding: 12px 15px; text-align: right;">1</td><td style="padding: 12px 15px; text-align: right;">10.0%</td><td style="padding: 12px 15px; text-align: right;">0</td></tr>
+                                <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Other</td><td style="padding: 12px 15px;">(other)</td><td style="padding: 12px 15px; text-align: right;">500</td><td style="padding: 12px 15px; text-align: right;">60.0%</td><td style="padding: 12px 15px; text-align: right;">15</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right Column: Top Referrers & Geographic Breakdown -->
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+
+                    <!-- Top Referrers List -->
+                    <div style="background-color: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                        <h3 style="margin-top: 0; margin-bottom: 20px; color: #333; font-size: 20px; font-weight: 600;">Top Referrers</h3>
+                        <ol style="padding: 0; margin: 0; list-style: none;">
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">exampleblog.com/post-1</span>
+                                <span style="color: #333; font-weight: 600;">12,500</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">newsportal.net/article-a</span>
+                                <span style="color: #333; font-weight: 600;">8,900</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">communityforum.org/thread-b</span>
+                                <span style="color: #333; font-weight: 600;">6,700</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">partnersite.co/page</span>
+                                <span style="color: #333; font-weight: 600;">4,100</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">reviewblog.xyz/review-c</span>
+                                <span style="color: #333; font-weight: 600;">3,500</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">social.platform/profile</span>
+                                <span style="color: #333; font-weight: 600;">2,800</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">anotherblog.com/guide</span>
+                                <span style="color: #333; font-weight: 600;">2,100</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">ecommerceforum.com/deals</span>
+                                <span style="color: #333; font-weight: 600;">1,900</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">affiliatesite.net/product</span>
+                                <span style="color: #333; font-weight: 600;">1,600</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">techsite.info/feature</span>
+                                <span style="color: #333; font-weight: 600;">1,400</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">developer-blog.dev/tutorial</span>
+                                <span style="color: #333; font-weight: 600;">1,200</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">design-gallery.art/project</span>
+                                <span style="color: #333; font-weight: 600;">1,000</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">marketing-tips.com/article</span>
+                                <span style="color: #333; font-weight: 600;">950</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">travel-blog.com/destination</span>
+                                <span style="color: #333; font-weight: 600;">880</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">food-recipes.org/recipe</span>
+                                <span style="color: #333; font-weight: 600;">790</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">health-wellness.info/advice</span>
+                                <span style="color: #333; font-weight: 600;">680</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">finance-news.biz/report</span>
+                                <span style="color: #333; font-weight: 600;">550</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">education-hub.edu/course</span>
+                                <span style="color: #333; font-weight: 600;">470</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                                <span style="color: #555;">gaming-community.com/post</span>
+                                <span style="color: #333; font-weight: 600;">390</span>
+                            </li>
+                            <li style="display: flex; justify-content: space-between; padding: 10px 0; font-size: 14px;">
+                                <span style="color: #555;">fashion-style.net/trend</span>
+                                <span style="color: #333; font-weight: 600;">310</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Geographic Breakdown Table -->
+                    <div style="background-color: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                        <h3 style="margin-top: 0; margin-bottom: 20px; color: #333; font-size: 20px; font-weight: 600;">Geographic Breakdown</h3>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+                                <thead style="background-color: #f8f8f8;">
+                                    <tr>
+                                        <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600;">Country</th>
+                                        <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600; text-align: right;">Sessions</th>
+                                        <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600; text-align: right;">Page Views</th>
+                                        <th style="padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; font-weight: 600; text-align: right;">Avg. Session Duration</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">United States</td><td style="padding: 12px 15px; text-align: right;">450,123</td><td style="padding: 12px 15px; text-align: right;">890,123</td><td style="padding: 12px 15px; text-align: right;">00:04:10</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">India</td><td style="padding: 12px 15px; text-align: right;">180,567</td><td style="padding: 12px 15px; text-align: right;">350,789</td><td style="padding: 12px 15px; text-align: right;">00:03:50</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">United Kingdom</td><td style="padding: 12px 15px; text-align: right;">95,345</td><td style="padding: 12px 15px; text-align: right;">190,456</td><td style="padding: 12px 15px; text-align: right;">00:04:30</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Canada</td><td style="padding: 12px 15px; text-align: right;">70,123</td><td style="padding: 12px 15px; text-align: right;">140,234</td><td style="padding: 12px 15px; text-align: right;">00:04:20</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Germany</td><td style="padding: 12px 15px; text-align: right;">60,789</td><td style="padding: 12px 15px; text-align: right;">115,890</td><td style="padding: 12px 15px; text-align: right;">00:03:55</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Australia</td><td style="padding: 12px 15px; text-align: right;">55,456</td><td style="padding: 12px 15px; text-align: right;">105,678</td><td style="padding: 12px 15px; text-align: right;">00:04:05</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Brazil</td><td style="padding: 12px 15px; text-align: right;">48,901</td><td style="padding: 12px 15px; text-align: right;">90,123</td><td style="padding: 12px 15px; text-align: right;">00:03:40</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">France</td><td style="padding: 12px 15px; text-align: right;">42,112</td><td style="padding: 12px 15px; text-align: right;">80,345</td><td style="padding: 12px 15px; text-align: right;">00:03:58</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Japan</td><td style="padding: 12px 15px; text-align: right;">38,765</td><td style="padding: 12px 15px; text-align: right;">75,678</td><td style="padding: 12px 15px; text-align: right;">00:04:15</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Mexico</td><td style="padding: 12px 15px; text-align: right;">35,123</td><td style="padding: 12px 15px; text-align: right;">68,901</td><td style="padding: 12px 15px; text-align: right;">00:03:30</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Italy</td><td style="padding: 12px 15px; text-align: right;">30,987</td><td style="padding: 12px 15px; text-align: right;">60,123</td><td style="padding: 12px 15px; text-align: right;">00:03:45</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Spain</td><td style="padding: 12px 15px; text-align: right;">28,456</td><td style="padding: 12px 15px; text-align: right;">55,678</td><td style="padding: 12px 15px; text-align: right;">00:03:52</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">South Korea</td><td style="padding: 12px 15px; text-align: right;">25,111</td><td style="padding: 12px 15px; text-align: right;">49,222</td><td style="padding: 12px 15px; text-align: right;">00:04:00</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Netherlands</td><td style="padding: 12px 15px; text-align: right;">22,789</td><td style="padding: 12px 15px; text-align: right;">44,890</td><td style="padding: 12px 15px; text-align: right;">00:04:10</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">China</td><td style="padding: 12px 15px; text-align: right;">20,543</td><td style="padding: 12px 15px; text-align: right;">40,654</td><td style="padding: 12px 15px; text-align: right;">00:03:20</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Sweden</td><td style="padding: 12px 15px; text-align: right;">18,100</td><td style="padding: 12px 15px; text-align: right;">35,200</td><td style="padding: 12px 15px; text-align: right;">00:04:25</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Switzerland</td><td style="padding: 12px 15px; text-align: right;">16,876</td><td style="padding: 12px 15px; text-align: right;">33,987</td><td style="padding: 12px 15px; text-align: right;">00:04:35</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Singapore</td><td style="padding: 12px 15px; text-align: right;">15,234</td><td style="padding: 12px 15px; text-align: right;">30,456</td><td style="padding: 12px 15px; text-align: right;">00:04:08</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Belgium</td><td style="padding: 12px 15px; text-align: right;">14,000</td><td style="padding: 12px 15px; text-align: right;">28,100</td><td style="padding: 12px 15px; text-align: right;">00:03:50</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">United Arab Emirates</td><td style="padding: 12px 15px; text-align: right;">12,987</td><td style="padding: 12px 15px; text-align: right;">25,876</td><td style="padding: 12px 15px; text-align: right;">00:04:02</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Denmark</td><td style="padding: 12px 15px; text-align: right;">11,543</td><td style="padding: 12px 15px; text-align: right;">22,654</td><td style="padding: 12px 15px; text-align: right;">00:04:18</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Norway</td><td style="padding: 12px 15px; text-align: right;">10,123</td><td style="padding: 12px 15px; text-align: right;">20,234</td><td style="padding: 12px 15px; text-align: right;">00:04:22</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Austria</td><td style="padding: 12px 15px; text-align: right;">9,876</td><td style="padding: 12px 15px; text-align: right;">19,012</td><td style="padding: 12px 15px; text-align: right;">00:04:05</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Ireland</td><td style="padding: 12px 15px; text-align: right;">8,543</td><td style="padding: 12px 15px; text-align: right;">17,100</td><td style="padding: 12px 15px; text-align: right;">00:04:15</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">New Zealand</td><td style="padding: 12px 15px; text-align: right;">7,901</td><td style="padding: 12px 15px; text-align: right;">15,800</td><td style="padding: 12px 15px; text-align: right;">00:04:28</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Finland</td><td style="padding: 12px 15px; text-align: right;">6,500</td><td style="padding: 12px 15px; text-align: right;">13,000</td><td style="padding: 12px 15px; text-align: right;">00:04:10</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">South Africa</td><td style="padding: 12px 15px; text-align: right;">5,876</td><td style="padding: 12px 15px; text-align: right;">11,700</td><td style="padding: 12px 15px; text-align: right;">00:03:40</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Hong Kong</td><td style="padding: 12px 15px; text-align: right;">4,987</td><td style="padding: 12px 15px; text-align: right;">9,900</td><td style="padding: 12px 15px; text-align: right;">00:04:00</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Portugal</td><td style="padding: 12px 15px; text-align: right;">4,100</td><td style="padding: 12px 15px; text-align: right;">8,200</td><td style="padding: 12px 15px; text-align: right;">00:03:55</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Israel</td><td style="padding: 12px 15px; text-align: right;">3,500</td><td style="padding: 12px 15px; text-align: right;">7,000</td><td style="padding: 12px 15px; text-align: right;">00:04:00</td></tr>
+                                    <tr style="border-bottom: 1px solid #f2f2f2;"><td style="padding: 12px 15px;">Rest of World</td><td style="padding: 12px 15px; text-align: right;">15,000</td><td style="padding: 12px 15px; text-align: right;">30,000</td><td style="padding: 12px 15px; text-align: right;">00:03:35</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

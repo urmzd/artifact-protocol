@@ -1,0 +1,22 @@
+{
+  "protocol": "gap/0.1",
+  "id": "artifact-id",
+  "version": 2,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "top-referrers-list"
+      },
+      "content": "<ul><li gap:target id=\"referrer-item-1\"><span><gap:target id=\"referrer-1-name\">github.com</gap:target></span><span><gap:target id=\"referrer-1-sessions\">78,900</gap:target></span></li><li gap:target id=\"referrer-item-2\"><span><gap:target id=\"referrer-2-name\">stackoverflow.com</gap:target></span><span><gap:target id=\"referrer-2-sessions\">65,400</gap:target></span></li><li gap:target id=\"referrer-item-3\"><span><gap:target id=\"referrer-3-name\">dev.to</gap:target></span><span><gap:target id=\"referrer-3-sessions\">42,100</gap:target></span></li><li gap:target id=\"referrer-item-4\"><span><gap:target id=\"referrer-4-name\">medium.com</gap:target></span><span><gap:target id=\"referrer-4-sessions\">35,600</gap:target></span></li><li gap:target id=\"referrer-item-5\"><span><gap:target id=\"referrer-5-name\">hashnode.com</gap:target></span><span><gap:target id=\"referrer-5-sessions\">28,700</gap:target></span></li><li gap:target id=\"referrer-item-6\"><span><gap:target id=\"referrer-6-name\">reddit.com/r/programming</gap:target></span><span><gap:target id=\"referrer-6-sessions\">21,500</gap:target></span></li><li gap:target id=\"referrer-item-7\"><span><gap:target id=\"referrer-7-name\">freecodecamp.org</gap:target></span><span><gap:target id=\"referrer-7-sessions\">18,900</gap:target></span></li><li gap:target id=\"referrer-item-8\"><span><gap:target id=\"referrer-8-name\">hackernews.com</gap:target></span><span><gap:target id=\"referrer-8-sessions\">15,200</gap:target></span></li><li gap:target id=\"referrer-item-9\"><span><gap:target id=\"referrer-9-name\">codepen.io</gap:target></span><span><gap:target id=\"referrer-9-sessions\">11,800</gap:target></span></li><li gap:target id=\"referrer-item-10\"><span><gap:target id=\"referrer-10-name\">smashingmagazine.com</gap:target></span><span><gap:target id=\"referrer-10-sessions\">9,300</gap:target></span></li><li gap:target id=\"referrer-item-11\"><span><gap:target id=\"referrer-11-name\">css-tricks.com</gap:target></span><span><gap:target id=\"referrer-11-sessions\">7,500</gap:target></span></li><li gap:target id=\"referrer-item-12\"><span><gap:target id=\"referrer-12-name\">w3schools.com</gap:target></span><span><gap:target id=\"referrer-12-sessions\">5,100</gap:target></span></li><li gap:target id=\"referrer-item-13\"><span><gap:target id=\"referrer-13-name\">geeksforgeeks.org</gap:target></span><span><gap:target id=\"referrer-13-sessions\">3,900</gap:target></span></li><li gap:target id=\"referrer-item-14\"><span><gap:target id=\"referrer-14-name\">digitalocean.com/community</gap:target></span><span><gap:target id=\"referrer-14-sessions\">2,800</gap:target></span></li><li gap:target id=\"referrer-item-15\"><span><gap:target id=\"referrer-15-name\">scotch.io</gap:target></span><span><gap:target id=\"referrer-15-sessions\">1,500</gap:target></span></li></ul>"
+    }
+  ]
+}

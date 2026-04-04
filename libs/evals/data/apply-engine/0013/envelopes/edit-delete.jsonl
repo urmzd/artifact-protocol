@@ -1,0 +1,2 @@
+{"protocol":"gap/0.1","id":"artifact-0013","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                    <li><a href=\"#\">Settings</a></li>"}}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0013","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                                <td>$450.99</td>"}}],"meta":{"format":"text/html"}}

@@ -71,11 +71,11 @@ pub fn init() -> TelemetryGuard {
     METRICS.get_or_init(Metrics::new);
 
     let tracer_provider = opentelemetry_sdk::trace::SdkTracerProvider::builder().build();
-    let tracer = tracer_provider.tracer("aap");
+    let tracer = tracer_provider.tracer("gap");
     let otel_layer = OpenTelemetryLayer::new(tracer);
 
     let env_filter = EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| EnvFilter::new("aap=info"));
+        .unwrap_or_else(|_| EnvFilter::new("gap=info"));
 
     tracing_subscriber::registry()
         .with(env_filter)

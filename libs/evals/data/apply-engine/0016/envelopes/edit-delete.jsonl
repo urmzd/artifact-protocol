@@ -1,0 +1,2 @@
+{"protocol":"gap/0.1","id":"artifact-0016","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                         <div style=\"flex-basis: 15%; min-width: 100px; margin: 10px;\">"}}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0016","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                    <h3>Atmospheric Pressure Details</h3>"}}],"meta":{"format":"text/html"}}

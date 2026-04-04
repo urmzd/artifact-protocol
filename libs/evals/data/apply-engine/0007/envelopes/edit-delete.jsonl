@@ -1,0 +1,2 @@
+{"protocol":"gap/0.1","id":"artifact-0007","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"    <h1 class=\"section-title\">Performance Overview (Last 30 Days)</h1>"}}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0007","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"            <div class=\"chart-area\" style=\"height: 300px;\">"}}],"meta":{"format":"text/html"}}

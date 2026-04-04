@@ -1,7 +1,7 @@
 """Analyze token costs across experiment results.
 
 Reads metrics.json files from experiment output directories and computes:
-- Per-turn input/output token comparison (base vs AAP)
+- Per-turn input/output token comparison (base vs GAP)
 - Cumulative cost curves
 - Break-even turn identification
 - Protocol overhead amortization

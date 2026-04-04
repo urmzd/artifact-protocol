@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aap.dev/schemas/artifact-envelope.json",
+  "$id": "https://urmzd.com/schemas/gap/artifact-envelope.json",
   "title": "Artifact Envelope",
-  "description": "Wire-format message for the Agent-Artifact Protocol (AAP). Three envelope types: synthesize (in), edit (in), handle (out).",
+  "description": "Wire-format message for the Generative Artifact Protocol (GAP). Three envelope types: synthesize (in), edit (in), handle (out).",
   "type": "object",
   "required": ["protocol", "id", "version", "name", "meta", "content"],
   "properties": {
     "protocol": {
       "type": "string",
-      "const": "aap/0.1",
+      "const": "gap/0.1",
       "description": "Protocol identifier and version"
     },
     "id": {

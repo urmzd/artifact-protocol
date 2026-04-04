@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use anyhow::{bail, Context, Result};
 use sha2::{Digest, Sha256};
 
-use crate::aap::{Artifact, Envelope, Name};
+use crate::gap::{Artifact, Envelope, Name};
 use crate::apply;
 
 /// In-memory versioned artifact store.
@@ -88,7 +88,7 @@ impl ArtifactStore {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::aap::*;
+    use crate::gap::*;
 
     fn make_meta(fmt: &str) -> Meta {
         Meta {
@@ -121,7 +121,7 @@ mod tests {
     fn test_synthesize_then_edit() {
         let mut store = ArtifactStore::new(10);
 
-        let (art, handle) = store.apply(&synth_env("t", 1, r#"<aap:target id="msg">hello</aap:target>"#)).unwrap();
+        let (art, handle) = store.apply(&synth_env("t", 1, r#"<gap:target id="msg">hello</gap:target>"#)).unwrap();
         assert_eq!(art.body.contains("hello"), true);
         assert_eq!(handle.name, Name::Handle);
 

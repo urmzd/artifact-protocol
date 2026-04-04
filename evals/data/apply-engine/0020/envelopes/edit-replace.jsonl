@@ -1,4 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0020","version":2,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"<!DOCTYPE html>"},"content":"UPDfe364450_TYPE html>"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0020","version":3,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"            height: fit-content;"},"content":"UPD6259baeb_UPD6259baeb_  height: fit-content;"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0020","version":4,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"            cursor: pointer;"},"content":"UPD3c04658d_UPD3c04658d_  cursor: pointer;"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0020","version":5,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"                <p>+45</p>"},"content":"                <p>+87</p>"}],"meta":{"format":"text/html"}}

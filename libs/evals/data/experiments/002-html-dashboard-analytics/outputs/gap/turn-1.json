@@ -1,0 +1,30 @@
+{
+  "protocol": "gap/0.1",
+  "id": "artifact-id",
+  "version": 2,
+  "name": "edit",
+  "meta": {
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "bounce-rate-value"
+      },
+      "content": "34.2%"
+    },
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "bounce-rate-value"
+      },
+      "content": "<span class=\"kpi-trend\" style=\"font-size: 0.8em; margin-top: 5px; display: block; color: #28a745;\"><gap:target id=\"bounce-rate-trend\">(-5.1% improvement)</gap:target></span>"
+    }
+  ]
+}

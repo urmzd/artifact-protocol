@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Breaking Changes
+
+- Renamed from Agent-Artifact Protocol (AAP) to Generative Artifact Protocol (GAP)
+- Wire markers: `<aap:target>` → `<gap:target>`
+- Protocol version: `aap/0.1` → `gap/0.1`
+- Python packages: `aap-core`, `aap-evals`, `aap-cli` → `gap-core`, `gap-evals`, `gap-cli`
+- Rust crate: `generative-artifact-protocol` (lib name `gap`)
+
 ## 0.12.0 (2026-04-03)
 
 ### Features

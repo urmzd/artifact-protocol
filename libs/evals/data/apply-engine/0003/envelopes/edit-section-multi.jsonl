@@ -1,0 +1,1 @@
+{"protocol":"gap/0.1","id":"artifact-0003","version":40,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"stats"},"content":"<h2 style=\"color: var(--text-dark);\">Today's Snapshot</h2>\n                <div class=\"stat-grid\">\n \n"},{"op":"replace","target":{"type":"id","value":"content"},"content":"\n"}],"meta":{"format":"text/html"}}

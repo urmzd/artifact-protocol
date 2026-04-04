@@ -1,4 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0013","version":2,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"<!DOCTYPE html>"},"content":"UPDfe364450_TYPE html>"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0013","version":3,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"        /* Stats Cards */"},"content":"UPD48f23f33_   /* Stats Cards */"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0013","version":4,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"        .pagination {"},"content":"UPD6a8c4d40_   .pagination {"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0013","version":5,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"                        <h3>Returns Pending</h3>"},"content":"                        <h45>Returns Pending</h45>"}],"meta":{"format":"text/html"}}

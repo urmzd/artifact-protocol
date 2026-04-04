@@ -3,7 +3,7 @@
 
   "step_1_handle": {
     "_description": "Orchestrator holds this handle after artifact creation via init context",
-    "protocol": "aap/0.1",
+    "protocol": "gap/0.1",
     "id": "dashboard-001",
     "version": 3,
     "name": "handle",
@@ -25,13 +25,13 @@
     "_description": "Maintain context receives artifact + message, produces edit envelope (not visible to orchestrator)",
 
     "maintain_context_input": {
-      "system_prompt": "You are an AAP maintain context. Given an artifact and an edit instruction, produce a name: \"edit\" envelope.",
+      "system_prompt": "You are an GAP maintain context. Given an artifact and an edit instruction, produce a name: \"edit\" envelope.",
       "artifact_injected": "(full HTML content of dashboard-001 v3 — ~10,240 tokens)",
       "message": "Update the revenue stat card to show $15,720 and the orders count to 384"
     },
 
     "maintain_context_output": {
-      "protocol": "aap/0.1",
+      "protocol": "gap/0.1",
       "id": "dashboard-001",
       "version": 4,
       "name": "edit",
@@ -49,7 +49,7 @@
 
   "step_4_handle_returned": {
     "_description": "Orchestrator receives updated handle — never sees the artifact content",
-    "protocol": "aap/0.1",
+    "protocol": "gap/0.1",
     "id": "dashboard-001",
     "version": 4,
     "name": "handle",

@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0017","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                    <div class=\"stat-card\">"}}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0017","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                                <td class=\"negative\">-$0.88</td>"}}],"meta":{"format":"text/html"}}

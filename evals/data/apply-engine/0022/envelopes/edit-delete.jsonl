@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0022","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                                <th>Quantity</th>"}}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0022","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                                <td>OUT (Sale)</td>"}}],"meta":{"format":"text/html"}}

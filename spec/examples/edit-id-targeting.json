@@ -1,5 +1,5 @@
 {
-  "protocol": "aap/0.1",
+  "protocol": "gap/0.1",
   "id": "dashboard-001",
   "version": 2,
   "name": "edit",

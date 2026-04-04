@@ -1,4 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0020","version":30,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"nav"},"content":"<NAV>\n        <a href=\"#\" style=\"background-color: #007bff; color: white;\">Overview</a>\n        <a href=\"#\">Leads Management</a>\n        <a href=\"#\">Team Performance</a>\n        <a href=\"#\">Forecasting</a>\n    </nav>\n"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0020","version":31,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"stats"},"content":"\n"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0020","version":32,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"content"},"content":"\n"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0020","version":33,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"footer"},"content":"\n"}],"meta":{"format":"text/html"}}

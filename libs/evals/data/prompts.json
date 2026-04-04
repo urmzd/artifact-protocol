@@ -1,0 +1,1603 @@
+[
+  {
+    "id": "html-dashboard-ecommerce",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "dashboard.html",
+    "size_hint": "large",
+    "expected_sections": [
+      "nav",
+      "stats",
+      "products-table",
+      "orders-table",
+      "settings"
+    ],
+    "prompt": "Create a large, self-contained HTML e-commerce admin dashboard with inline CSS only.\n\nInclude:\n- Top navigation bar with logo, nav links, signed-in user avatar, Sign Out button\n- 4 stat cards (Total Revenue, Orders, Customers, Conversion Rate) with trend indicators\n- Products table with at least 60 rows (name, SKU, price, stock, category, status badge)\n- Orders table with at least 40 rows (order ID, customer, amount, date, status badge)\n- Account settings form with profile fields and notification toggles\n\nUse section IDs: nav, stats, products-table, orders-table, settings\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline in <style>. No CDN, no external resources. Modern, clean design.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the Total Revenue stat card to show $215,430 with a +12.3% trend indicator",
+      "Add 15 new rows to the orders table with recent order data from March 2026",
+      "Change the primary accent color from blue to purple (#8b5cf6) across all elements",
+      "Add a new 'Recent Activity' section after the stats cards showing the last 10 user actions"
+    ]
+  },
+  {
+    "id": "html-dashboard-analytics",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "analytics.html",
+    "size_hint": "large",
+    "expected_sections": [
+      "nav",
+      "kpi-cards",
+      "traffic-table",
+      "referrers",
+      "geo"
+    ],
+    "prompt": "Create a self-contained HTML analytics dashboard with inline CSS.\n\nInclude:\n- Navigation bar with breadcrumbs and date range picker\n- KPI cards: Page Views, Unique Visitors, Bounce Rate, Avg Session Duration\n- Traffic sources table with 50+ rows (source, medium, sessions, bounce rate, conversions)\n- Top referrers list with 20 entries\n- Geographic breakdown table with 30 countries\n\nUse section IDs: nav, kpi-cards, traffic-table, referrers, geo\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. No external dependencies. Clean data-focused design.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the Bounce Rate KPI card to show 34.2% with a -5.1% improvement trend",
+      "Add 20 new rows to the traffic sources table with social media referral data from Q1 2026",
+      "Replace the top referrers list with a new list of 15 referrers focused on developer communities",
+      "Add a new 'Conversion Funnel' section after the KPI cards showing 5 funnel stages with drop-off percentages"
+    ]
+  },
+  {
+    "id": "html-landing-saas",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "landing.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "hero",
+      "features",
+      "pricing",
+      "testimonials",
+      "footer"
+    ],
+    "prompt": "Create a self-contained HTML landing page for a fictional SaaS product called \"CloudSync\".\n\nInclude:\n- Hero section with headline, subheadline, CTA button, and a decorative gradient background\n- Features grid with 6 features (icon placeholder, title, description)\n- Pricing section with 3 tiers (Starter, Pro, Enterprise) in card layout\n- Testimonials section with 4 customer quotes\n- Footer with links, social icons, and copyright\n\nUse section IDs: hero, features, pricing, testimonials, footer\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Modern, polished SaaS landing page aesthetic.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the hero headline to 'Sync Everything. Everywhere.' and the subheadline to 'CloudSync connects your tools in real time.'",
+      "Rewrite the pricing section to have 4 tiers instead of 3: Free, Starter $19/mo, Pro $49/mo, Enterprise custom",
+      "Add a new 'Integrations' section between features and pricing showing a grid of 8 integration logos with names"
+    ]
+  },
+  {
+    "id": "html-email-receipt",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "receipt.html",
+    "size_hint": "small",
+    "expected_sections": [
+      "header",
+      "order-summary",
+      "items",
+      "totals"
+    ],
+    "prompt": "Create a self-contained HTML email receipt for an online purchase.\n\nInclude:\n- Header with company logo placeholder and \"Order Confirmation\" title\n- Order summary (order number, date, shipping address)\n- Items table with 5 products (name, quantity, unit price, subtotal)\n- Totals section (subtotal, shipping, tax, total)\n\nUse section IDs: header, order-summary, items, totals\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nUse table-based layout for email compatibility. Inline styles only. Max width 600px.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the order number to ORD-2026-03-4821 and the date to March 28, 2026",
+      "Add 3 more products to the items table: Wireless Charger ($34.99, qty 1), USB-C Hub ($59.99, qty 1), and Monitor Stand ($89.99, qty 2)"
+    ]
+  },
+  {
+    "id": "html-form-wizard",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "wizard.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "progress-bar",
+      "step-personal",
+      "step-address",
+      "step-payment",
+      "step-review"
+    ],
+    "prompt": "Create a self-contained HTML multi-step form wizard for user registration.\n\nInclude:\n- Progress bar showing 4 steps\n- Step 1: Personal info (name, email, phone, date of birth)\n- Step 2: Address (street, city, state, zip, country dropdown)\n- Step 3: Payment (card number, expiry, CVV, billing address toggle)\n- Step 4: Review all entered information\n- Next/Previous/Submit buttons with basic JS to show/hide steps\n\nUse section IDs: progress-bar, step-personal, step-address, step-payment, step-review\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS and JS inline. Clean form design with validation styling.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new Step 5 for 'Preferences' with fields for newsletter opt-in, preferred language dropdown, and communication channel radio buttons",
+      "Update the progress bar to show 5 steps instead of 4 and change its color from blue to teal (#0d9488)",
+      "Rewrite Step 3 (Payment) to include PayPal and Apple Pay options as radio button alternatives to credit card"
+    ]
+  },
+  {
+    "id": "html-portfolio",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "portfolio.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "hero",
+      "about",
+      "projects",
+      "skills",
+      "contact"
+    ],
+    "prompt": "Create a self-contained HTML portfolio page for a software developer named Alex Chen.\n\nInclude:\n- Hero with name, title \"Full-Stack Developer\", and brief intro\n- About section with bio paragraph and profile image placeholder\n- Projects grid with 6 project cards (title, description, tech stack tags, links)\n- Skills section with categorized skill bars (Frontend, Backend, DevOps)\n- Contact form (name, email, message) and social links\n\nUse section IDs: hero, about, projects, skills, contact\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Dark theme with accent color highlights.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the developer name to 'Jordan Rivera' and title to 'Cloud Infrastructure Engineer'",
+      "Replace the projects grid with 8 project cards instead of 6, adding 'Kubernetes Autoscaler' and 'GraphQL Gateway' projects with relevant tech stack tags",
+      "Add a new 'Blog' section after projects showing the 3 most recent blog post previews with title, date, and excerpt"
+    ]
+  },
+  {
+    "id": "html-blog-post",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "blog.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "header",
+      "article-content",
+      "author-bio",
+      "comments"
+    ],
+    "prompt": "Create a self-contained HTML blog post page about \"Building Scalable Microservices with Rust\".\n\nInclude:\n- Header with blog name, navigation, and search bar\n- Article with title, author, date, reading time, and 5+ paragraphs of realistic technical content\n- Code snippets within the article (use <pre><code> blocks)\n- Author bio card at the bottom\n- Comments section with 4 sample comments (avatar placeholder, name, date, comment text)\n\nUse section IDs: header, article-content, author-bio, comments\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Clean reading-focused typography.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the article title to 'Building Scalable Microservices with Go and gRPC'",
+      "Rewrite the comments section to have 6 comments instead of 4, with replies nested under the first two comments",
+      "Add a 'Related Articles' section after the author bio showing 3 related article cards with titles and excerpts"
+    ]
+  },
+  {
+    "id": "html-admin-users",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "users.html",
+    "size_hint": "large",
+    "expected_sections": [
+      "toolbar",
+      "filters",
+      "users-table",
+      "pagination"
+    ],
+    "prompt": "Create a self-contained HTML admin user management page with inline CSS.\n\nInclude:\n- Toolbar with \"Add User\" button, search input, and bulk action dropdown\n- Filter bar with role, status, and date range filters\n- Users table with 80+ rows (avatar placeholder, name, email, role, status badge, last login, actions dropdown)\n- Pagination controls with page numbers and items-per-page selector\n\nUse section IDs: toolbar, filters, users-table, pagination\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Professional admin panel design.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a 'Department' column to the users table between 'role' and 'status badge' with realistic department values",
+      "Update the toolbar to include a 'Export CSV' button and a 'Deactivate Selected' bulk action option",
+      "Add 20 more rows to the users table with users who have 'Viewer' and 'Editor' roles",
+      "Change all status badges to use pill-shaped styling with colors: green for active, red for suspended, gray for inactive"
+    ]
+  },
+  {
+    "id": "html-invoice",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "invoice.html",
+    "size_hint": "small",
+    "expected_sections": [
+      "header",
+      "addresses",
+      "line-items",
+      "totals"
+    ],
+    "prompt": "Create a self-contained HTML invoice document.\n\nInclude:\n- Header with company name \"TechCorp Solutions\", logo placeholder, invoice number INV-2024-0847\n- From/To addresses side by side\n- Line items table with 8 items (description, quantity, rate, amount)\n- Totals section (subtotal, discount 10%, tax 8.5%, total due)\n- Payment terms and bank details at the bottom\n\nUse section IDs: header, addresses, line-items, totals\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Print-friendly layout, max width 800px.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the company name to 'NovaTech Industries' and invoice number to INV-2026-1203",
+      "Add 4 more line items: Cloud Hosting Setup ($2,400), SSL Certificate ($199), Data Migration ($3,500), Training Session ($1,800)"
+    ]
+  },
+  {
+    "id": "html-kanban",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "kanban.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "board-header",
+      "col-backlog",
+      "col-in-progress",
+      "col-review",
+      "col-done"
+    ],
+    "prompt": "Create a self-contained HTML Kanban board for project management.\n\nInclude:\n- Board header with project name \"Sprint 24\", member avatars, and filter buttons\n- 4 columns: Backlog (6 cards), In Progress (4 cards), In Review (3 cards), Done (5 cards)\n- Each card has: title, assignee, priority tag (low/medium/high/critical), due date, labels\n- Cards should have realistic software development task names\n- Basic drag hint styling (grab cursor)\n\nUse section IDs: board-header, col-backlog, col-in-progress, col-review, col-done\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Horizontal scrolling layout with colored column headers.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the project name from 'Sprint 24' to 'Sprint 27 \u2014 Q2 Launch' and update all member avatars to show 6 team members",
+      "Move 2 cards from Backlog to In Progress and add a 'Blocked' label to the first card in In Review",
+      "Add a new 'Cancelled' column after Done with 2 cancelled task cards",
+      "Change all 'critical' priority tags to have a red pulsing animation effect"
+    ]
+  },
+  {
+    "id": "python-fastapi-users",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "users_api.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "models",
+      "schemas",
+      "crud",
+      "routes"
+    ],
+    "prompt": "Create a FastAPI user management module with full CRUD operations.\n\nInclude:\n- SQLAlchemy models for User (id, email, name, hashed_password, role, is_active, created_at)\n- Pydantic schemas for UserCreate, UserUpdate, UserResponse, UserList\n- CRUD functions (create_user, get_user, list_users with pagination, update_user, delete_user)\n- FastAPI router with endpoints: POST /users, GET /users, GET /users/{id}, PUT /users/{id}, DELETE /users/{id}\n- Proper error handling with HTTPException\n\nUse section IDs: models, schemas, crud, routes\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a 'role' field to UserCreate schema with allowed values 'admin', 'editor', 'viewer' and default 'viewer'",
+      "Rewrite the list_users CRUD function to support filtering by role and is_active status",
+      "Add a new PATCH /users/{id}/deactivate endpoint that sets is_active to False and returns the updated user"
+    ]
+  },
+  {
+    "id": "python-cli-log-analyzer",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "log_analyzer.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "parser",
+      "analyzers",
+      "formatters",
+      "main"
+    ],
+    "prompt": "Create a Python CLI log analyzer tool using argparse.\n\nInclude:\n- Log parser that handles common formats (Apache, Nginx, JSON structured logs)\n- Analysis functions: top IPs, status code distribution, response time percentiles, error rate over time, top endpoints\n- Output formatters: table (rich-style ASCII), JSON, CSV\n- Main function with argparse: input file, output format, time range filter, top-N limit\n- Type hints throughout\n\nUse section IDs: parser, analyzers, formatters, main\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new analyzer function called 'detect_anomalies' that flags response times above the 99th percentile",
+      "Update the argparse main function to add a --group-by flag that accepts 'hour', 'day', or 'week' for time-based grouping",
+      "Rewrite the table formatter to use box-drawing characters for borders instead of plain ASCII dashes and pipes"
+    ]
+  },
+  {
+    "id": "python-data-pipeline",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "pipeline.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "extraction",
+      "transformation",
+      "validation",
+      "loading"
+    ],
+    "prompt": "Create a Python ETL data pipeline for processing CSV sales data.\n\nInclude:\n- Extraction: read CSV files, handle encoding issues, parse dates\n- Transformation: clean column names, calculate derived metrics (profit margin, YoY growth), categorize products, aggregate by region\n- Validation: schema validation with expected types, null checks, range checks, duplicate detection\n- Loading: write to Parquet and JSON, generate summary statistics\n- Use dataclasses for pipeline config, pandas for data processing\n\nUse section IDs: extraction, transformation, validation, loading\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new transformation step that calculates a 'customer_lifetime_value' metric by aggregating total spend per customer",
+      "Update the validation section to add a check that rejects rows where the sale date is in the future",
+      "Rewrite the loading section to also output a summary CSV with one row per region containing total revenue, order count, and average order value"
+    ]
+  },
+  {
+    "id": "python-pytest-suite",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "test_auth.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "fixtures",
+      "test-registration",
+      "test-login",
+      "test-permissions"
+    ],
+    "prompt": "Create a comprehensive pytest test suite for a user authentication system.\n\nInclude:\n- Fixtures: test database, test client, sample users (admin, regular, inactive), auth headers\n- Registration tests: valid signup, duplicate email, weak password, missing fields, email validation\n- Login tests: valid login, wrong password, inactive user, rate limiting, token refresh\n- Permission tests: admin-only endpoints, resource ownership, role escalation prevention\n- Use parametrize for edge cases, proper assertions with descriptive messages\n\nUse section IDs: fixtures, test-registration, test-login, test-permissions\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new fixture 'sample_superadmin' with elevated permissions and update the permission tests to verify superadmin can access all endpoints",
+      "Add 3 new parametrized test cases to test-login for multi-factor authentication scenarios: valid MFA code, expired MFA code, and invalid MFA code",
+      "Rewrite the test-registration section to include tests for OAuth signup via Google and GitHub providers"
+    ]
+  },
+  {
+    "id": "python-dataclasses-models",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "models.py",
+    "size_hint": "small",
+    "expected_sections": [
+      "base",
+      "entities",
+      "value-objects"
+    ],
+    "prompt": "Create Python dataclass models for a project management system.\n\nInclude:\n- Base classes with common fields (id, created_at, updated_at)\n- Entity models: Project, Sprint, Task, User, Team, Comment\n- Value objects: Priority (enum), Status (enum), TimeEstimate, DateRange\n- Relationships between models using IDs\n- Validation methods and factory classmethods\n- Type hints and docstrings\n\nUse section IDs: base, entities, value-objects\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Milestone' entity with fields: id, name, target_date, status, project_id, and a list of associated task IDs",
+      "Update the Priority enum to include a 'URGENT' level above 'HIGH' and add a color property returning hex codes for each level"
+    ]
+  },
+  {
+    "id": "python-websocket-chat",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "chat_server.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "models",
+      "connection-manager",
+      "handlers",
+      "app"
+    ],
+    "prompt": "Create a Python WebSocket chat server using FastAPI.\n\nInclude:\n- Message models (ChatMessage, SystemMessage, UserJoined, UserLeft)\n- ConnectionManager class: connect, disconnect, broadcast, send_to_user, list_rooms\n- Message handlers: join room, leave room, send message, typing indicator, message history\n- FastAPI app with WebSocket endpoint and REST endpoints for room management\n- Basic rate limiting and message validation\n\nUse section IDs: models, connection-manager, handlers, app\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'ReactionMessage' model with fields: message_id, user_id, emoji, and timestamp",
+      "Rewrite the broadcast method in ConnectionManager to support broadcasting only to users in a specific room",
+      "Add a new handler for 'pin_message' that allows users to pin a message in a room and notifies all room members"
+    ]
+  },
+  {
+    "id": "python-scraper",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "scraper.py",
+    "size_hint": "small",
+    "expected_sections": [
+      "config",
+      "fetcher",
+      "parser",
+      "storage"
+    ],
+    "prompt": "Create a Python web scraper for collecting product data from an e-commerce site.\n\nInclude:\n- Config dataclass with base URL, rate limit, retry settings, output path\n- Fetcher with retries, rate limiting, session management, and User-Agent rotation\n- HTML parser extracting: product name, price, rating, review count, availability, image URL\n- Storage layer writing to JSON Lines and SQLite\n- Proper error handling and logging throughout\n\nUse section IDs: config, fetcher, parser, storage\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the config to set the rate limit to 2 requests per second and add a proxy_url field",
+      "Add a new parser field for 'discount_price' that extracts sale prices and calculates the discount percentage from the original price"
+    ]
+  },
+  {
+    "id": "js-react-data-table",
+    "format": "text/javascript",
+    "extension": ".jsx",
+    "filename": "DataTable.jsx",
+    "size_hint": "medium",
+    "expected_sections": [
+      "hooks",
+      "columns",
+      "toolbar",
+      "table-body",
+      "pagination"
+    ],
+    "prompt": "Create a React data table component with sorting, filtering, and pagination.\n\nInclude:\n- Custom hooks: useSort, useFilter, usePagination\n- Column definitions for a user table (name, email, role, status, joined date, actions)\n- Toolbar component with search input, filter dropdowns, and column visibility toggle\n- Table body with row selection, expandable rows, and inline editing\n- Pagination component with page size selector and page navigation\n- Sample data with 20 realistic user entries\n\nUse section IDs: hooks, columns, toolbar, table-body, pagination\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'department' column after 'role' with values like Engineering, Marketing, Sales, and Support",
+      "Rewrite the toolbar component to include a date range filter with 'from' and 'to' date pickers",
+      "Add 10 more user entries to the sample data with international names and email addresses",
+      "Update the pagination component to show 'Showing X-Y of Z results' text and a jump-to-page input"
+    ]
+  },
+  {
+    "id": "js-express-api",
+    "format": "text/javascript",
+    "extension": ".js",
+    "filename": "server.js",
+    "size_hint": "medium",
+    "expected_sections": [
+      "middleware",
+      "models",
+      "routes",
+      "error-handling"
+    ],
+    "prompt": "Create an Express.js REST API server for a task management application.\n\nInclude:\n- Middleware: CORS, JSON parsing, request logging, auth token verification\n- In-memory data models for Task, Project, User with helper methods\n- Routes: CRUD for tasks, projects; assign task, change status, add comment\n- Error handling middleware with proper status codes and error messages\n- Rate limiting and input validation\n\nUse section IDs: middleware, models, routes, error-handling\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'labels' field to the Task model with an array of strings, and add a PUT /tasks/:id/labels endpoint",
+      "Rewrite the auth token verification middleware to support both Bearer tokens and API key authentication via X-API-Key header",
+      "Add a new route POST /projects/:id/archive that marks a project as archived and moves all its pending tasks to cancelled status"
+    ]
+  },
+  {
+    "id": "ts-react-form",
+    "format": "text/typescript",
+    "extension": ".tsx",
+    "filename": "CheckoutForm.tsx",
+    "size_hint": "medium",
+    "expected_sections": [
+      "types",
+      "validation",
+      "form-fields",
+      "summary",
+      "submission"
+    ],
+    "prompt": "Create a TypeScript React checkout form component.\n\nInclude:\n- TypeScript interfaces for FormData, ValidationErrors, CartItem, ShippingOption\n- Validation functions for email, credit card (Luhn), expiry date, required fields\n- Form field components: text input, select, card number with formatting, expiry picker\n- Order summary sidebar showing cart items, subtotal, shipping, tax, total\n- Form submission handler with loading state and error display\n- Styled with CSS-in-JS (inline style objects)\n\nUse section IDs: types, validation, form-fields, summary, submission\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new ShippingOption interface with fields: id, name, price, estimated_days, and carrier",
+      "Rewrite the form-fields section to add a promo code input with a 'Apply' button that validates the code and shows a discount line in the summary",
+      "Update the validation functions to show inline error messages below each field instead of a single error block at the top"
+    ]
+  },
+  {
+    "id": "js-utility-library",
+    "format": "text/javascript",
+    "extension": ".js",
+    "filename": "utils.js",
+    "size_hint": "medium",
+    "expected_sections": [
+      "string-utils",
+      "date-utils",
+      "array-utils",
+      "validation-utils"
+    ],
+    "prompt": "Create a JavaScript utility library with commonly needed helper functions.\n\nInclude:\n- String utilities: slugify, truncate, capitalize, camelCase, snakeCase, escapeHtml, generateId\n- Date utilities: formatDate, timeAgo, addDays, isWeekend, getDateRange, parseRelativeDate\n- Array utilities: chunk, groupBy, uniqueBy, sortBy, flatten, intersection, difference, shuffle\n- Validation utilities: isEmail, isURL, isStrongPassword, isPhoneNumber, isCreditCard, isIPv4\n- JSDoc comments on every function with examples\n\nUse section IDs: string-utils, date-utils, array-utils, validation-utils\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add three new string utilities: maskEmail (show first 2 chars + ***@domain), pluralize (word, count), and wordCount",
+      "Rewrite the date-utils section to add a formatDuration function that converts milliseconds to human-readable format like '2h 15m 30s'",
+      "Add a new 'object-utils' section with functions: deepClone, deepMerge, pick, omit, and isEqual"
+    ]
+  },
+  {
+    "id": "ts-state-store",
+    "format": "text/typescript",
+    "extension": ".ts",
+    "filename": "store.ts",
+    "size_hint": "small",
+    "expected_sections": [
+      "types",
+      "actions",
+      "reducers",
+      "selectors"
+    ],
+    "prompt": "Create a TypeScript state management store for a shopping cart application.\n\nInclude:\n- Types: CartItem, Product, CartState, CartAction (union type)\n- Action creators: addItem, removeItem, updateQuantity, applyCoupon, clearCart\n- Reducer function handling all actions with immutable state updates\n- Selectors: getCartTotal, getItemCount, getCartItems, getCouponDiscount, getTaxAmount\n- Helper for localStorage persistence\n\nUse section IDs: types, actions, reducers, selectors\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'applyBulkDiscount' action that applies a 15% discount when the cart has 5 or more items",
+      "Update the getTaxAmount selector to accept a state tax rate parameter instead of using a hardcoded rate"
+    ]
+  },
+  {
+    "id": "json-openapi-spec",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "openapi.json",
+    "size_hint": "large",
+    "expected_sections": [
+      "paths",
+      "schemas",
+      "responses"
+    ],
+    "prompt": "Create an OpenAPI 3.0 specification in JSON for a bookstore API.\n\nInclude:\n- Info with title \"Bookstore API\", version, description, contact\n- Paths: /books (GET list, POST create), /books/{id} (GET, PUT, DELETE), /authors, /categories, /orders, /reviews\n- Each endpoint with parameters, request body, responses (200, 400, 404, 500)\n- Component schemas: Book, Author, Category, Order, Review, PaginatedResponse, ErrorResponse\n- Security scheme: Bearer JWT\n- At least 8 endpoints with full request/response schemas\n\nNo section markers needed for JSON (use JSON Pointer addressing).\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new /wishlist endpoint group with POST /wishlist (add item), GET /wishlist (list items), and DELETE /wishlist/{id} (remove item), including full request/response schemas",
+      "Update the Book schema to include a 'format' enum field with values 'hardcover', 'paperback', 'ebook', 'audiobook'",
+      "Add rate limiting information to the API info section: 100 requests per minute for authenticated users, 20 for anonymous",
+      "Add a new /search endpoint that accepts query, category, price_min, price_max, and sort_by parameters"
+    ]
+  },
+  {
+    "id": "json-package-monorepo",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "package.json",
+    "size_hint": "small",
+    "expected_sections": [],
+    "prompt": "Create a realistic package.json for a TypeScript monorepo web application called \"@acme/dashboard\".\n\nInclude:\n- name, version, description, license, author, repository\n- scripts: dev, build, test, lint, format, typecheck, clean, prepare\n- dependencies: react, next.js, tailwindcss, zod, tanstack-query, lucide-react (realistic versions)\n- devDependencies: typescript, eslint, prettier, vitest, @types packages\n- workspaces configuration\n- engines field\n\nUse realistic, current version numbers.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add drizzle-orm and @auth/core to the dependencies with realistic version numbers",
+      "Update the scripts section to add 'db:migrate', 'db:seed', and 'db:studio' commands using drizzle-kit"
+    ]
+  },
+  {
+    "id": "json-tsconfig",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "tsconfig.json",
+    "size_hint": "tiny",
+    "expected_sections": [],
+    "prompt": "Create a tsconfig.json for a modern TypeScript project using ES modules.\n\nInclude strict mode, path aliases, reasonable compiler options for a Next.js 14 project.\nInclude compilerOptions, include, exclude arrays.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add path aliases for '@/components/*', '@/lib/*', and '@/hooks/*' pointing to their respective src subdirectories",
+      "Change the target from ES2017 to ES2022 and enable the 'decorators' and 'verbatimModuleSyntax' compiler options"
+    ]
+  },
+  {
+    "id": "json-api-response-users",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "users_response.json",
+    "size_hint": "medium",
+    "expected_sections": [
+      "meta",
+      "data",
+      "pagination"
+    ],
+    "prompt": "Create a realistic JSON API response for a paginated users endpoint.\n\nInclude:\n- meta: request_id, timestamp, api_version\n- data: array of 30 user objects (id, email, first_name, last_name, avatar_url, role, department, is_active, created_at, last_login_at, preferences object)\n- pagination: page, per_page, total, total_pages, has_next, has_prev\n- Use realistic names, emails, and dates\n\nNo section markers needed for JSON.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add 10 more users to the data array with roles 'billing_admin' and 'support_agent' and departments 'Finance' and 'Customer Success'",
+      "Update the pagination to show page 3 of 12 with per_page set to 30 and update has_next and has_prev accordingly",
+      "Add a 'team_id' and 'team_name' field to each user object, with users grouped into 4 teams: Platform, Growth, Infrastructure, and Design"
+    ]
+  },
+  {
+    "id": "json-i18n-translations",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "en.json",
+    "size_hint": "medium",
+    "expected_sections": [],
+    "prompt": "Create a JSON i18n translation file (English) for a project management web application.\n\nInclude nested keys for:\n- common: buttons, labels, messages, errors\n- auth: login, register, forgot password, reset password\n- dashboard: stats, charts, filters, actions\n- projects: list, detail, create, edit, archive\n- tasks: status labels, priority labels, assignment, comments\n- settings: profile, notifications, security, billing\n\nAt least 150 translation keys total with realistic UI text.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'teams' section with translation keys for team list, team detail, invite member, remove member, and role assignment",
+      "Update all error messages in the 'common.errors' section to be more user-friendly and include suggested actions",
+      "Add a 'notifications' section with keys for email, push, and in-app notification preferences and delivery status messages"
+    ]
+  },
+  {
+    "id": "json-geojson-cities",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "cities.geojson",
+    "size_hint": "medium",
+    "expected_sections": [],
+    "prompt": "Create a GeoJSON FeatureCollection containing 25 major world cities.\n\nEach feature should have:\n- Point geometry with realistic coordinates\n- Properties: name, country, population, timezone, elevation_m, is_capital, continent\n\nUse actual coordinates and approximate populations.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add 10 more cities from Africa and South America with accurate coordinates and populations",
+      "Add a 'language' property to every city feature listing the primary official language spoken there"
+    ]
+  },
+  {
+    "id": "yaml-docker-compose-microservices",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "docker-compose.yaml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "services",
+      "networks",
+      "volumes"
+    ],
+    "prompt": "Create a docker-compose.yaml for a microservices application with:\n\n- API gateway (nginx) on port 80\n- Auth service (Node.js) with JWT config\n- User service (Python/FastAPI) with PostgreSQL\n- Order service (Go) with Redis cache\n- Notification service (Python) with RabbitMQ\n- PostgreSQL database with initialization\n- Redis cache\n- RabbitMQ message broker\n- Shared network and named volumes\n- Health checks for each service\n- Environment variables and .env file references\n\nUse section IDs: services, networks, volumes\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'monitoring' service using Prometheus with a scrape config targeting all other services on their /metrics endpoints",
+      "Update the PostgreSQL service to use version 16 and add a health check that runs pg_isready every 10 seconds",
+      "Add resource limits (CPU and memory) to every service: API gateway 0.5 CPU / 256MB, application services 1 CPU / 512MB, databases 2 CPU / 1GB",
+      "Add a new 'celery-worker' service that shares the same image as the notification service but runs with the celery worker command"
+    ]
+  },
+  {
+    "id": "yaml-github-actions-ci",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "ci.yaml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "triggers",
+      "lint-job",
+      "test-job",
+      "build-job",
+      "deploy-job"
+    ],
+    "prompt": "Create a GitHub Actions CI/CD workflow for a TypeScript monorepo.\n\nInclude:\n- Triggers: push to main, pull_request, manual dispatch\n- Lint job: checkout, setup Node, install deps, run eslint and prettier check\n- Test job: matrix (Node 18, 20), run vitest with coverage, upload coverage artifact\n- Build job: depends on lint+test, build Next.js app, upload build artifact\n- Deploy job: depends on build, deploy to Vercel (staging on PR, production on main push)\n- Concurrency control, caching for node_modules\n\nUse section IDs: triggers, lint-job, test-job, build-job, deploy-job\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'security-scan' job between lint and test that runs npm audit and Snyk vulnerability scanning",
+      "Update the deploy job to add a manual approval step before production deployment using environments and reviewers",
+      "Rewrite the test job to also run Playwright e2e tests in a separate matrix entry with a PostgreSQL service container"
+    ]
+  },
+  {
+    "id": "yaml-k8s-deployment",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "deployment.yaml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "deployment",
+      "service",
+      "ingress",
+      "hpa",
+      "configmap"
+    ],
+    "prompt": "Create Kubernetes manifests for deploying a web application.\n\nInclude:\n- Deployment: 3 replicas, rolling update strategy, resource limits, liveness/readiness probes, env from configmap/secret\n- Service: ClusterIP type, port 80 targeting 8080\n- Ingress: with TLS, host-based routing, path prefixes\n- HorizontalPodAutoscaler: min 2, max 10, CPU target 70%\n- ConfigMap: application configuration (database URL, cache TTL, log level, feature flags)\n\nUse section IDs: deployment, service, ingress, hpa, configmap\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nSeparate each manifest with `---`.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the Deployment to use 5 replicas and add a PodDisruptionBudget with minAvailable of 3",
+      "Add a new Secret manifest containing database credentials and update the Deployment to mount it as environment variables",
+      "Rewrite the Ingress to add a second host rule for api.example.com routing to a different service on port 8081"
+    ]
+  },
+  {
+    "id": "yaml-ansible-playbook",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "playbook.yaml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "vars",
+      "pre-tasks",
+      "roles-setup",
+      "app-deploy",
+      "post-tasks"
+    ],
+    "prompt": "Create an Ansible playbook for deploying a Python web application to Ubuntu servers.\n\nInclude:\n- Variables: app name, version, deploy path, service user, Python version, Nginx config\n- Pre-tasks: update apt, install system packages, create deploy user\n- Server setup: install Python, create virtualenv, configure systemd service\n- App deployment: clone repo, install dependencies, run migrations, collect static files\n- Post-tasks: configure Nginx reverse proxy, enable SSL with certbot, restart services\n- Handlers for service restarts\n\nUse section IDs: vars, pre-tasks, roles-setup, app-deploy, post-tasks\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the vars section to add a 'backup_retention_days: 30' variable and add a new post-task that sets up a daily database backup cron job",
+      "Add a new pre-task that checks disk space and fails the playbook if less than 5GB is available on /var",
+      "Rewrite the app-deploy section to use a blue-green deployment strategy with a symlink swap between 'current' and 'previous' release directories"
+    ]
+  },
+  {
+    "id": "yaml-cloudformation",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "infrastructure.yaml",
+    "size_hint": "large",
+    "expected_sections": [
+      "parameters",
+      "vpc-resources",
+      "compute",
+      "database",
+      "outputs"
+    ],
+    "prompt": "Create an AWS CloudFormation template for a 3-tier web application.\n\nInclude:\n- Parameters: environment, instance type, DB instance class, VPC CIDR\n- VPC with 2 public and 2 private subnets, NAT Gateway, route tables\n- Application Load Balancer with target group and listener\n- Auto Scaling Group with launch template, scaling policies\n- RDS PostgreSQL in private subnet with multi-AZ\n- Security groups for ALB, EC2, and RDS\n- Outputs: ALB DNS, RDS endpoint, VPC ID\n\nUse section IDs: parameters, vpc-resources, compute, database, outputs\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new ElastiCache Redis cluster resource in a private subnet with 2 cache nodes of type cache.t3.medium",
+      "Update the Auto Scaling Group to use a target tracking scaling policy based on ALBRequestCountPerTarget with a target value of 1000",
+      "Add a new 'environment' parameter with allowed values 'dev', 'staging', 'prod' and use it to conditionally enable multi-AZ on the RDS instance only for 'prod'",
+      "Add an S3 bucket resource for static assets with CloudFront distribution and OAI access control"
+    ]
+  },
+  {
+    "id": "md-readme-cli",
+    "format": "text/markdown",
+    "extension": ".md",
+    "filename": "README.md",
+    "size_hint": "medium",
+    "expected_sections": [
+      "overview",
+      "installation",
+      "usage",
+      "configuration",
+      "api"
+    ],
+    "prompt": "Create a README.md for a CLI tool called \"dbmigrate\" \u2014 a database migration tool.\n\nInclude:\n- Overview with badges (build, version, license) and brief description\n- Installation instructions (npm, brew, cargo)\n- Usage section with 10+ command examples (init, create, up, down, status, rollback, seed)\n- Configuration section with config file format and environment variables\n- API/library usage for programmatic access\n- Contributing guidelines summary\n- License\n\nUse section IDs: overview, installation, usage, configuration, api\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Troubleshooting' section after API with 5 common issues and their solutions",
+      "Update the usage section to add examples for two new commands: 'dbmigrate squash' (squash multiple migrations) and 'dbmigrate diff' (show pending changes)",
+      "Rewrite the installation section to add Docker installation instructions with a docker run example"
+    ]
+  },
+  {
+    "id": "md-api-docs",
+    "format": "text/markdown",
+    "extension": ".md",
+    "filename": "api-docs.md",
+    "size_hint": "large",
+    "expected_sections": [
+      "authentication",
+      "users-endpoints",
+      "projects-endpoints",
+      "errors",
+      "rate-limiting"
+    ],
+    "prompt": "Create API documentation in Markdown for a project management REST API.\n\nInclude:\n- Authentication section: API key and OAuth2 flows, token refresh, example headers\n- Users endpoints: list, get, create, update, delete \u2014 each with method, path, parameters, request body, response example, error cases\n- Projects endpoints: CRUD plus members, tasks, milestones \u2014 same detail level\n- Error codes reference table with code, message, description\n- Rate limiting: limits, headers, retry-after behavior\n- Use fenced code blocks for all examples (curl, JSON responses)\n\nAt least 12 fully documented endpoints.\n\nUse section IDs: authentication, users-endpoints, projects-endpoints, errors, rate-limiting\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Teams' endpoint group after Projects with CRUD operations for teams plus POST /teams/{id}/members and DELETE /teams/{id}/members/{userId}",
+      "Update the errors section to add 5 new error codes: 409 Conflict, 413 Payload Too Large, 422 Unprocessable Entity, 503 Service Unavailable, 504 Gateway Timeout",
+      "Rewrite the authentication section to add a new 'Service Account' authentication flow using long-lived API tokens with scope restrictions",
+      "Add webhook documentation showing available events (project.created, task.updated, etc.) with payload examples"
+    ]
+  },
+  {
+    "id": "md-changelog",
+    "format": "text/markdown",
+    "extension": ".md",
+    "filename": "CHANGELOG.md",
+    "size_hint": "medium",
+    "expected_sections": [
+      "unreleased",
+      "v2",
+      "v1"
+    ],
+    "prompt": "Create a CHANGELOG.md following Keep a Changelog format for a web framework.\n\nInclude:\n- Unreleased section with upcoming changes\n- v2.3.0 through v2.0.0 (4 releases) with Added, Changed, Fixed, Deprecated, Removed, Security subsections\n- v1.5.0 through v1.0.0 (6 releases)\n- Each release should have realistic framework-related changes (routing, middleware, templating, ORM, CLI)\n- Dates in YYYY-MM-DD format\n\nUse section IDs: unreleased, v2, v1\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new v2.4.0 release at the top of the v2 section with 3 Added items about WebSocket support, GraphQL integration, and streaming responses",
+      "Update the unreleased section to include a Deprecated entry for the legacy XML configuration format and a Security fix for CVE-2026-1234",
+      "Rewrite the v1.0.0 entry to expand it with a detailed 'Migration Guide from v0.x' subsection listing 5 breaking changes"
+    ]
+  },
+  {
+    "id": "md-tutorial",
+    "format": "text/markdown",
+    "extension": ".md",
+    "filename": "tutorial.md",
+    "size_hint": "medium",
+    "expected_sections": [
+      "intro",
+      "setup",
+      "building",
+      "testing",
+      "deploying"
+    ],
+    "prompt": "Create a tutorial in Markdown: \"Build a REST API with FastAPI and PostgreSQL\".\n\nInclude:\n- Introduction: what we'll build, prerequisites, final result overview\n- Setup: project structure, virtual environment, installing dependencies\n- Building: models, schemas, database connection, CRUD endpoints, authentication middleware\n- Testing: pytest setup, fixtures, unit tests, integration tests\n- Deploying: Dockerfile, docker-compose, environment config, deployment checklist\n- Code blocks throughout with realistic Python code\n\nUse section IDs: intro, setup, building, testing, deploying\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the setup section to use uv instead of pip for dependency management, with the corresponding pyproject.toml configuration",
+      "Add a new 'Monitoring' subsection to the deploying section covering Prometheus metrics endpoint, health check routes, and structured logging with JSON format",
+      "Rewrite the testing section to add a 'Load Testing' subsection using locust with a sample locustfile that tests the CRUD endpoints"
+    ]
+  },
+  {
+    "id": "md-adr",
+    "format": "text/markdown",
+    "extension": ".md",
+    "filename": "adr-003.md",
+    "size_hint": "small",
+    "expected_sections": [
+      "context",
+      "decision",
+      "consequences"
+    ],
+    "prompt": "Create an Architecture Decision Record (ADR-003): \"Use Event Sourcing for Order Processing\".\n\nInclude:\n- Title, Status (Accepted), Date, Deciders\n- Context: current problems with CRUD-based order state, consistency issues, audit trail needs\n- Decision: adopt event sourcing with event store, command handlers, read model projections\n- Alternatives Considered: 2 other approaches with pros/cons\n- Consequences: positive (audit trail, replay, temporal queries) and negative (complexity, learning curve, eventual consistency)\n\nUse section IDs: context, decision, consequences\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the status from 'Accepted' to 'Superseded by ADR-007' and add a link reference to the superseding ADR",
+      "Add a third alternative considered: 'Use CDC (Change Data Capture) with Debezium' with 3 pros and 2 cons"
+    ]
+  },
+  {
+    "id": "css-design-system",
+    "format": "text/css",
+    "extension": ".css",
+    "filename": "design-system.css",
+    "size_hint": "large",
+    "expected_sections": [
+      "variables",
+      "reset",
+      "typography",
+      "layout",
+      "components",
+      "utilities"
+    ],
+    "prompt": "Create a CSS design system / component library.\n\nInclude:\n- CSS custom properties: colors (primary, secondary, neutral scale), spacing scale, font sizes, border radii, shadows, breakpoints\n- Reset / normalize styles\n- Typography: headings h1-h6, body text, links, lists, code blocks\n- Layout: container, grid system (12 columns), flexbox utilities, spacing utilities\n- Components: buttons (primary, secondary, ghost, sizes), cards, badges, alerts, form inputs, tables, navigation, modals, tooltips\n- Utility classes: display, margin, padding, text alignment, colors\n\nUse section IDs: variables, reset, typography, layout, components, utilities\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `/* section:id */` and `/* /section:id */`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the primary color from blue to indigo (#4f46e5) and update the secondary color to amber (#f59e0b) across all CSS custom properties",
+      "Add a new 'breadcrumbs' component with separator chevrons, active state styling, and responsive truncation for long paths",
+      "Rewrite the buttons component section to add a new 'danger' button variant with red color scheme and a 'loading' state with a spinner animation",
+      "Add a dark mode section using @media (prefers-color-scheme: dark) that inverts the color scheme for all components"
+    ]
+  },
+  {
+    "id": "css-animations",
+    "format": "text/css",
+    "extension": ".css",
+    "filename": "animations.css",
+    "size_hint": "small",
+    "expected_sections": [
+      "keyframes",
+      "transitions",
+      "utility-classes"
+    ],
+    "prompt": "Create a CSS animation utility library.\n\nInclude:\n- Keyframe animations: fadeIn, fadeOut, slideUp, slideDown, slideLeft, slideRight, bounce, pulse, shake, spin, flip, zoom\n- Transition utility classes with different durations and easing functions\n- Animation utility classes: .animate-fade-in, .animate-bounce, etc.\n- Reduced motion media query overrides\n- CSS custom properties for animation duration and delay\n\nUse section IDs: keyframes, transitions, utility-classes\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `/* section:id */` and `/* /section:id */`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add 3 new keyframe animations: 'typewriter' (text appears character by character), 'gradient-shift' (background gradient rotation), and 'float' (gentle up-down hover effect)",
+      "Update all animation durations to use CSS custom properties like --duration-fast: 150ms, --duration-normal: 300ms, --duration-slow: 500ms"
+    ]
+  },
+  {
+    "id": "rust-cli-file-processor",
+    "format": "text/x-rust",
+    "extension": ".rs",
+    "filename": "main.rs",
+    "size_hint": "medium",
+    "expected_sections": [
+      "cli",
+      "processor",
+      "output",
+      "tests"
+    ],
+    "prompt": "Create a Rust CLI tool for processing and analyzing CSV files using clap and serde.\n\nInclude:\n- CLI argument parsing with clap derive: input file, output format (table/json/csv), columns to select, filter expression, sort column, limit\n- CSV processor: read file, parse headers, apply column selection, filtering, sorting, aggregation (count, sum, avg, min, max by group)\n- Output formatters: pretty table, JSON, CSV\n- Unit tests for parsing and filtering logic\n- Proper error handling with thiserror\n\nUse section IDs: cli, processor, output, tests\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new --head flag to the CLI that shows only the first N rows of output, defaulting to 10",
+      "Rewrite the output section to add a Markdown table formatter that generates GitHub-flavored Markdown tables",
+      "Add a new aggregation mode 'distinct' that counts unique values in a specified column and displays them sorted by frequency"
+    ]
+  },
+  {
+    "id": "rust-http-client",
+    "format": "text/x-rust",
+    "extension": ".rs",
+    "filename": "client.rs",
+    "size_hint": "medium",
+    "expected_sections": [
+      "types",
+      "client",
+      "endpoints",
+      "error"
+    ],
+    "prompt": "Create a Rust HTTP API client library for a weather service.\n\nInclude:\n- Types: WeatherResponse, Forecast, Location, Temperature, WindSpeed, Condition (enum)\n- Client struct with reqwest, base URL, API key, timeout config\n- Endpoint methods: current_weather, forecast (5-day), historical, search_location, alerts\n- Custom error type with variants: HttpError, ParseError, RateLimited, InvalidApiKey, NotFound\n- Builder pattern for client configuration\n- Serde deserialization for all response types\n\nUse section IDs: types, client, endpoints, error\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'air_quality' endpoint method that takes a Location and returns an AirQualityResponse with AQI index, PM2.5, PM10, and O3 readings",
+      "Update the error type to add a 'Timeout' variant and implement a retry_with_backoff method on the client that retries on HttpError and Timeout up to 3 times",
+      "Add a caching layer to the client that stores responses in a HashMap with TTL expiration of 5 minutes"
+    ]
+  },
+  {
+    "id": "rust-data-structures",
+    "format": "text/x-rust",
+    "extension": ".rs",
+    "filename": "collections.rs",
+    "size_hint": "medium",
+    "expected_sections": [
+      "lru-cache",
+      "trie",
+      "bloom-filter",
+      "tests"
+    ],
+    "prompt": "Create Rust implementations of three data structures.\n\nInclude:\n- LRU Cache: generic over K, V, with capacity, get, put, remove, len, clear\n- Trie: insert, search, starts_with, delete, autocomplete (return all words with prefix)\n- Bloom Filter: with configurable false positive rate, insert, contains, estimated count\n- Comprehensive unit tests for each data structure\n- Proper use of generics, traits, and lifetime annotations\n\nUse section IDs: lru-cache, trie, bloom-filter, tests\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a 'get_or_insert' method to the LRU Cache that takes a key and a closure, returning the existing value or inserting the closure's result",
+      "Rewrite the Trie to support wildcard matching where '?' matches any single character and '*' matches any sequence of characters",
+      "Add a new 'count_prefix' method to the Trie that returns how many inserted words share the given prefix"
+    ]
+  },
+  {
+    "id": "go-http-server",
+    "format": "text/x-go",
+    "extension": ".go",
+    "filename": "server.go",
+    "size_hint": "medium",
+    "expected_sections": [
+      "types",
+      "handlers",
+      "middleware",
+      "server"
+    ],
+    "prompt": "Create a Go HTTP server for a URL shortener service using net/http.\n\nInclude:\n- Types: URL struct, CreateRequest, StatsResponse, in-memory store with sync.RWMutex\n- Handlers: CreateShortURL (POST), RedirectURL (GET /:code), GetStats (GET /stats/:code), ListURLs (GET /urls), DeleteURL (DELETE /:code)\n- Middleware: logging, CORS, rate limiting (token bucket), request ID\n- Server setup: routes, graceful shutdown, configuration from environment\n- JSON encoding/decoding, proper HTTP status codes\n\nUse section IDs: types, handlers, middleware, server\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new GetTopURLs handler (GET /urls/top?limit=10) that returns the most-clicked URLs sorted by visit count",
+      "Update the rate limiting middleware to use a per-IP token bucket with configurable burst size of 10 and refill rate of 5 per second",
+      "Add URL expiration support: a new 'expires_at' field on the URL struct and a handler PATCH /:code/expire that sets the expiration timestamp"
+    ]
+  },
+  {
+    "id": "go-worker-pool",
+    "format": "text/x-go",
+    "extension": ".go",
+    "filename": "worker.go",
+    "size_hint": "small",
+    "expected_sections": [
+      "types",
+      "pool",
+      "workers",
+      "example"
+    ],
+    "prompt": "Create a Go worker pool implementation for concurrent task processing.\n\nInclude:\n- Types: Job interface, Result struct, WorkerPool struct, PoolConfig\n- Pool: New, Submit, Start, Stop, Results channel, error handling\n- Worker goroutines: process jobs, handle panics, report results\n- Example usage: processing a batch of HTTP requests concurrently\n- Context cancellation support, graceful shutdown\n\nUse section IDs: types, pool, workers, example\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a 'Priority' field to the Job interface and update the pool to process high-priority jobs before low-priority ones",
+      "Update the example to process a batch of 20 image resize operations instead of HTTP requests, with configurable width and height parameters"
+    ]
+  },
+  {
+    "id": "shell-deploy-script",
+    "format": "text/x-sh",
+    "extension": ".sh",
+    "filename": "deploy.sh",
+    "size_hint": "medium",
+    "expected_sections": [
+      "config",
+      "checks",
+      "build",
+      "deploy",
+      "verify"
+    ],
+    "prompt": "Create a bash deployment script for a Node.js application to a remote server.\n\nInclude:\n- Configuration: server host, deploy path, app name, Node version, env vars\n- Pre-deploy checks: git status clean, tests pass, correct branch, SSH connectivity\n- Build: install dependencies, run build, create tarball\n- Deploy: upload to server, extract, install production deps, run migrations, swap symlink, restart PM2\n- Post-deploy verification: health check endpoint, log tail, rollback on failure\n- Colored output, error handling with set -euo pipefail\n\nUse section IDs: config, checks, build, deploy, verify\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a '--dry-run' flag to the script that prints every command without executing it",
+      "Rewrite the deploy section to support deploying to multiple servers defined in a SERVERS array with parallel rsync uploads",
+      "Add a rollback function that restores the previous symlink and restarts PM2 if the health check fails within 60 seconds of deployment"
+    ]
+  },
+  {
+    "id": "shell-setup-dev",
+    "format": "text/x-sh",
+    "extension": ".sh",
+    "filename": "setup.sh",
+    "size_hint": "small",
+    "expected_sections": [
+      "detect-os",
+      "install-deps",
+      "configure",
+      "verify"
+    ],
+    "prompt": "Create a bash script for setting up a development environment.\n\nInclude:\n- OS detection (macOS vs Ubuntu/Debian)\n- Install dependencies: Git, Node.js (via nvm), Python (via pyenv), Docker, PostgreSQL client\n- Configure: create .env from .env.example, setup git hooks, initialize database\n- Verify: check all tools installed with versions, run a smoke test\n- Idempotent (safe to run multiple times)\n\nUse section IDs: detect-os, install-deps, configure, verify\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add Rust installation via rustup to the install-deps section with the stable toolchain and cargo-watch",
+      "Update the verify section to output a formatted summary table showing each tool name, expected version, and installed version with pass/fail status"
+    ]
+  },
+  {
+    "id": "svg-bar-chart",
+    "format": "image/svg+xml",
+    "extension": ".svg",
+    "filename": "revenue_chart.svg",
+    "size_hint": "medium",
+    "expected_sections": [
+      "axes",
+      "bars",
+      "labels",
+      "legend"
+    ],
+    "prompt": "Create an SVG bar chart showing monthly revenue data for 2024.\n\nInclude:\n- X-axis with month labels (Jan-Dec), Y-axis with dollar amounts ($0-$500K)\n- 12 bars with realistic revenue data, gradient fills\n- Value labels on top of each bar\n- Grid lines and axis ticks\n- Legend showing \"Revenue\" and \"Target\"\n- Title: \"Monthly Revenue 2024\"\n- Responsive viewBox, clean SVG structure\n\nUse section IDs: axes, bars, labels, legend\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the March bar to show $425,000 and the July bar to show $380,000 with their value labels adjusted",
+      "Add a second bar series in a lighter shade for 'Previous Year' revenue data alongside each month's current bar",
+      "Change the chart title to 'Monthly Revenue 2024 vs 2023' and add a subtitle showing 'Total: $4.2M (+18% YoY)'"
+    ]
+  },
+  {
+    "id": "svg-dashboard-icons",
+    "format": "image/svg+xml",
+    "extension": ".svg",
+    "filename": "icons.svg",
+    "size_hint": "medium",
+    "expected_sections": [
+      "navigation-icons",
+      "action-icons",
+      "status-icons"
+    ],
+    "prompt": "Create an SVG icon sprite sheet with 18 dashboard icons.\n\nInclude:\n- Navigation icons (6): home, users, settings, chart, inbox, calendar\n- Action icons (6): plus, edit, delete, download, upload, search\n- Status icons (6): check-circle, x-circle, alert-triangle, info, clock, star\n- Each icon in a <symbol> with id, viewBox=\"0 0 24 24\"\n- Clean paths, consistent 2px stroke width, no fill (stroke-based icons)\n\nUse section IDs: navigation-icons, action-icons, status-icons\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add 4 new action icons: 'filter', 'sort', 'refresh', and 'copy' following the same 24x24 viewBox and 2px stroke style",
+      "Rewrite the navigation icons to use a filled style instead of stroke-based, with a consistent fill color of currentColor",
+      "Add a new 'social-icons' section with 4 icons: github, twitter, linkedin, and discord"
+    ]
+  },
+  {
+    "id": "svg-architecture-diagram",
+    "format": "image/svg+xml",
+    "extension": ".svg",
+    "filename": "architecture.svg",
+    "size_hint": "medium",
+    "expected_sections": [
+      "frontend",
+      "backend",
+      "data-layer",
+      "connections"
+    ],
+    "prompt": "Create an SVG architecture diagram for a microservices application.\n\nInclude:\n- Frontend tier: React app, CDN, load balancer (boxes with labels)\n- Backend tier: API Gateway, Auth Service, User Service, Order Service, Notification Service\n- Data layer: PostgreSQL, Redis, RabbitMQ, S3\n- Connection arrows between components with labels (HTTP, gRPC, AMQP)\n- Color coding by tier (blue frontend, green backend, orange data)\n- Title and legend\n\nUse section IDs: frontend, backend, data-layer, connections\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Monitoring' tier in purple with Prometheus, Grafana, and Jaeger boxes connected to all backend services",
+      "Rewrite the backend tier to add a 'Search Service' box connected to an Elasticsearch instance in the data layer",
+      "Update all connection arrows between API Gateway and backend services to show 'gRPC' instead of 'HTTP' and change the arrow style to dashed lines"
+    ]
+  },
+  {
+    "id": "toml-cargo-workspace",
+    "format": "text/x-toml",
+    "extension": ".toml",
+    "filename": "Cargo.toml",
+    "size_hint": "small",
+    "expected_sections": [
+      "package",
+      "dependencies",
+      "workspace"
+    ],
+    "prompt": "Create a Cargo.toml for a Rust workspace with a CLI app and two library crates.\n\nInclude:\n- Workspace members: cli, core, utils\n- Package metadata for the CLI: name \"dataforge\", version, edition, description, license, authors, repository\n- Dependencies: clap, serde, tokio, anyhow, tracing, reqwest\n- Dev-dependencies: criterion, tempfile, mockito\n- Features: default, full, minimal\n- Binary and library targets\n- Profile settings for release (LTO, strip)\n\nUse section IDs: package, dependencies, workspace\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add sqlx and sea-orm to the dependencies with features for PostgreSQL and runtime-tokio",
+      "Update the release profile to enable codegen-units = 1 and add a bench profile with debug = true for profiling"
+    ]
+  },
+  {
+    "id": "toml-pyproject",
+    "format": "text/x-toml",
+    "extension": ".toml",
+    "filename": "pyproject.toml",
+    "size_hint": "small",
+    "expected_sections": [
+      "project",
+      "tools",
+      "build"
+    ],
+    "prompt": "Create a pyproject.toml for a Python library called \"dataforge\" for data transformation.\n\nInclude:\n- Project metadata: name, version, description, authors, license, requires-python, classifiers\n- Dependencies: pandas, pydantic, click, rich, httpx\n- Optional dependencies: dev (pytest, ruff, mypy), docs (mkdocs, mkdocstrings)\n- Scripts/entry points: dataforge CLI command\n- Tool configs: ruff (rules, line-length), mypy (strict), pytest (testpaths, markers)\n- Build system: hatchling\n\nUse section IDs: project, tools, build\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add polars and pyarrow to the dependencies and create a new optional dependency group 'perf' containing them",
+      "Update the ruff configuration to add the 'I' (isort) and 'UP' (pyupgrade) rule sets and set target-version to 'py312'"
+    ]
+  },
+  {
+    "id": "xml-maven-pom",
+    "format": "application/xml",
+    "extension": ".xml",
+    "filename": "pom.xml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "properties",
+      "dependencies",
+      "build",
+      "profiles"
+    ],
+    "prompt": "Create a Maven pom.xml for a Spring Boot 3 web application.\n\nInclude:\n- Parent: spring-boot-starter-parent\n- Properties: Java 21, versions for dependencies\n- Dependencies: spring-boot-starter-web, spring-boot-starter-data-jpa, spring-boot-starter-security, spring-boot-starter-validation, postgresql, flyway, lombok, mapstruct, springdoc-openapi\n- Test dependencies: spring-boot-starter-test, testcontainers\n- Build plugins: spring-boot-maven-plugin, mapstruct-processor, jacoco\n- Profiles: dev, staging, production with different properties\n\nUse section IDs: properties, dependencies, build, profiles\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add spring-boot-starter-cache and caffeine dependencies for local caching support",
+      "Rewrite the profiles section to add a 'test' profile with H2 in-memory database, Testcontainers disabled, and reduced logging",
+      "Add the jib-maven-plugin to the build section for containerizing the application with a distroless base image"
+    ]
+  },
+  {
+    "id": "xml-rss-feed",
+    "format": "application/xml",
+    "extension": ".xml",
+    "filename": "feed.xml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "channel-info",
+      "items"
+    ],
+    "prompt": "Create an RSS 2.0 XML feed for a technology blog called \"ByteStream\".\n\nInclude:\n- Channel: title, link, description, language, copyright, lastBuildDate, image\n- 15 items with: title, link, description (2-3 sentences), author, pubDate, category, guid\n- Realistic tech blog post titles covering: programming, DevOps, AI/ML, databases, cloud\n- Dates spanning the last 3 months\n\nUse section IDs: channel-info, items\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add 5 new items about Rust, WebAssembly, and edge computing topics with dates from the last 2 weeks",
+      "Update the channel-info to change the blog name to 'CodeStream Weekly' and add an itunes:author and itunes:category element for podcast compatibility",
+      "Change the category of all AI/ML related items from 'Technology' to 'Artificial Intelligence'"
+    ]
+  },
+  {
+    "id": "java-spring-controller",
+    "format": "text/x-java",
+    "extension": ".java",
+    "filename": "ProductController.java",
+    "size_hint": "medium",
+    "expected_sections": [
+      "imports",
+      "controller",
+      "service",
+      "repository"
+    ],
+    "prompt": "Create a Spring Boot REST controller for product management.\n\nInclude:\n- ProductController with @RestController: CRUD endpoints, search, pagination, sorting\n- ProductService: business logic, validation, caching with @Cacheable\n- ProductRepository: JPA repository with custom query methods\n- DTOs: ProductRequest, ProductResponse, ProductSearchCriteria, PagedResponse\n- Exception handling with @ControllerAdvice\n- Proper annotations, validation, and Javadoc\n\nUse section IDs: imports, controller, service, repository\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new GET /products/export endpoint in the controller that returns products as a CSV download with Content-Disposition header",
+      "Update the ProductService to add a bulkUpdatePrices method that accepts a Map<Long, BigDecimal> and updates prices in a single transaction",
+      "Rewrite the repository to add a custom @Query method findByPriceRangeAndCategory that uses a JPQL query with price between and category filter"
+    ]
+  },
+  {
+    "id": "ruby-rails-model",
+    "format": "text/x-ruby",
+    "extension": ".rb",
+    "filename": "order.rb",
+    "size_hint": "small",
+    "expected_sections": [
+      "associations",
+      "validations",
+      "scopes",
+      "methods"
+    ],
+    "prompt": "Create a Ruby on Rails model for an Order in an e-commerce application.\n\nInclude:\n- Associations: belongs_to user, has_many order_items, has_one shipping_address, has_many payments\n- Validations: presence, numericality, custom validators for status transitions\n- Scopes: recent, by_status, by_date_range, high_value, pending_shipment\n- Instance methods: total, subtotal, tax_amount, apply_coupon, can_cancel?, ship!, complete!\n- State machine for order status (pending -> confirmed -> shipped -> delivered, with cancel)\n- Callbacks: before_create, after_update\n\nUse section IDs: associations, validations, scopes, methods\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'has_many :refunds' association and a 'refund!' method that creates a refund record and updates the order status to 'refunded'",
+      "Update the scopes section to add a 'by_payment_method' scope that accepts :credit_card, :paypal, or :bank_transfer and filters accordingly"
+    ]
+  },
+  {
+    "id": "sql-schema-ecommerce",
+    "format": "text/x-sql",
+    "extension": ".sql",
+    "filename": "schema.sql",
+    "size_hint": "medium",
+    "expected_sections": [
+      "tables",
+      "indexes",
+      "views",
+      "seed-data"
+    ],
+    "prompt": "Create a PostgreSQL schema for an e-commerce application.\n\nInclude:\n- Tables: users, products, categories, orders, order_items, reviews, addresses, coupons, inventory\n- Proper data types, constraints, foreign keys, NOT NULL, DEFAULT values\n- Indexes: on foreign keys, email unique, composite indexes for common queries\n- Views: order_summary (with totals), product_ratings (avg rating, count), low_stock_products\n- Seed data: 5 categories, 10 products, 3 users, 5 sample orders with items\n- Use SERIAL/BIGSERIAL for PKs, TIMESTAMPTZ for dates\n\nUse section IDs: tables, indexes, views, seed-data\n-- Use `-- region id` and `-- endregion id` for section markers.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'wishlists' table with columns: id, user_id (FK), product_id (FK), added_at, and a unique constraint on (user_id, product_id)",
+      "Rewrite the seed-data section to add 10 more products across all categories with realistic names, prices between $9.99 and $299.99, and stock quantities",
+      "Add a new materialized view 'monthly_sales_summary' that aggregates total revenue, order count, and average order value by month and year"
+    ]
+  },
+  {
+    "id": "json-eslintrc",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": ".eslintrc.json",
+    "size_hint": "tiny",
+    "expected_sections": [],
+    "prompt": "Create an .eslintrc.json for a TypeScript React project with Prettier integration.\nInclude extends, rules, env, and parser options. Keep it concise.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add the 'react-hooks/exhaustive-deps' rule set to 'warn' and add 'plugin:@tanstack/eslint-plugin-query/recommended' to extends",
+      "Change the parser from @typescript-eslint/parser to @babel/eslint-parser and update the parserOptions accordingly"
+    ]
+  },
+  {
+    "id": "yaml-renovate",
+    "format": "text/x-yaml",
+    "extension": ".json",
+    "filename": "renovate.json",
+    "size_hint": "tiny",
+    "expected_sections": [],
+    "prompt": "Create a Renovate bot configuration (renovate.json) for a TypeScript monorepo.\nInclude extends, schedule, automerge rules, package grouping, and labels.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a packageRule that groups all @types/* packages into a single PR with automerge enabled",
+      "Update the schedule to run only on weekends and add a 'prConcurrentLimit' of 5"
+    ]
+  },
+  {
+    "id": "toml-rustfmt",
+    "format": "text/x-toml",
+    "extension": ".toml",
+    "filename": "rustfmt.toml",
+    "size_hint": "tiny",
+    "expected_sections": [],
+    "prompt": "Create a rustfmt.toml configuration with opinionated formatting settings.\nInclude max_width, tab_spaces, use_field_init_shorthand, imports_granularity, and other common settings.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change max_width to 120 and add wrap_comments = true and format_code_in_doc_comments = true",
+      "Add group_imports = 'StdExternalCrate' and reorder_imports = true settings"
+    ]
+  },
+  {
+    "id": "yaml-pre-commit",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": ".pre-commit-config.yaml",
+    "size_hint": "tiny",
+    "expected_sections": [],
+    "prompt": "Create a .pre-commit-config.yaml with hooks for a Python project.\nInclude: ruff (lint + format), mypy, trailing whitespace, end-of-file-fixer, check-yaml, check-json, detect-secrets.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a bandit hook for security linting with a severity level of medium and a confidence level of high",
+      "Update the ruff hook to pin version 0.9.0 and add the --fix flag to automatically fix fixable violations"
+    ]
+  },
+  {
+    "id": "shell-git-hooks",
+    "format": "text/x-sh",
+    "extension": ".sh",
+    "filename": "pre-commit",
+    "size_hint": "tiny",
+    "expected_sections": [],
+    "prompt": "Create a git pre-commit hook script that runs linting and formatting checks.\nCheck for: trailing whitespace, large files (>5MB), secrets/API keys, then run the project's linter.\nExit with non-zero on failure.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a check that prevents commits containing TODO or FIXME comments unless the --allow-todos flag is set",
+      "Update the secrets detection to also scan for AWS access keys matching the pattern AKIA[0-9A-Z]{16}"
+    ]
+  },
+  {
+    "id": "md-contributing",
+    "format": "text/markdown",
+    "extension": ".md",
+    "filename": "CONTRIBUTING.md",
+    "size_hint": "small",
+    "expected_sections": [
+      "getting-started",
+      "workflow",
+      "standards"
+    ],
+    "prompt": "Create a CONTRIBUTING.md for an open-source TypeScript project.\n\nInclude getting started (fork, clone, install, run tests), development workflow (branches, commits, PRs), and coding standards (formatting, testing, documentation requirements).\n\nUse section IDs: getting-started, workflow, standards\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Release Process' subsection to the workflow section explaining semantic versioning, changelog updates, and tag creation",
+      "Update the standards section to add a code review checklist with 8 items reviewers should verify before approving a PR"
+    ]
+  },
+  {
+    "id": "python-conftest",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "conftest.py",
+    "size_hint": "small",
+    "expected_sections": [
+      "fixtures",
+      "factories",
+      "helpers"
+    ],
+    "prompt": "Create a pytest conftest.py for a FastAPI application with PostgreSQL.\n\nInclude:\n- Fixtures: async test client, test database session, authenticated user, admin user\n- Factory functions: create_user, create_project, create_task (with realistic defaults)\n- Test helpers: assert_response_ok, assert_validation_error, random_email, random_string\n\nUse section IDs: fixtures, factories, helpers\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new fixture 'mock_redis' that patches the Redis connection with fakeredis and yields the fake Redis client",
+      "Rewrite the factories section to add a 'create_comment' factory with fields: task_id, author_id, content, and optional parent_comment_id for threading"
+    ]
+  },
+  {
+    "id": "html-email-newsletter",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "newsletter.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "header",
+      "featured",
+      "articles",
+      "footer"
+    ],
+    "prompt": "Create a self-contained HTML email newsletter for a tech company weekly digest.\n\nInclude:\n- Header with company logo placeholder, issue number, date\n- Featured article with large image placeholder, headline, excerpt\n- 4 article cards in 2x2 grid (image, title, excerpt, \"Read more\" link)\n- Footer with unsubscribe link, social links, company address\n\nUse section IDs: header, featured, articles, footer\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nTable-based layout for email clients. Inline styles only. Max width 600px.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the issue number to '#47' and the date to 'March 28, 2026'",
+      "Rewrite the featured article to be about 'AI-Powered Code Review: How We Cut Bug Rates by 40%' with a new excerpt",
+      "Add a 'Quick Tips' section between the featured article and the article cards showing 3 short developer tips in a numbered list"
+    ]
+  },
+  {
+    "id": "python-fastapi-auth",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "auth.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "config",
+      "jwt-utils",
+      "dependencies",
+      "routes"
+    ],
+    "prompt": "Create a FastAPI authentication module with JWT tokens.\n\nInclude:\n- Config: secret key, algorithm, token expiry settings\n- JWT utilities: create_access_token, create_refresh_token, verify_token, decode_token\n- Dependency functions: get_current_user, require_role, optional_auth\n- Routes: POST /auth/register, POST /auth/login, POST /auth/refresh, POST /auth/logout, GET /auth/me\n- Password hashing with bcrypt pattern\n- Proper error responses for expired/invalid tokens\n\nUse section IDs: config, jwt-utils, dependencies, routes\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the config section to change the access token expiry to 15 minutes and the refresh token expiry to 7 days",
+      "Add a new POST /auth/change-password route that requires the current password and validates the new password against strength requirements",
+      "Rewrite the dependencies section to add an 'require_verified_email' dependency that checks the user's email_verified field and returns 403 if unverified"
+    ]
+  },
+  {
+    "id": "js-react-dashboard-widgets",
+    "format": "text/javascript",
+    "extension": ".jsx",
+    "filename": "Widgets.jsx",
+    "size_hint": "medium",
+    "expected_sections": [
+      "stat-card",
+      "chart-widget",
+      "activity-feed",
+      "quick-actions"
+    ],
+    "prompt": "Create React dashboard widget components.\n\nInclude:\n- StatCard: displays metric name, value, trend (up/down with percentage), icon placeholder\n- ChartWidget: wrapper with title, date range selector, placeholder for chart area with sample SVG sparkline\n- ActivityFeed: scrollable list of 10 activity items (avatar, user, action, timestamp, details)\n- QuickActions: grid of 6 action buttons with icon and label (New Project, Add User, Generate Report, etc.)\n- All components with PropTypes and default props\n- Inline styles using style objects\n\nUse section IDs: stat-card, chart-widget, activity-feed, quick-actions\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the StatCard component to accept a 'sparkline' prop with an array of 7 data points and render a mini SVG sparkline chart",
+      "Add 5 more activity items to the ActivityFeed showing deployment, code review, and incident response activities",
+      "Rewrite the QuickActions section to have 8 action buttons instead of 6, adding 'Schedule Meeting' and 'View Analytics' with their icons"
+    ]
+  },
+  {
+    "id": "yaml-github-actions-release",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "release.yaml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "triggers",
+      "build-matrix",
+      "publish",
+      "notifications"
+    ],
+    "prompt": "Create a GitHub Actions release workflow for a Rust CLI tool.\n\nInclude:\n- Trigger on tag push (v*)\n- Build matrix: Linux (x86_64, aarch64), macOS (x86_64, aarch64), Windows (x86_64)\n- Cross-compilation setup, cargo build --release\n- Create GitHub Release with changelog from git log\n- Upload binary artifacts for each platform\n- Publish to crates.io\n- Notification step (Slack webhook)\n\nUse section IDs: triggers, build-matrix, publish, notifications\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a 'checksum' step after the build that generates SHA256 checksums for all binary artifacts and uploads a checksums.txt file",
+      "Update the build matrix to add a musl target for Linux x86_64 that produces a statically linked binary",
+      "Rewrite the notifications section to also send a Discord webhook notification with an embed showing the release version, changelog, and download links"
+    ]
+  },
+  {
+    "id": "go-config-parser",
+    "format": "text/x-go",
+    "extension": ".go",
+    "filename": "config.go",
+    "size_hint": "small",
+    "expected_sections": [
+      "types",
+      "loader",
+      "validation"
+    ],
+    "prompt": "Create a Go configuration loader that reads from file, environment, and flags.\n\nInclude:\n- Config struct with nested sub-configs: Server (host, port, timeout), Database (DSN, pool size, migrations), Redis (addr, password, DB), Logging (level, format, output)\n- Loader: read YAML file, overlay with env vars (APP_ prefix), overlay with CLI flags\n- Validation: required fields, port ranges, valid log levels, DSN format\n- Defaults for all fields\n\nUse section IDs: types, loader, validation\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'SMTP' sub-config to the types section with fields: host, port, username, password, from_address, and tls_enabled",
+      "Update the validation to add a custom validator that checks the database DSN format matches 'postgres://user:pass@host:port/dbname'"
+    ]
+  },
+  {
+    "id": "html-data-visualization",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "visualization.html",
+    "size_hint": "large",
+    "expected_sections": [
+      "controls",
+      "chart-area",
+      "data-table",
+      "summary"
+    ],
+    "prompt": "Create a self-contained HTML data visualization page showing sales performance.\n\nInclude:\n- Controls bar: date range picker, region dropdown, product category filter, export button\n- Chart area with an inline SVG bar chart showing monthly sales (12 months), with tooltips via CSS\n- Data table with 50+ rows of sales records (date, product, region, quantity, revenue, profit margin)\n- Summary cards: total revenue, avg order value, top product, top region\n- All CSS inline, responsive design\n\nUse section IDs: controls, chart-area, data-table, summary\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the summary cards to show: Total Revenue $1,284,500, Avg Order Value $342, Top Product 'Enterprise License', Top Region 'North America'",
+      "Add 20 more rows to the data table with sales records from March 2026 across APAC and EMEA regions",
+      "Rewrite the chart area to show a grouped bar chart comparing revenue vs target for each month, with target bars in a lighter shade",
+      "Add a new 'Trends' section after the summary cards showing 3 mini line charts for revenue trend, order volume trend, and average deal size trend"
+    ]
+  },
+  {
+    "id": "python-orm-models",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "database.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "base",
+      "models",
+      "queries",
+      "migrations"
+    ],
+    "prompt": "Create SQLAlchemy ORM models for a content management system.\n\nInclude:\n- Base setup with declarative_base, engine, session\n- Models: User, Article, Category, Tag, Comment, Media, Permission, AuditLog\n- Relationships: articles have authors, categories, tags (M2M), comments; users have roles and permissions\n- Query helpers: get_published_articles, search_articles, get_user_activity, get_popular_tags\n- Alembic migration helpers: create initial tables, add indexes\n\nUse section IDs: base, models, queries, migrations\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Revision' model that stores article version history with fields: id, article_id, content, editor_id, created_at, and a 'diff' text field",
+      "Rewrite the queries section to add a 'full_text_search' function that uses PostgreSQL tsvector to search across article titles and content",
+      "Add a new migration helper that adds a 'published_at' column to the articles table and backfills it from created_at for all articles with status='published'"
+    ]
+  },
+  {
+    "id": "ts-api-client",
+    "format": "text/typescript",
+    "extension": ".ts",
+    "filename": "api-client.ts",
+    "size_hint": "medium",
+    "expected_sections": [
+      "types",
+      "client-class",
+      "endpoints",
+      "interceptors"
+    ],
+    "prompt": "Create a TypeScript API client class for a project management API.\n\nInclude:\n- Types: Project, Task, User, Comment, ApiResponse<T>, PaginatedResponse<T>, ApiError\n- ApiClient class: constructor with baseURL and auth token, generic request method\n- Endpoint methods: projects CRUD, tasks CRUD, assign task, add comment, upload attachment\n- Request/response interceptors: auth header injection, error transformation, retry logic, request logging\n- Proper TypeScript generics throughout\n\nUse section IDs: types, client-class, endpoints, interceptors\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Milestone' type with fields: id, title, due_date, status, progress_percentage, and associated task_ids array",
+      "Rewrite the interceptors section to add a request deduplication interceptor that prevents duplicate concurrent GET requests to the same URL",
+      "Add batch endpoint methods: batchUpdateTasks(updates: Array<{id: string, status: string}>) and batchAssignTasks(taskIds: string[], userId: string)"
+    ]
+  },
+  {
+    "id": "yaml-terraform-vars",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "terraform.tfvars.yaml",
+    "size_hint": "small",
+    "expected_sections": [
+      "environment",
+      "networking",
+      "compute"
+    ],
+    "prompt": "Create a Terraform variables file in YAML format for an AWS infrastructure deployment.\n\nInclude:\n- Environment settings: name, region, account ID, tags\n- Networking: VPC CIDR, subnet CIDRs (public/private), availability zones, NAT gateway toggle\n- Compute: instance types, AMI IDs, key pair name, auto-scaling min/max/desired\n- Database: engine, version, instance class, storage, backup retention\n- Monitoring: CloudWatch alarms, SNS topic ARNs, log retention days\n\nUse section IDs: environment, networking, compute\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the environment name to 'production', region to 'us-west-2', and add a 'cost_center' tag with value 'engineering-platform'",
+      "Change the compute instance type to 'c6g.xlarge' (ARM-based) and update the AMI ID to an ARM64 Ubuntu 22.04 AMI"
+    ]
+  },
+  {
+    "id": "html-status-page",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "status.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "header",
+      "current-status",
+      "services",
+      "incidents",
+      "uptime-history"
+    ],
+    "prompt": "Create a self-contained HTML service status page.\n\nInclude:\n- Header with company name and overall status indicator (All Systems Operational)\n- Current status banner with last updated timestamp\n- Services list (10 services): API, Web App, Database, CDN, Email, Search, Auth, Payments, Storage, Queue \u2014 each with status dot and response time\n- Recent incidents section (3 incidents with timeline: investigating, identified, monitoring, resolved)\n- 90-day uptime history bars for each service (visual representation with colored segments)\n\nUse section IDs: header, current-status, services, incidents, uptime-history\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Clean, minimal design with green/yellow/red status colors.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Change the overall status to 'Partial System Outage' with a yellow banner and mark the Payments and Search services as 'Degraded Performance'",
+      "Add a new active incident at the top: 'Elevated API Latency' with timeline entries at 14:30, 14:45, and 15:10 showing investigation progress",
+      "Rewrite the services section to add response time history sparklines next to each service showing the last 24 hours of data",
+      "Add a 'Subscribe to Updates' section at the bottom with email and SMS notification signup options"
+    ]
+  },
+  {
+    "id": "rust-error-types",
+    "format": "text/x-rust",
+    "extension": ".rs",
+    "filename": "error.rs",
+    "size_hint": "small",
+    "expected_sections": [
+      "error-enum",
+      "display-impl",
+      "conversions"
+    ],
+    "prompt": "Create a Rust error handling module for a web application.\n\nInclude:\n- AppError enum with variants: NotFound, Unauthorized, Forbidden, ValidationError, DatabaseError, ExternalServiceError, RateLimited, InternalError\n- Display and Error trait implementations\n- From implementations for common error types (sqlx::Error, reqwest::Error, serde_json::Error, std::io::Error)\n- Into HTTP response conversion (status code + JSON error body)\n- Helper constructors and Result type alias\n\nUse section IDs: error-enum, display-impl, conversions\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'Conflict' variant for HTTP 409 responses with a 'resource_id' field showing which resource caused the conflict",
+      "Update the From implementation for sqlx::Error to distinguish between unique constraint violations (map to Conflict) and other database errors"
+    ]
+  },
+  {
+    "id": "css-responsive-grid",
+    "format": "text/css",
+    "extension": ".css",
+    "filename": "grid.css",
+    "size_hint": "small",
+    "expected_sections": [
+      "breakpoints",
+      "container",
+      "grid-classes"
+    ],
+    "prompt": "Create a CSS responsive grid system similar to Bootstrap's grid.\n\nInclude:\n- Breakpoint variables: sm (576px), md (768px), lg (992px), xl (1200px), xxl (1400px)\n- Container class with responsive max-widths\n- 12-column grid: .row, .col-1 through .col-12, plus responsive variants (.col-sm-6, .col-md-4, etc.)\n- Offset classes, order classes, gap utilities\n- Display and visibility utilities per breakpoint\n\nUse section IDs: breakpoints, container, grid-classes\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `/* section:id */` and `/* /section:id */`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new '.col-auto' class that sizes the column based on its content width and update the responsive variants to include auto",
+      "Rewrite the container section to add a '.container-fluid' class that is always full-width with horizontal padding"
+    ]
+  },
+  {
+    "id": "json-database-seed",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "seed.json",
+    "size_hint": "large",
+    "expected_sections": [],
+    "prompt": "Create a JSON seed data file for a project management application database.\n\nInclude:\n- 10 users with realistic profiles (name, email, avatar URL, role, department, timezone)\n- 5 projects with names, descriptions, status, dates, assigned team members\n- 40 tasks across the projects (title, description, status, priority, assignee, due date, story points, labels)\n- 20 comments on various tasks (author, content, created_at, reactions)\n- 8 milestones with target dates and associated tasks\n\nUse realistic, coherent data \u2014 tasks should relate to their projects, comments should reference task context.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add 3 more users with the 'contractor' role from timezones 'Asia/Tokyo', 'Europe/Berlin', and 'America/Sao_Paulo'",
+      "Add a new project 'Mobile App Redesign' with 8 tasks covering UI mockups, user testing, and React Native implementation",
+      "Update all tasks in the 'Infrastructure Migration' project to have their due dates pushed back by 2 weeks and add a 'blocked' label to any task with status 'in_progress'",
+      "Add 10 more comments on tasks in the 'API Gateway' project with realistic code review feedback and question-response threads"
+    ]
+  },
+  {
+    "id": "python-middleware-chain",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "middleware.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "base",
+      "auth-middleware",
+      "logging-middleware",
+      "rate-limiter",
+      "cors"
+    ],
+    "prompt": "Create ASGI middleware classes for a Python web application.\n\nInclude:\n- Base middleware class with __init__ and __call__ pattern\n- AuthMiddleware: verify JWT, attach user to request, skip public paths\n- LoggingMiddleware: request/response logging with timing, request ID generation, structured JSON output\n- RateLimiter: sliding window per IP, configurable limits, Redis-backed counter, 429 responses\n- CORSMiddleware: configurable origins, methods, headers, credentials, preflight caching\n\nUse section IDs: base, auth-middleware, logging-middleware, rate-limiter, cors\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the rate-limiter to support different rate limits per endpoint by accepting a dict mapping path prefixes to (requests, window_seconds) tuples",
+      "Rewrite the logging-middleware to add request body logging for POST/PUT requests with automatic redaction of fields named 'password', 'token', or 'secret'",
+      "Add a new 'MaintenanceMiddleware' section that returns 503 Service Unavailable with a JSON body when a MAINTENANCE_MODE environment variable is set to 'true'"
+    ]
+  },
+  {
+    "id": "yaml-docker-compose-dev",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "docker-compose.dev.yaml",
+    "size_hint": "small",
+    "expected_sections": [
+      "services",
+      "volumes"
+    ],
+    "prompt": "Create a docker-compose.yaml for local development of a web application.\n\nInclude:\n- App service: Node.js with hot reload, volume mounts, debugger port\n- PostgreSQL: with initialization SQL, persistent volume, exposed port\n- Redis: latest image, persistent volume\n- Mailhog: for email testing (SMTP + web UI)\n- Environment variables from .env file\n- Named volumes for data persistence\n\nUse section IDs: services, volumes\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a MinIO service for S3-compatible local object storage on port 9000 with a web console on port 9001",
+      "Update the PostgreSQL service to use version 16 and add a health check with pg_isready running every 5 seconds"
+    ]
+  },
+  {
+    "id": "html-pricing-page",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "pricing.html",
+    "size_hint": "medium",
+    "expected_sections": [
+      "header",
+      "toggle",
+      "pricing-cards",
+      "comparison-table",
+      "faq"
+    ],
+    "prompt": "Create a self-contained HTML pricing page for a SaaS product.\n\nInclude:\n- Header with navigation and \"Start Free Trial\" CTA\n- Monthly/Annual toggle switch with discount badge\n- 3 pricing cards (Starter $29/mo, Professional $79/mo, Enterprise custom) with feature lists and CTA buttons\n- Feature comparison table with checkmarks across all 3 plans (15+ features)\n- FAQ accordion section with 6 questions about billing, trials, upgrades\n\nUse section IDs: header, toggle, pricing-cards, comparison-table, faq\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS and JS inline. Highlight the \"Professional\" plan as recommended.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the Starter plan price to $19/mo and add a '14-day free trial' badge to all plans",
+      "Rewrite the FAQ section to add 2 more questions about data export and SLA guarantees",
+      "Add a new 'Add-ons' section after the comparison table showing 4 optional add-ons: Extra Storage ($5/mo), Priority Support ($15/mo), Custom Domain ($10/mo), API Access ($25/mo)",
+      "Change the annual discount from a percentage to show the exact savings: 'Save $58/year' on Starter and 'Save $158/year' on Professional"
+    ]
+  },
+  {
+    "id": "go-grpc-service",
+    "format": "text/x-go",
+    "extension": ".go",
+    "filename": "service.go",
+    "size_hint": "medium",
+    "expected_sections": [
+      "types",
+      "service",
+      "handlers",
+      "interceptors"
+    ],
+    "prompt": "Create a Go gRPC service implementation for a notification service.\n\nInclude:\n- Types: Notification, NotificationChannel (email, SMS, push), Template, DeliveryStatus\n- Service struct implementing NotificationServiceServer with dependency injection\n- Handlers: SendNotification, GetNotificationStatus, ListNotifications, UpdatePreferences, RegisterDevice\n- Interceptors: logging, auth, rate limiting, panic recovery\n- Helper functions for template rendering and channel-specific delivery\n\nUse section IDs: types, service, handlers, interceptors\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'ScheduleNotification' handler that accepts a delivery time and queues the notification for future delivery",
+      "Update the Types section to add a 'NotificationPriority' enum with values: LOW, NORMAL, HIGH, URGENT and add it as a field on the Notification struct",
+      "Rewrite the interceptors to add a metrics interceptor that tracks request count, latency histogram, and error rate per handler using Prometheus-style metrics"
+    ]
+  },
+  {
+    "id": "svg-pie-chart",
+    "format": "image/svg+xml",
+    "extension": ".svg",
+    "filename": "expenses.svg",
+    "size_hint": "small",
+    "expected_sections": [
+      "chart",
+      "labels",
+      "legend"
+    ],
+    "prompt": "Create an SVG pie/donut chart showing expense breakdown by category.\n\nInclude:\n- Donut chart with 7 slices: Housing (35%), Food (15%), Transport (12%), Healthcare (10%), Entertainment (8%), Education (12%), Savings (8%)\n- Each slice with a different color and hover effect (slight expansion)\n- Percentage labels on or near each slice\n- Legend with color swatches and category names + amounts\n- Title: \"Monthly Expense Breakdown\"\n- Center text showing total: \"$4,250\"\n\nUse section IDs: chart, labels, legend\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the total in the center to '$5,100' and change the Housing slice to 30% ($1,530) and Savings to 13% ($663)",
+      "Add an 'Insurance' slice at 5% by reducing Entertainment from 8% to 3%, and use a teal color (#0d9488) for the new slice"
+    ]
+  },
+  {
+    "id": "md-security-policy",
+    "format": "text/markdown",
+    "extension": ".md",
+    "filename": "SECURITY.md",
+    "size_hint": "small",
+    "expected_sections": [
+      "reporting",
+      "policy",
+      "scope"
+    ],
+    "prompt": "Create a SECURITY.md vulnerability disclosure policy for an open-source project.\n\nInclude:\n- How to report vulnerabilities (email, PGP key, response timeline)\n- Supported versions table\n- Disclosure policy and timeline\n- Scope: what's in/out of scope for security reports\n- Safe harbor statement\n\nUse section IDs: reporting, policy, scope\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the response timeline to commit to: initial response within 24 hours, status update within 72 hours, and fix within 90 days",
+      "Add a 'Hall of Fame' section at the end listing 5 fictional security researchers who have responsibly disclosed vulnerabilities"
+    ]
+  },
+  {
+    "id": "json-swagger-pets",
+    "format": "application/json",
+    "extension": ".json",
+    "filename": "swagger.json",
+    "size_hint": "medium",
+    "expected_sections": [],
+    "prompt": "Create a Swagger/OpenAPI 2.0 JSON specification for a pet adoption API.\n\nInclude paths for:\n- /pets: list (with filters), create\n- /pets/{id}: get, update, delete\n- /shelters: list, get\n- /adoptions: create, list, get status\n- /users/favorites: add, remove, list\n\nFull schemas for Pet, Shelter, Adoption, User with relationships. Include tags, security definitions (apiKey), and example responses.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new /pets/{id}/medical-records endpoint group with GET (list records) and POST (add record) including a MedicalRecord schema with date, type, veterinarian, and notes fields",
+      "Update the Pet schema to add 'vaccinated', 'neutered', and 'microchipped' boolean fields",
+      "Add pagination parameters (page, per_page, sort_by) to all list endpoints and update the response schemas to include pagination metadata"
+    ]
+  },
+  {
+    "id": "python-celery-tasks",
+    "format": "text/x-python",
+    "extension": ".py",
+    "filename": "tasks.py",
+    "size_hint": "medium",
+    "expected_sections": [
+      "config",
+      "email-tasks",
+      "report-tasks",
+      "cleanup-tasks"
+    ],
+    "prompt": "Create Celery task definitions for a web application's background job processing.\n\nInclude:\n- Celery app configuration with Redis broker and result backend\n- Email tasks: send_welcome_email, send_password_reset, send_notification_digest (with retry logic)\n- Report tasks: generate_daily_report, generate_monthly_summary, export_user_data (with progress tracking)\n- Cleanup tasks: purge_expired_sessions, archive_old_records, cleanup_temp_files (with scheduling via beat)\n- Proper error handling, retries with exponential backoff, task chaining examples\n\nUse section IDs: config, email-tasks, report-tasks, cleanup-tasks\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new 'send_invoice_email' task to the email-tasks section that accepts order_id, formats line items into an HTML table, and sends with a PDF attachment path",
+      "Update the config to use a dead letter queue named 'failed_tasks' and set the task_reject_on_worker_lost to True",
+      "Rewrite the cleanup-tasks section to add a new 'rotate_logs' task that compresses log files older than 7 days and deletes compressed files older than 30 days"
+    ]
+  },
+  {
+    "id": "ts-react-hooks",
+    "format": "text/typescript",
+    "extension": ".ts",
+    "filename": "hooks.ts",
+    "size_hint": "medium",
+    "expected_sections": [
+      "data-hooks",
+      "ui-hooks",
+      "form-hooks"
+    ],
+    "prompt": "Create custom React hooks in TypeScript for a dashboard application.\n\nInclude:\n- Data hooks: useApi<T> (fetch with loading/error), usePagination, useInfiniteScroll, useDebounce, useLocalStorage<T>\n- UI hooks: useMediaQuery, useClickOutside, useKeyboardShortcut, useTheme, useToast\n- Form hooks: useForm<T> (generic form state), useFieldValidation, useFormSubmit\n- Full TypeScript generics, proper cleanup in useEffect, AbortController for fetch cancellation\n\nUse section IDs: data-hooks, ui-hooks, form-hooks\n\nUse GAP target markers to delineate each major code block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Add a new useWebSocket<T> hook to the data-hooks section that manages a WebSocket connection with auto-reconnect, heartbeat, and typed message parsing",
+      "Update the useForm hook to support nested object fields using dot notation paths like 'address.city' and array fields like 'tags[0]'",
+      "Rewrite the useToast hook to support toast stacking with a max of 5 visible toasts, auto-dismiss after 5 seconds, and a pause-on-hover feature"
+    ]
+  },
+  {
+    "id": "html-documentation-page",
+    "format": "text/html",
+    "extension": ".html",
+    "filename": "docs.html",
+    "size_hint": "large",
+    "expected_sections": [
+      "sidebar",
+      "content",
+      "code-examples",
+      "api-reference"
+    ],
+    "prompt": "Create a self-contained HTML documentation page for a JavaScript library called \"DataFlow\".\n\nInclude:\n- Fixed sidebar with navigation: Getting Started, Core Concepts, API Reference, Examples, FAQ\n- Content area with: introduction, installation (npm, CDN, ESM), quick start code example\n- Code examples section with 5 annotated code blocks showing different features (syntax highlighted via CSS)\n- API reference with 8 functions documented: name, description, parameters table, return type, example\n- Responsive layout: sidebar collapses on mobile\n\nUse section IDs: sidebar, content, code-examples, api-reference\n\nUse GAP target markers to delineate each major content block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\nAll CSS inline. Documentation-focused typography with code font for examples.\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Rewrite the sidebar navigation to add a 'Plugins' section with 3 sub-items: Official Plugins, Community Plugins, and Writing a Plugin",
+      "Add 3 more functions to the API reference: 'pipe', 'compose', and 'memoize' with full parameter tables and usage examples",
+      "Update the installation section to add a Deno import example and a 'Requirements' subsection listing minimum Node 18+ and browser compatibility",
+      "Add a 'Migration Guide' section after the FAQ showing how to migrate from v1 to v2 with a comparison table of changed API methods"
+    ]
+  },
+  {
+    "id": "yaml-k8s-helm-values",
+    "format": "text/x-yaml",
+    "extension": ".yaml",
+    "filename": "values.yaml",
+    "size_hint": "medium",
+    "expected_sections": [
+      "global",
+      "app",
+      "database",
+      "monitoring"
+    ],
+    "prompt": "Create a Helm values.yaml for deploying a web application stack to Kubernetes.\n\nInclude:\n- Global settings: namespace, image registry, environment, labels\n- App: image, replicas, resources, env vars, probes, ingress, service account, PDB\n- Database: PostgreSQL subchart values (auth, primary, readReplicas, persistence, metrics)\n- Monitoring: Prometheus ServiceMonitor, Grafana dashboards, alerting rules\n- Redis: subchart values (auth, architecture, persistence)\n- Detailed comments explaining each setting\n\nUse section IDs: global, app, database, monitoring\n\nUse GAP target markers to delineate each major block.\nWrap each logical section with `<gap:target id=\"ID\">` and `</gap:target>`.\n\n\nOutput raw code only. No markdown fences, no explanation.",
+    "turns": [
+      "Update the app section to set replicas to 5, change the image tag to 'v2.4.0', and add a new environment variable FEATURE_NEW_DASHBOARD=true",
+      "Add a new 'redis' section after database with architecture set to 'replication', 3 read replicas, and persistence enabled with 1Gi storage",
+      "Rewrite the monitoring section to add custom Grafana dashboard JSON for request rate, error rate, and p99 latency panels"
+    ]
+  }
+]

@@ -1,0 +1,2 @@
+{"protocol":"gap/0.1","id":"artifact-0009","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                        <span class=\"stage-tag\">Medium</span >"}}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0009","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                        <span class=\"value\">$550,000</span>"}}],"meta":{"format":"text/html"}}

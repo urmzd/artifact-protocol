@@ -1,4 +1,4 @@
-"""Analyze AAP envelope reliability across experiments.
+"""Analyze GAP envelope reliability across experiments.
 
 Reads metrics.json files and computes:
 - Envelope parse success rate

@@ -1,0 +1,21 @@
+[project]
+name = "gap-cli"
+version = "0.1.0"
+description = "GAP command-line interface"
+requires-python = ">=3.12"
+dependencies = [
+    "gap-evals",
+]
+
+[project.scripts]
+gap-evals = "gap.cli.main:app"
+
+[build-system]
+requires = ["uv_build>=0.7,<0.8"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "gap.cli"
+
+[tool.uv.sources]
+gap-evals = { workspace = true }

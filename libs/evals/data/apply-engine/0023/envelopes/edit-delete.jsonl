@@ -1,0 +1,2 @@
+{"protocol":"gap/0.1","id":"artifact-0023","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"    <div class=\"card-grid\">"}}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0023","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                    <td>Sales</td>"}}],"meta":{"format":"text/html"}}

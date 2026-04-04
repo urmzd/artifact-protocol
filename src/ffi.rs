@@ -1,14 +1,14 @@
-//! PyO3 bindings for the AAP apply engine.
+//! PyO3 bindings for the GAP apply engine.
 //!
 //! Exposes `resolve_envelope` to Python. Takes an operation envelope JSON
 //! and an optional base artifact JSON, returns `{"artifact": {...}, "handle": {...}}`.
 
 use pyo3::prelude::*;
 
-use crate::aap::{Artifact, Envelope};
+use crate::gap::{Artifact, Envelope};
 use crate::apply;
 
-/// Resolve an AAP operation against an optional base artifact.
+/// Resolve a GAP operation against an optional base artifact.
 ///
 /// Args:
 ///     operation_json: JSON string of the operation envelope (synthesize or edit).
@@ -40,9 +40,9 @@ fn resolve_envelope(operation_json: &str, artifact_json: Option<&str>) -> PyResu
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("serialization failed: {e}")))
 }
 
-/// AAP apply engine Python module.
-#[pymodule]
-fn aap(m: &Bound<'_, PyModule>) -> PyResult<()> {
+/// GAP apply engine Python module.
+#[pymodule(name = "_gap")]
+fn gap_core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(resolve_envelope, m)?)?;
     Ok(())
 }

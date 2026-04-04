@@ -1,0 +1,677 @@
+<html>
+<head>
+    <title><gap:target id="dashboard-title">Analytics Dashboard</gap:target></title>
+    <style>
+        body {
+            <gap:target id="body-font-family">font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;</gap:target>
+            <gap:target id="body-margin">margin: 0;</gap:target>
+            <gap:target id="body-padding">padding: 0;</gap:target>
+            <gap:target id="body-background-color">background-color: #f4f7f6;</gap:target>
+            <gap:target id="body-color">color: #333;</gap:target>
+            <gap:target id="body-line-height">line-height: 1.6;</gap:target>
+        }
+        .header {
+            <gap:target id="header-background-color">background-color: #ffffff;</gap:target>
+            <gap:target id="header-padding">padding: 15px 30px;</gap:target>
+            <gap:target id="header-border-bottom">border-bottom: 1px solid #e0e0e0;</gap:target>
+            <gap:target id="header-display">display: flex;</gap:target>
+            <gap:target id="header-justify-content">justify-content: space-between;</gap:target>
+            <gap:target id="header-align-items">align-items: center;</gap:target>
+        }
+        .breadcrumbs {
+            <gap:target id="breadcrumbs-margin">margin: 0;</gap:target>
+            <gap:target id="breadcrumbs-padding">padding: 0;</gap:target>
+            <gap:target id="breadcrumbs-list-style">list-style: none;</gap:target>
+            <gap:target id="breadcrumbs-display">display: flex;</gap:target>
+            <gap:target id="breadcrumbs-font-size">font-size: 0.9em;</gap:target>
+        }
+        .breadcrumbs li {
+            <gap:target id="breadcrumbs-li-margin-right">margin-right: 5px;</gap:target>
+        }
+        .breadcrumbs li + li::before {
+            <gap:target id="breadcrumbs-separator-content">content: '/';</gap:target>
+            <gap:target id="breadcrumbs-separator-margin">margin-right: 5px;</gap:target>
+            <gap:target id="breadcrumbs-separator-color">color: #999;</gap:target>
+        }
+        .breadcrumbs a {
+            <gap:target id="breadcrumbs-link-color">color: #007bff;</gap:target>
+            <gap:target id="breadcrumbs-link-text-decoration">text-decoration: none;</gap:target>
+        }
+        .breadcrumbs a:hover {
+            <gap:target id="breadcrumbs-link-hover-text-decoration">text-decoration: underline;</gap:target>
+        }
+        .date-range-picker {
+            <gap:target id="date-range-picker-display">display: flex;</gap:target>
+            <gap:target id="date-range-picker-align-items">align-items: center;</gap:target>
+            <gap:target id="date-range-picker-background-color">background-color: #f0f0f0;</gap:target>
+            <gap:target id="date-range-picker-border-radius">border-radius: 4px;</gap:target>
+            <gap:target id="date-range-picker-padding">padding: 5px 10px;</gap:target>
+            <gap:target id="date-range-picker-cursor">cursor: pointer;</gap:target>
+            <gap:target id="date-range-picker-font-size">font-size: 0.9em;</gap:target>
+            <gap:target id="date-range-picker-color">color: #555;</gap:target>
+        }
+        .date-range-picker span {
+            <gap:target id="date-range-picker-span-margin-right">margin-right: 8px;</gap:target>
+            <gap:target id="date-range-picker-span-font-weight">font-weight: 500;</gap:target>
+        }
+        .date-range-picker svg {
+            <gap:target id="date-range-picker-svg-fill">fill: #555;</gap:target>
+            <gap:target id="date-range-picker-svg-width">width: 16px;</gap:target>
+            <gap:target id="date-range-picker-svg-height">height: 16px;</gap:target>
+        }
+        .dashboard-container {
+            <gap:target id="dashboard-container-padding">padding: 20px 30px;</gap:target>
+            <gap:target id="dashboard-container-max-width">max-width: 1600px;</gap:target>
+            <gap:target id="dashboard-container-margin">margin: 20px auto;</gap:target>
+            <gap:target id="dashboard-container-background-color">background-color: #ffffff;</gap:target>
+            <gap:target id="dashboard-container-border-radius">border-radius: 8px;</gap:target>
+            <gap:target id="dashboard-container-box-shadow">box-shadow: 0 4px 12px rgba(0,0,0,0.05);</gap:target>
+        }
+        .kpi-grid {
+            <gap:target id="kpi-grid-display">display: grid;</gap:target>
+            <gap:target id="kpi-grid-gap">gap: 20px;</gap:target>
+            <gap:target id="kpi-grid-template-columns">grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));</gap:target>
+            <gap:target id="kpi-grid-margin-bottom">margin-bottom: 30px;</gap:target>
+        }
+        .kpi-card {
+            <gap:target id="kpi-card-background-color">background-color: #fcfcfc;</gap:target>
+            <gap:target id="kpi-card-padding">padding: 20px;</gap:target>
+            <gap:target id="kpi-card-border-radius">border-radius: 8px;</gap:target>
+            <gap:target id="kpi-card-box-shadow">box-shadow: 0 2px 5px rgba(0,0,0,0.03);</gap:target>
+            <gap:target id="kpi-card-text-align">text-align: left;</gap:target>
+            <gap:target id="kpi-card-border">border: 1px solid #e9ecef;</gap:target>
+        }
+        .kpi-card .label {
+            <gap:target id="kpi-card-label-font-size">font-size: 0.9em;</gap:target>
+            <gap:target id="kpi-card-label-color">color: #777;</gap:target>
+            <gap:target id="kpi-card-label-margin-bottom">margin-bottom: 8px;</gap:target>
+            <gap:target id="kpi-card-label-display">display: block;</gap:target>
+        }
+        .kpi-card .value {
+            <gap:target id="kpi-card-value-font-size">font-size: 2em;</gap:target>
+            <gap:target id="kpi-card-value-font-weight">font-weight: 700;</gap:target>
+            <gap:target id="kpi-card-value-color">color: #212529;</gap:target>
+            <gap:target id="kpi-card-value-display">display: block;</gap:target>
+        }
+        .kpi-card.positive .value {
+            <gap:target id="kpi-card-positive-value-color">color: #28a745;</gap:target>
+        }
+        .kpi-card.negative .value {
+            <gap:target id="kpi-card-negative-value-color">color: #dc3545;</gap:target>
+        }
+        .section-title {
+            <gap:target id="section-title-font-size">font-size: 1.5em;</gap:target>
+            <gap:target id="section-title-margin-bottom">margin-bottom: 20px;</gap:target>
+            <gap:target id="section-title-color">color: #212529;</gap:target>
+            <gap:target id="section-title-font-weight">font-weight: 600;</gap:target>
+            <gap:target id="section-title-border-bottom">border-bottom: 1px solid #eee;</gap:target>
+            <gap:target id="section-title-padding-bottom">padding-bottom: 10px;</gap:target>
+        }
+        .data-table {
+            <gap:target id="data-table-width">width: 100%;</gap:target>
+            <gap:target id="data-table-border-collapse">border-collapse: collapse;</gap:target>
+            <gap:target id="data-table-margin-bottom">margin-bottom: 30px;</gap:target>
+            <gap:target id="data-table-font-size">font-size: 0.9em;</gap:target>
+        }
+        .data-table th, .data-table td {
+            <gap:target id="data-table-th-td-padding">padding: 12px 15px;</gap:target>
+            <gap:target id="data-table-th-td-text-align">text-align: left;</gap:target>
+            <gap:target id="data-table-th-td-border-bottom">border-bottom: 1px solid #eee;</gap:target>
+        }
+        .data-table th {
+            <gap:target id="data-table-th-background-color">background-color: #f8f9fa;</gap:target>
+            <gap:target id="data-table-th-font-weight">font-weight: 600;</gap:target>
+            <gap:target id="data-table-th-color">color: #495057;</gap:target>
+            <gap:target id="data-table-th-text-transform">text-transform: uppercase;</gap:target>
+        }
+        .data-table tbody tr:hover {
+            <gap:target id="data-table-tbody-tr-hover-background-color">background-color: #f1f7fe;</gap:target>
+        }
+        .two-column-layout {
+            <gap:target id="two-column-layout-display">display: grid;</gap:target>
+            <gap:target id="two-column-layout-grid-template-columns">grid-template-columns: 1fr 1fr;</gap:target>
+            <gap:target id="two-column-layout-gap">gap: 30px;</gap:target>
+            <gap:target id="two-column-layout-margin-top">margin-top: 30px;</gap:target>
+        }
+        @media (max-width: 900px) {
+            .two-column-layout {
+                <gap:target id="two-column-layout-media-query-grid-template-columns">grid-template-columns: 1fr;</gap:target>
+            }
+            .dashboard-container {
+                <gap:target id="dashboard-container-media-query-padding">padding: 15px;</gap:target>
+            }
+            .header {
+                <gap:target id="header-media-query-padding">padding: 10px 15px;</gap:target>
+                <gap:target id="header-media-query-flex-direction">flex-direction: column;</gap:target>
+                <gap:target id="header-media-query-align-items">align-items: flex-start;</gap:target>
+            }
+            .date-range-picker {
+                <gap:target id="date-range-picker-media-query-margin-top">margin-top: 10px;</gap:target>
+            }
+            .section-title {
+                <gap:target id="section-title-media-query-font-size">font-size: 1.3em;</gap:target>
+            }
+        }
+        .list-widget {
+            <gap:target id="list-widget-background-color">background-color: #fcfcfc;</gap:target>
+            <gap:target id="list-widget-padding">padding: 20px;</gap:target>
+            <gap:target id="list-widget-border-radius">border-radius: 8px;</gap:target>
+            <gap:target id="list-widget-box-shadow">box-shadow: 0 2px 5px rgba(0,0,0,0.03);</gap:target>
+            <gap:target id="list-widget-border">border: 1px solid #e9ecef;</gap:target>
+        }
+        .list-widget ul {
+            <gap:target id="list-widget-ul-margin">margin: 0;</gap:target>
+            <gap:target id="list-widget-ul-padding">padding: 0;</gap:target>
+            <gap:target id="list-widget-ul-list-style">list-style: none;</gap:target>
+        }
+        .list-widget li {
+            <gap:target id="list-widget-li-padding">padding: 10px 0;</gap:target>
+            <gap:target id="list-widget-li-border-bottom">border-bottom: 1px solid #eee;</gap:target>
+            <gap:target id="list-widget-li-display">display: flex;</gap:target>
+            <gap:target id="list-widget-li-justify-content">justify-content: space-between;</gap:target>
+            <gap:target id="list-widget-li-align-items">align-items: center;</gap:target>
+        }
+        .list-widget li:last-child {
+            <gap:target id="list-widget-li-last-child-border-bottom">border-bottom: none;</gap:target>
+        }
+        .list-widget li span:first-child {
+            <gap:target id="list-widget-li-span-first-child-font-weight">font-weight: 500;</gap:target>
+            <gap:target id="list-widget-li-span-first-child-color">color: #333;</gap:target>
+        }
+        .list-widget li span:last-child {
+            <gap:target id="list-widget-li-span-last-child-color">color: #555;</gap:target>
+            <gap:target id="list-widget-li-span-last-child-font-size">font-size: 0.9em;</gap:target>
+        }
+    </style>
+</head>
+<body>
+    <gap:target id="overall-dashboard">
+    <div class="header">
+        <gap:target id="dashboard-header">
+            <ul class="breadcrumbs">
+                <gap:target id="breadcrumbs-section">
+                    <li><a href="#"><gap:target id="breadcrumb-item-home">Home</gap:target></a></li>
+                    <li><a href="#"><gap:target id="breadcrumb-item-analytics">Analytics</gap:target></a></li>
+                    <li><gap:target id="breadcrumb-item-overview">Overview</gap:target></li>
+                </gap:target>
+            </ul>
+            <div class="date-range-picker">
+                <gap:target id="date-range-picker-section">
+                    <span><gap:target id="date-range-display">Last 30 Days</gap:target></span>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path d="M13 7h-2v5H7v2h6z"/>
+                    </svg>
+                </gap:target>
+            </div>
+        </gap:target>
+    </div>
+
+    <div class="dashboard-container">
+        <gap:target id="kpi-cards-section">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <span class="label"><gap:target id="page-views-label">Page Views</gap:target></span>
+                    <span class="value"><gap:target id="page-views-value">1,234,567</gap:target></span>
+                </div>
+                <div class="kpi-card">
+                    <span class="label"><gap:target id="unique-visitors-label">Unique Visitors</gap:target></span>
+                    <span class="value"><gap:target id="unique-visitors-value">876,543</gap:target></span>
+                </div>
+                <div class="kpi-card negative">
+                    <span class="label"><gap:target id="bounce-rate-label">Bounce Rate</gap:target></span>
+                    <span class="value"><gap:target id="bounce-rate-value">34.2%<span class="kpi-trend" style="font-size: 0.8em; margin-top: 5px; display: block; color: #28a745;"><gap:target id="bounce-rate-trend">(-5.1% improvement)</gap:target></span></gap:target></span>
+                </div>
+                <div class="kpi-card positive">
+                    <span class="label"><gap:target id="avg-session-duration-label">Avg. Session Duration</gap:target></span>
+                    <span class="value"><gap:target id="avg-session-duration-value">00:03:45</gap:target></span>
+                </div>
+            </div>
+        </gap:target>
+
+        <gap:target id="traffic-sources-section">
+            <h2 class="section-title"><gap:target id="traffic-sources-title">Traffic Sources</gap:target></h2>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th><gap:target id="traffic-sources-header-source">Source</gap:target></th>
+                            <th><gap:target id="traffic-sources-header-medium">Medium</gap:target></th>
+                            <th><gap:target id="traffic-sources-header-sessions">Sessions</gap:target></th>
+                            <th><gap:target id="traffic-sources-header-bounce-rate">Bounce Rate</gap:target></th>
+                            <th><gap:target id="traffic-sources-header-conversions">Conversions</gap:target></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <gap:target id="traffic-sources-table">
+                        <tr gap:target id="traffic-source-row-1">
+                            <td><gap:target id="traffic-source-1-source">google</gap:target></td>
+                            <td><gap:target id="traffic-source-1-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-1-sessions">345,678</gap:target></td>
+                            <td><gap:target id="traffic-source-1-bounce-rate">38.12%</gap:target></td>
+                            <td><gap:target id="traffic-source-1-conversions">12,345</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-2">
+                            <td><gap:target id="traffic-source-2-source">direct</gap:target></td>
+                            <td><gap:target id="traffic-source-2-medium">(none)</gap:target></td>
+                            <td><gap:target id="traffic-source-2-sessions">210,987</gap:target></td>
+                            <td><gap:target id="traffic-source-2-bounce-rate">42.50%</gap:target></td>
+                            <td><gap:target id="traffic-source-2-conversions">8,765</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-3">
+                            <td><gap:target id="traffic-source-3-source">bing</gap:target></td>
+                            <td><gap:target id="traffic-source-3-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-3-sessions">87,654</gap:target></td>
+                            <td><gap:target id="traffic-source-3-bounce-rate">40.10%</gap:target></td>
+                            <td><gap:target id="traffic-source-3-conversions">2,100</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-4">
+                            <td><gap:target id="traffic-source-4-source">facebook.com</gap:target></td>
+                            <td><gap:target id="traffic-source-4-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-4-sessions">65,432</gap:target></td>
+                            <td><gap:target id="traffic-source-4-bounce-rate">55.70%</gap:target></td>
+                            <td><gap:target id="traffic-source-4-conversions">1,500</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-5">
+                            <td><gap:target id="traffic-source-5-source">linkedin.com</gap:target></td>
+                            <td><gap:target id="traffic-source-5-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-5-sessions">43,210</gap:target></td>
+                            <td><gap:target id="traffic-source-5-bounce-rate">52.30%</gap:target></td>
+                            <td><gap:target id="traffic-source-5-conversions">980</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-6">
+                            <td><gap:target id="traffic-source-6-source">email-campaign</gap:target></td>
+                            <td><gap:target id="traffic-source-6-medium">email</gap:target></td>
+                            <td><gap:target id="traffic-source-6-sessions">32,109</gap:target></td>
+                            <td><gap:target id="traffic-source-6-bounce-rate">35.90%</gap:target></td>
+                            <td><gap:target id="traffic-source-6-conversions">1,800</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-7">
+                            <td><gap:target id="traffic-source-7-source">google</gap:target></td>
+                            <td><gap:target id="traffic-source-7-medium">cpc</gap:target></td>
+                            <td><gap:target id="traffic-source-7-sessions">25,000</gap:target></td>
+                            <td><gap:target id="traffic-source-7-bounce-rate">48.20%</gap:target></td>
+                            <td><gap:target id="traffic-source-7-conversions">1,100</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-8">
+                            <td><gap:target id="traffic-source-8-source">youtube.com</gap:target></td>
+                            <td><gap:target id="traffic-source-8-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-8-sessions">18,765</gap:target></td>
+                            <td><gap:target id="traffic-source-8-bounce-rate">60.10%</gap:target></td>
+                            <td><gap:target id="traffic-source-8-conversions">450</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-9">
+                            <td><gap:target id="traffic-source-9-source">twitter.com</gap:target></td>
+                            <td><gap:target id="traffic-source-9-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-9-sessions">15,678</gap:target></td>
+                            <td><gap:target id="traffic-source-9-bounce-rate">62.30%</gap:target></td>
+                            <td><gap:target id="traffic-source-9-conversions">320</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-10">
+                            <td><gap:target id="traffic-source-10-source">duckduckgo</gap:target></td>
+                            <td><gap:target id="traffic-source-10-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-10-sessions">12,345</gap:target></td>
+                            <td><gap:target id="traffic-source-10-bounce-rate">39.80%</gap:target></td>
+                            <td><gap:target id="traffic-source-10-conversions">250</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-11">
+                            <td><gap:target id="traffic-source-11-source">pinterest.com</gap:target></td>
+                            <td><gap:target id="traffic-source-11-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-11-sessions">10,987</gap:target></td>
+                            <td><gap:target id="traffic-source-11-bounce-rate">58.10%</gap:target></td>
+                            <td><gap:target id="traffic-source-11-conversions">180</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-12">
+                            <td><gap:target id="traffic-source-12-source">reddit.com</gap:target></td>
+                            <td><gap:target id="traffic-source-12-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-12-sessions">9,876</gap:target></td>
+                            <td><gap:target id="traffic-source-12-bounce-rate">65.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-12-conversions">100</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-13">
+                            <td><gap:target id="traffic-source-13-source">newsletter</gap:target></td>
+                            <td><gap:target id="traffic-source-13-medium">email</gap:target></td>
+                            <td><gap:target id="traffic-source-13-sessions">8,765</gap:target></td>
+                            <td><gap:target id="traffic-source-13-bounce-rate">34.50%</gap:target></td>
+                            <td><gap:target id="traffic-source-13-conversions">400</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-14">
+                            <td><gap:target id="traffic-source-14-source">msn</gap:target></td>
+                            <td><gap:target id="traffic-source-14-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-14-sessions">7,654</gap:target></td>
+                            <td><gap:target id="traffic-source-14-bounce-rate">41.20%</gap:target></td>
+                            <td><gap:target id="traffic-source-14-conversions">150</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-15">
+                            <td><gap:target id="traffic-source-15-source">tiktok.com</gap:target></td>
+                            <td><gap:target id="traffic-source-15-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-15-sessions">6,543</gap:target></td>
+                            <td><gap:target id="traffic-source-15-bounce-rate">68.70%</gap:target></td>
+                            <td><gap:target id="traffic-source-15-conversions">70</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-16">
+                            <td><gap:target id="traffic-source-16-source">outbrain</gap:target></td>
+                            <td><gap:target id="traffic-source-16-medium">cpc</gap:target></td>
+                            <td><gap:target id="traffic-source-16-sessions">5,432</gap:target></td>
+                            <td><gap:target id="traffic-source-16-bounce-rate">50.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-16-conversions">200</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-17">
+                            <td><gap:target id="traffic-source-17-source">taboola</gap:target></td>
+                            <td><gap:target id="traffic-source-17-medium">cpc</gap:target></td>
+                            <td><gap:target id="traffic-source-17-sessions">4,321</gap:target></td>
+                            <td><gap:target id="traffic-source-17-bounce-rate">51.50%</gap:target></td>
+                            <td><gap:target id="traffic-source-17-conversions">180</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-18">
+                            <td><gap:target id="traffic-source-18-source">instagram.com</gap:target></td>
+                            <td><gap:target id="traffic-source-18-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-18-sessions">3,210</gap:target></td>
+                            <td><gap:target id="traffic-source-18-bounce-rate">59.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-18-conversions">80</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-19">
+                            <td><gap:target id="traffic-source-19-source">yahoo</gap:target></td>
+                            <td><gap:target id="traffic-source-19-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-19-sessions">2,109</gap:target></td>
+                            <td><gap:target id="traffic-source-19-bounce-rate">43.70%</gap:target></td>
+                            <td><gap:target id="traffic-source-19-conversions">60</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-20">
+                            <td><gap:target id="traffic-source-20-source">display-network</gap:target></td>
+                            <td><gap:target id="traffic-source-20-medium">display</gap:target></td>
+                            <td><gap:target id="traffic-source-20-sessions">1,876</gap:target></td>
+                            <td><gap:target id="traffic-source-20-bounce-rate">70.10%</gap:target></td>
+                            <td><gap:target id="traffic-source-20-conversions">50</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-21">
+                            <td><gap:target id="traffic-source-21-source">baidu</gap:target></td>
+                            <td><gap:target id="traffic-source-21-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-21-sessions">1,765</gap:target></td>
+                            <td><gap:target id="traffic-source-21-bounce-rate">45.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-21-conversions">45</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-22">
+                            <td><gap:target id="traffic-source-22-source">yandex</gap:target></td>
+                            <td><gap:target id="traffic-source-22-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-22-sessions">1,654</gap:target></td>
+                            <td><gap:target id="traffic-source-22-bounce-rate">46.20%</gap:target></td>
+                            <td><gap:target id="traffic-source-22-conversions">40</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-23">
+                            <td><gap:target id="traffic-source-23-source">mail.ru</gap:target></td>
+                            <td><gap:target id="traffic-source-23-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-23-sessions">1,543</gap:target></td>
+                            <td><gap:target id="traffic-source-23-bounce-rate">57.80%</gap:target></td>
+                            <td><gap:target id="traffic-source-23-conversions">35</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-24">
+                            <td><gap:target id="traffic-source-24-source">campaign-x</gap:target></td>
+                            <td><gap:target id="traffic-source-24-medium">cpc</gap:target></td>
+                            <td><gap:target id="traffic-source-24-sessions">1,432</gap:target></td>
+                            <td><gap:target id="traffic-source-24-bounce-rate">52.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-24-conversions">60</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-25">
+                            <td><gap:target id="traffic-source-25-source">partnersite.com</gap:target></td>
+                            <td><gap:target id="traffic-source-25-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-25-sessions">1,321</gap:target></td>
+                            <td><gap:target id="traffic-source-25-bounce-rate">53.50%</gap:target></td>
+                            <td><gap:target id="traffic-source-25-conversions">30</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-26">
+                            <td><gap:target id="traffic-source-26-source">ecosia</gap:target></td>
+                            <td><gap:target id="traffic-source-26-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-26-sessions">1,210</gap:target></td>
+                            <td><gap:target id="traffic-source-26-bounce-rate">39.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-26-conversions">25</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-27">
+                            <td><gap:target id="traffic-source-27-source">seznam</gap:target></td>
+                            <td><gap:target id="traffic-source-27-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-27-sessions">1,109</gap:target></td>
+                            <td><gap:target id="traffic-source-27-bounce-rate">40.50%</gap:target></td>
+                            <td><gap:target id="traffic-source-27-conversions">20</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-28">
+                            <td><gap:target id="traffic-source-28-source">adwords-display</gap:target></td>
+                            <td><gap:target id="traffic-source-28-medium">display</gap:target></td>
+                            <td><gap:target id="traffic-source-28-sessions">1,000</gap:target></td>
+                            <td><gap:target id="traffic-source-28-bounce-rate">68.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-28-conversions">15</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-29">
+                            <td><gap:target id="traffic-source-29-source">referral-blog</gap:target></td>
+                            <td><gap:target id="traffic-source-29-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-29-sessions">987</gap:target></td>
+                            <td><gap:target id="traffic-source-29-bounce-rate">55.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-29-conversions">10</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-30">
+                            <td><gap:target id="traffic-source-30-source">affiliate-network</gap:target></td>
+                            <td><gap:target id="traffic-source-30-medium">affiliate</gap:target></td>
+                            <td><gap:target id="traffic-source-30-sessions">876</gap:target></td>
+                            <td><gap:target id="traffic-source-30-bounce-rate">47.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-30-conversions">30</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-31">
+                            <td><gap:target id="traffic-source-31-source">blog.example.com</gap:target></td>
+                            <td><gap:target id="traffic-source-31-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-31-sessions">765</gap:target></td>
+                            <td><gap:target id="traffic-source-31-bounce-rate">58.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-31-conversions">8</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-32">
+                            <td><gap:target id="traffic-source-32-source">other-social</gap:target></td>
+                            <td><gap:target id="traffic-source-32-medium">social</gap:target></td>
+                            <td><gap:target id="traffic-source-32-sessions">654</gap:target></td>
+                            <td><gap:target id="traffic-source-32-bounce-rate">61.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-32-conversions">5</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-33">
+                            <td><gap:target id="traffic-source-33-source">paid-social-fb</gap:target></td>
+                            <td><gap:target id="traffic-source-33-medium">cpc</gap:target></td>
+                            <td><gap:target id="traffic-source-33-sessions">543</gap:target></td>
+                            <td><gap:target id="traffic-source-33-bounce-rate">60.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-33-conversions">12</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-34">
+                            <td><gap:target id="traffic-source-34-source">paid-social-li</gap:target></td>
+                            <td><gap:target id="traffic-source-34-medium">cpc</gap:target></td>
+                            <td><gap:target id="traffic-source-34-sessions">432</gap:target></td>
+                            <td><gap:target id="traffic-source-34-bounce-rate">59.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-34-conversions">10</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-35">
+                            <td><gap:target id="traffic-source-35-source">forum.example.com</gap:target></td>
+                            <td><gap:target id="traffic-source-35-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-35-sessions">321</gap:target></td>
+                            <td><gap:target id="traffic-source-35-bounce-rate">63.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-35-conversions">3</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-36">
+                            <td><gap:target id="traffic-source-36-source">press-release</gap:target></td>
+                            <td><gap:target id="traffic-source-36-medium">pr</gap:target></td>
+                            <td><gap:target id="traffic-source-36-sessions">210</gap:target></td>
+                            <td><gap:target id="traffic-source-36-bounce-rate">45.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-36-conversions">7</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-37">
+                            <td><gap:target id="traffic-source-37-source">webinar-promo</gap:target></td>
+                            <td><gap:target id="traffic-source-37-medium">email</gap:target></td>
+                            <td><gap:target id="traffic-source-37-sessions">180</gap:target></td>
+                            <td><gap:target id="traffic-source-37-bounce-rate">32.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-37-conversions">15</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-38">
+                            <td><gap:target id="traffic-source-38-source">qwant</gap:target></td>
+                            <td><gap:target id="traffic-source-38-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-38-sessions">150</gap:target></td>
+                            <td><gap:target id="traffic-source-38-bounce-rate">41.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-38-conversions">2</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-39">
+                            <td><gap:target id="traffic-source-39-source">startpage</gap:target></td>
+                            <td><gap:target id="traffic-source-39-medium">organic</gap:target></td>
+                            <td><gap:target id="traffic-source-39-sessions">120</gap:target></td>
+                            <td><gap:target id="traffic-source-39-bounce-rate">38.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-39-conversions">1</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-40">
+                            <td><gap:target id="traffic-source-40-source">adcampaign-summer</gap:target></td>
+                            <td><gap:target id="traffic-source-40-medium">cpc</gap:target></td>
+                            <td><gap:target id="traffic-source-40-sessions">90</gap:target></td>
+                            <td><gap:target id="traffic-source-40-bounce-rate">55.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-40-conversions">5</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-41">
+                            <td><gap:target id="traffic-source-41-source">news.example.com</gap:target></td>
+                            <td><gap:target id="traffic-source-41-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-41-sessions">70</gap:target></td>
+                            <td><gap:target id="traffic-source-41-bounce-rate">65.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-41-conversions">0</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-42">
+                            <td><gap:target id="traffic-source-42-source">community-forum</gap:target></td>
+                            <td><gap:target id="traffic-source-42-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-42-sessions">60</gap:target></td>
+                            <td><gap:target id="traffic-source-42-bounce-rate">68.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-42-conversions">0</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-43">
+                            <td><gap:target id="traffic-source-43-source">print-ad-qr</gap:target></td>
+                            <td><gap:target id="traffic-source-43-medium">offline</gap:target></td>
+                            <td><gap:target id="traffic-source-43-sessions">50</gap:target></td>
+                            <td><gap:target id="traffic-source-43-bounce-rate">40.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-43-conversions">3</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-44">
+                            <td><gap:target id="traffic-source-44-source">podcast-ad</gap:target></td>
+                            <td><gap:target id="traffic-source-44-medium">audio</gap:target></td>
+                            <td><gap:target id="traffic-source-44-sessions">40</gap:target></td>
+                            <td><gap:target id="traffic-source-44-bounce-rate">48.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-44-conversions">2</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-45">
+                            <td><gap:target id="traffic-source-45-source">newsletter-archive</gap:target></td>
+                            <td><gap:target id="traffic-source-45-medium">email</gap:target></td>
+                            <td><gap:target id="traffic-source-45-sessions">35</gap:target></td>
+                            <td><gap:target id="traffic-source-45-bounce-rate">30.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-45-conversions">4</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-46">
+                            <td><gap:target id="traffic-source-46-source">internal-promo</gap:target></td>
+                            <td><gap:target id="traffic-source-46-medium">internal</gap:target></td>
+                            <td><gap:target id="traffic-source-46-sessions">30</gap:target></td>
+                            <td><gap:target id="traffic-source-46-bounce-rate">20.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-46-conversions">1</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-47">
+                            <td><gap:target id="traffic-source-47-source">partner-referral-a</gap:target></td>
+                            <td><gap:target id="traffic-source-47-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-47-sessions">25</gap:target></td>
+                            <td><gap:target id="traffic-source-47-bounce-rate">50.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-47-conversions">1</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-48">
+                            <td><gap:target id="traffic-source-48-source">partner-referral-b</gap:target></td>
+                            <td><gap:target id="traffic-source-48-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-48-sessions">20</gap:target></td>
+                            <td><gap:target id="traffic-source-48-bounce-rate">52.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-48-conversions">0</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-49">
+                            <td><gap:target id="traffic-source-49-source">email-signature</gap:target></td>
+                            <td><gap:target id="traffic-source-49-medium">email</gap:target></td>
+                            <td><gap:target id="traffic-source-49-sessions">18</gap:target></td>
+                            <td><gap:target id="traffic-source-49-bounce-rate">25.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-49-conversions">2</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-50">
+                            <td><gap:target id="traffic-source-50-source">offline-event</gap:target></td>
+                            <td><gap:target id="traffic-source-50-medium">event</gap:target></td>
+                            <td><gap:target id="traffic-source-50-sessions">15</gap:target></td>
+                            <td><gap:target id="traffic-source-50-bounce-rate">30.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-50-conversions">3</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-51">
+                            <td><gap:target id="traffic-source-51-source">social-bookmark</gap:target></td>
+                            <td><gap:target id="traffic-source-51-medium">referral</gap:target></td>
+                            <td><gap:target id="traffic-source-51-sessions">12</gap:target></td>
+                            <td><gap:target id="traffic-source-51-bounce-rate">60.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-51-conversions">0</gap:target></td>
+                        </tr>
+                        <tr gap:target id="traffic-source-row-52">
+                            <td><gap:target id="traffic-source-52-source">customer-service</gap:target></td>
+                            <td><gap:target id="traffic-source-52-medium">support</gap:target></td>
+                            <td><gap:target id="traffic-source-52-sessions">10</gap:target></td>
+                            <td><gap:target id="traffic-source-52-bounce-rate">10.00%</gap:target></td>
+                            <td><gap:target id="traffic-source-52-conversions">5</gap:target></td>
+                        </tr>
+                        </gap:target>
+                    </tbody>
+                </table>
+            </div>
+        </gap:target>
+
+        <gap:target id="secondary-metrics-section">
+            <div class="two-column-layout">
+                <div class="list-widget">
+                    <h3 class="section-title" style="margin-top:0; border-bottom: none; padding-bottom: 0;"><gap:target id="top-referrers-title">Top Referrers</gap:target></h3>
+                    <gap:target id="top-referrers-list"><ul><li gap:target id="referrer-item-1"><span><gap:target id="referrer-1-name">github.com</gap:target></span><span><gap:target id="referrer-1-sessions">78,900</gap:target></span></li><li gap:target id="referrer-item-2"><span><gap:target id="referrer-2-name">stackoverflow.com</gap:target></span><span><gap:target id="referrer-2-sessions">65,400</gap:target></span></li><li gap:target id="referrer-item-3"><span><gap:target id="referrer-3-name">dev.to</gap:target></span><span><gap:target id="referrer-3-sessions">42,100</gap:target></span></li><li gap:target id="referrer-item-4"><span><gap:target id="referrer-4-name">medium.com</gap:target></span><span><gap:target id="referrer-4-sessions">35,600</gap:target></span></li><li gap:target id="referrer-item-5"><span><gap:target id="referrer-5-name">hashnode.com</gap:target></span><span><gap:target id="referrer-5-sessions">28,700</gap:target></span></li><li gap:target id="referrer-item-6"><span><gap:target id="referrer-6-name">reddit.com/r/programming</gap:target></span><span><gap:target id="referrer-6-sessions">21,500</gap:target></span></li><li gap:target id="referrer-item-7"><span><gap:target id="referrer-7-name">freecodecamp.org</gap:target></span><span><gap:target id="referrer-7-sessions">18,900</gap:target></span></li><li gap:target id="referrer-item-8"><span><gap:target id="referrer-8-name">hackernews.com</gap:target></span><span><gap:target id="referrer-8-sessions">15,200</gap:target></span></li><li gap:target id="referrer-item-9"><span><gap:target id="referrer-9-name">codepen.io</gap:target></span><span><gap:target id="referrer-9-sessions">11,800</gap:target></span></li><li gap:target id="referrer-item-10"><span><gap:target id="referrer-10-name">smashingmagazine.com</gap:target></span><span><gap:target id="referrer-10-sessions">9,300</gap:target></span></li><li gap:target id="referrer-item-11"><span><gap:target id="referrer-11-name">css-tricks.com</gap:target></span><span><gap:target id="referrer-11-sessions">7,500</gap:target></span></li><li gap:target id="referrer-item-12"><span><gap:target id="referrer-12-name">w3schools.com</gap:target></span><span><gap:target id="referrer-12-sessions">5,100</gap:target></span></li><li gap:target id="referrer-item-13"><span><gap:target id="referrer-13-name">geeksforgeeks.org</gap:target></span><span><gap:target id="referrer-13-sessions">3,900</gap:target></span></li><li gap:target id="referrer-item-14"><span><gap:target id="referrer-14-name">digitalocean.com/community</gap:target></span><span><gap:target id="referrer-14-sessions">2,800</gap:target></span></li><li gap:target id="referrer-item-15"><span><gap:target id="referrer-15-name">scotch.io</gap:target></span><span><gap:target id="referrer-15-sessions">1,500</gap:target></span></li></ul></gap:target>
+                </div>
+
+                <div class="list-widget">
+                    <h3 class="section-title" style="margin-top:0; border-bottom: none; padding-bottom: 0;"><gap:target id="geographic-breakdown-title">Geographic Breakdown</gap:target></h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th><gap:target id="geo-header-country">Country</gap:target></th>
+                                    <th><gap:target id="geo-header-sessions">Sessions</gap:target></th>
+                                    <th><gap:target id="geo-header-pageviews">Page Views</gap:target></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <gap:target id="geographic-breakdown-table">
+                                <tr gap:target id="geo-row-1"><td><gap:target id="geo-1-country">United States</gap:target></td><td><gap:target id="geo-1-sessions">654,321</gap:target></td><td><gap:target id="geo-1-pageviews">897,654</gap:target></td></tr>
+                                <tr gap:target id="geo-row-2"><td><gap:target id="geo-2-country">India</gap:target></td><td><gap:target id="geo-2-sessions">123,456</gap:target></td><td><gap:target id="geo-2-pageviews">178,900</gap:target></td></tr>
+                                <tr gap:target id="geo-row-3"><td><gap:target id="geo-3-country">United Kingdom</gap:target></td><td><gap:target id="geo-3-sessions">87,654</gap:target></td><td><gap:target id="geo-3-pageviews">110,234</gap:target></td></tr>
+                                <tr gap:target id="geo-row-4"><td><gap:target id="geo-4-country">Canada</gap:target></td><td><gap:target id="geo-4-sessions">54,321</gap:target></td><td><gap:target id="geo-4-pageviews">70,123</gap:target></td></tr>
+                                <tr gap:target id="geo-row-5"><td><gap:target id="geo-5-country">Germany</gap:target></td><td><gap:target id="geo-5-sessions">43,210</gap:target></td><td><gap:target id="geo-5-pageviews">58,765</gap:target></td></tr>
+                                <tr gap:target id="geo-row-6"><td><gap:target id="geo-6-country">Australia</gap:target></td><td><gap:target id="geo-6-sessions">32,109</gap:target></td><td><gap:target id="geo-6-pageviews">45,678</gap:target></td></tr>
+                                <tr gap:target id="geo-row-7"><td><gap:target id="geo-7-country">France</gap:target></td><td><gap:target id="geo-7-sessions">28,900</gap:target></td><td><gap:target id="geo-7-pageviews">38,123</gap:target></td></tr>
+                                <tr gap:target id="geo-row-8"><td><gap:target id="geo-8-country">Brazil</gap:target></td><td><gap:target id="geo-8-sessions">25,678</gap:target></td><td><gap:target id="geo-8-pageviews">33,456</gap:target></td></tr>
+                                <tr gap:target id="geo-row-9"><td><gap:target id="geo-9-country">Japan</gap:target></td><td><gap:target id="geo-9-sessions">22,345</gap:target></td><td><gap:target id="geo-9-pageviews">29,876</gap:target></td></tr>
+                                <tr gap:target id="geo-row-10"><td><gap:target id="geo-10-country">Mexico</gap:target></td><td><gap:target id="geo-10-sessions">19,876</gap:target></td><td><gap:target id="geo-10-pageviews">26,543</gap:target></td></tr>
+                                <tr gap:target id="geo-row-11"><td><gap:target id="geo-11-country">China</gap:target></td><td><gap:target id="geo-11-sessions">17,654</gap:target></td><td><gap:target id="geo-11-pageviews">23,987</gap:target></td></tr>
+                                <tr gap:target id="geo-row-12"><td><gap:target id="geo-12-country">Italy</gap:target></td><td><gap:target id="geo-12-sessions">15,432</gap:target></td><td><gap:target id="geo-12-pageviews">20,109</gap:target></td></tr>
+                                <tr gap:target id="geo-row-13"><td><gap:target id="geo-13-country">Spain</gap:target></td><td><gap:target id="geo-13-sessions">13,210</gap:target></td><td><gap:target id="geo-13-pageviews">17,876</gap:target></td></tr>
+                                <tr gap:target id="geo-row-14"><td><gap:target id="geo-14-country">Netherlands</gap:target></td><td><gap:target id="geo-14-sessions">11,098</gap:target></td><td><gap:target id="geo-14-pageviews">14,567</gap:target></td></tr>
+                                <tr gap:target id="geo-row-15"><td><gap:target id="geo-15-country">South Africa</gap:target></td><td><gap:target id="geo-15-sessions">9,876</gap:target></td><td><gap:target id="geo-15-pageviews">12,345</gap:target></td></tr>
+                                <tr gap:target id="geo-row-16"><td><gap:target id="geo-16-country">Russia</gap:target></td><td><gap:target id="geo-16-sessions">8,765</gap:target></td><td><gap:target id="geo-16-pageviews">11,098</gap:target></td></tr>
+                                <tr gap:target id="geo-row-17"><td><gap:target id="geo-17-country">Indonesia</gap:target></td><td><gap:target id="geo-17-sessions">7,654</gap:target></td><td><gap:target id="geo-17-pageviews">9,876</gap:target></td></tr>
+                                <tr gap:target id="geo-row-18"><td><gap:target id="geo-18-country">Argentina</gap:target></td><td><gap:target id="geo-18-sessions">6,543</gap:target></td><td><gap:target id="geo-18-pageviews">8,765</gap:target></td></tr>
+                                <tr gap:target id="geo-row-19"><td><gap:target id="geo-19-country">Turkey</gap:target></td><td><gap:target id="geo-19-sessions">5,432</gap:target></td><td><gap:target id="geo-19-pageviews">7,654</gap:target></td></tr>
+                                <tr gap:target id="geo-row-20"><td><gap:target id="geo-20-country">South Korea</gap:target></td><td><gap:target id="geo-20-sessions">4,321</gap:target></td><td><gap:target id="geo-20-pageviews">6,543</gap:target></td></tr>
+                                <tr gap:target id="geo-row-21"><td><gap:target id="geo-21-country">Sweden</gap:target></td><td><gap:target id="geo-21-sessions">3,987</gap:target></td><td><gap:target id="geo-21-pageviews">5,876</gap:target></td></tr>
+                                <tr gap:target id="geo-row-22"><td><gap:target id="geo-22-country">Poland</gap:target></td><td><gap:target id="geo-22-sessions">3,456</gap:target></td><td><gap:target id="geo-22-pageviews">4,901</gap:target></td></tr>
+                                <tr gap:target id="geo-row-23"><td><gap:target id="geo-23-country">Belgium</gap:target></td><td><gap:target id="geo-23-sessions">2,876</gap:target></td><td><gap:target id="geo-23-pageviews">3,890</gap:target></td></tr>
+                                <tr gap:target id="geo-row-24"><td><gap:target id="geo-24-country">Switzerland</gap:target></td><td><gap:target id="geo-24-sessions">2,543</gap:target></td><td><gap:target id="geo-24-pageviews">3,210</gap:target></td></tr>
+                                <tr gap:target id="geo-row-25"><td><gap:target id="geo-25-country">Austria</gap:target></td><td><gap:target id="geo-25-sessions">2,109</gap:target></td><td><gap:target id="geo-25-pageviews">2,765</gap:target></td></tr>
+                                <tr gap:target id="geo-row-26"><td><gap:target id="geo-26-country">Singapore</gap:target></td><td><gap:target id="geo-26-sessions">1,876</gap:target></td><td><gap:target id="geo-26-pageviews">2,345</gap:target></td></tr>
+                                <tr gap:target id="geo-row-27"><td><gap:target id="geo-27-country">Ireland</gap:target></td><td><gap:target id="geo-27-sessions">1,543</gap:target></td><td><gap:target id="geo-27-pageviews">1,987</gap:target></td></tr>
+                                <tr gap:target id="geo-row-28"><td><gap:target id="geo-28-country">Norway</gap:target></td><td><gap:target id="geo-28-sessions">1,210</gap:target></td><td><gap:target id="geo-28-pageviews">1,543</gap:target></td></tr>
+                                <tr gap:target id="geo-row-29"><td><gap:target id="geo-29-country">Finland</gap:target></td><td><gap:target id="geo-29-sessions">987</gap:target></td><td><gap:target id="geo-29-pageviews">1,210</gap:target></td></tr>
+                                <tr gap:target id="geo-row-30"><td><gap:target id="geo-30-country">Denmark</gap:target></td><td><gap:target id="geo-30-sessions">765</gap:target></td><td><gap:target id="geo-30-pageviews">987</gap:target></td></tr>
+                                </gap:target>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </gap:target>
+
+    </div>
+    </gap:target>
+</body>
+</html>

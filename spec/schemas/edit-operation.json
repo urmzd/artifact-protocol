@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aap.dev/schemas/edit-operation.json",
+  "$id": "https://urmzd.com/schemas/gap/edit-operation.json",
   "title": "Edit Operation",
   "description": "A single edit operation applied to an artifact. Target addressing uses a discriminated union with type and value fields.",
   "type": "object",
@@ -19,7 +19,7 @@
         "type": {
           "type": "string",
           "enum": ["id", "pointer"],
-          "description": "Addressing mode: id (aap:target marker) or pointer (JSON Pointer RFC 6901)"
+          "description": "Addressing mode: id (gap:target marker) or pointer (JSON Pointer RFC 6901)"
         },
         "value": {
           "type": "string",

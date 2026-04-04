@@ -1,4 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0008","version":2,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"<!DOCTYPE html>"},"content":"UPDfe364450_TYPE html>"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0008","version":3,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"        .dashboard-content {"},"content":"UPD78006f63_   .dashboard-content {"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0008","version":4,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"            margin-top: 15px;"},"content":"            margin-top: 57px;"}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0008","version":5,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"                        <div class=\"metric\">1,245</div>"},"content":"                        <div class=\"metric\">43,287</div>"}],"meta":{"format":"text/html"}}

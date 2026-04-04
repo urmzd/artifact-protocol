@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aap.dev/schemas/relationship.json",
+  "$id": "https://urmzd.com/schemas/gap/relationship.json",
   "title": "Artifact Relationship",
   "description": "A typed link between artifacts",
   "type": "object",

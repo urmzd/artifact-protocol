@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0011","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                            <th>Reorder Threshold</th>"}}],"meta":{"format":"text/html"}}
-{"protocol":"aap/0.1","id":"artifact-0011","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                            <td>TXN-8921</td>"}}],"meta":{"format":"text/html"}}

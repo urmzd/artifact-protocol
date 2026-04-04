@@ -1,0 +1,2 @@
+{"protocol":"gap/0.1","id":"artifact-0008","version":10,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                <div class=\"stats-grid\">"}}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0008","version":11,"name":"edit","content":[{"op":"delete","target":{"type":"id","value":"                                <th>Status</th>"}}],"meta":{"format":"text/html"}}

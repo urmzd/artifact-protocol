@@ -18,7 +18,7 @@ just bench   # run criterion benchmarks
 agent-artifact-protocol/
 ├── src/
 │   ├── lib.rs                 # crate root (re-exports modules)
-│   ├── aap.rs                 # envelope data model
+│   ├── gap.rs                 # envelope data model
 │   ├── apply.rs               # stateless apply engine
 │   ├── store.rs               # versioned artifact store
 │   ├── markers.rs             # section marker utilities
@@ -26,10 +26,10 @@ agent-artifact-protocol/
 │   └── ffi.rs                 # Python bindings (optional, pyo3)
 ├── evals/                     # LLM evaluation framework
 │   ├── pyproject.toml         # Python dependencies (uv + maturin)
-│   └── src/aap_evals/         # Eval CLI and harness
+│   └── src/gap_evals/         # Eval CLI and harness
 ├── spec/                      # Protocol specification
-│   ├── aap.md                 # Main spec (v0.1)
-│   ├── aap-sse.md             # SSE wire format binding
+│   ├── gap.md                 # Main spec (v0.1)
+│   ├── gap-sse.md             # SSE wire format binding
 │   ├── schemas/               # JSON Schema files
 │   └── examples/              # Example envelopes
 ├── benches/                   # Criterion benchmarks

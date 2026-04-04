@@ -1,0 +1,4 @@
+{"protocol":"gap/0.1","id":"artifact-0004","version":2,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"<!DOCTYPE html>"},"content":"UPDfe364450_TYPE html>"}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0004","version":3,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"            color: #ecf0f1;"},"content":"            color: #ecf42f43;"}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0004","version":4,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"            display: flex;"},"content":"UPD0d69437c_UPD0d69437c_  display: flex;"}],"meta":{"format":"text/html"}}
+{"protocol":"gap/0.1","id":"artifact-0004","version":5,"name":"edit","content":[{"op":"replace","target":{"type":"id","value":"                    <h4>On Track</h4>"},"content":"                    <h46>On Track</h46>"}],"meta":{"format":"text/html"}}
