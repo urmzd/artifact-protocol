@@ -1,13 +1,13 @@
 [package]
-name = "aap"
+name = "generative-artifact-protocol"
 version = "0.12.0"
 edition = "2021"
-description = "Agent-Artifact Protocol — token-efficient artifact generation and updates for LLMs"
+description = "Generative Artifact Protocol (GAP) — token-efficient artifact generation and updates for LLMs"
 license = "Apache-2.0"
 repository = "https://github.com/urmzd/agent-artifact-protocol"
 homepage = "https://github.com/urmzd/agent-artifact-protocol"
 readme = "README.md"
-keywords = ["aap", "llm", "artifact", "apply-engine"]
+keywords = ["gap", "aap", "llm", "artifact", "apply-engine"]
 categories = ["text-processing"]
 exclude = [
   "apps/",
@@ -25,7 +25,7 @@ exclude = [
 ]
 
 [lib]
-name = "aap"
+name = "gap"
 path = "src/lib.rs"
 crate-type = ["lib", "cdylib"]
 
