@@ -5,8 +5,8 @@ Contributions are welcome. Please follow these guidelines.
 ## Getting started
 
 ```sh
-git clone https://github.com/urmzd/agent-artifact-protocol
-cd agent-artifact-protocol
+git clone https://github.com/urmzd/generative-artifact-protocol
+cd generative-artifact-protocol
 just build   # compile the Rust library
 just test    # run unit tests
 just bench   # run criterion benchmarks
@@ -15,7 +15,7 @@ just bench   # run criterion benchmarks
 ## Project structure
 
 ```
-agent-artifact-protocol/
+generative-artifact-protocol/
 ├── src/
 │   ├── lib.rs                 # crate root (re-exports modules)
 │   ├── gap.rs                 # envelope data model

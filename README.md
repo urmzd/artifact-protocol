@@ -1,4 +1,4 @@
-# gap
+# generative-artifact-protocol
 
 > **Warning**: This project is `v0` — the protocol, schemas, and APIs are subject to breaking changes without notice until a formal release.
 
