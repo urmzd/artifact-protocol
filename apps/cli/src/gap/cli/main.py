@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
+from importlib.metadata import version as _pkg_version
 from pathlib import Path
 from typing import Annotated
 
@@ -16,6 +18,38 @@ from gap.evals import DATA_DIR
 
 app = typer.Typer(name="gap-evals", help="GAP benchmarks and evaluations.")
 console = Console()
+
+
+# ── version ───────────────────────────────────────────────────────────────
+
+
+@app.command(name="version")
+def show_version() -> None:
+    """Print the installed gap-cli version."""
+    try:
+        v = _pkg_version("gap-cli")
+    except Exception:
+        v = "unknown"
+    print(v)
+
+
+# ── update ────────────────────────────────────────────────────────────────
+
+
+@app.command(name="update")
+def update_cli() -> None:
+    """Update gap-cli to the latest published version."""
+    import shutil
+    import subprocess
+
+    if shutil.which("uv"):
+        cmd = ["uv", "tool", "upgrade", "gap-cli"]
+    else:
+        cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "gap-cli"]
+
+    console.print(f"[dim]Running: {' '.join(cmd)}[/dim]")
+    result = subprocess.run(cmd)
+    raise typer.Exit(result.returncode)
 
 GAP_INIT_SPEC = (DATA_DIR / "gap-spec-init.md").read_text().strip()
 GAP_MAINTAIN_SPEC = (DATA_DIR / "gap-spec-maintain.md").read_text().strip()
@@ -440,6 +474,7 @@ def eval_experiments(
 def report(
     experiments_dir: Annotated[Path, typer.Option(help="Experiments directory")] = DATA_DIR / "experiments",
     output: Annotated[Path, typer.Option(help="Output file")] = DATA_DIR / "experiments" / "results.md",
+    format: Annotated[str, typer.Option(help="Output format: human or json")] = "human",
 ) -> None:
     """Generate report from experiment metrics."""
     metrics_files = sorted(experiments_dir.glob("*/metrics.json"))
@@ -448,6 +483,36 @@ def report(
         raise typer.Exit(1)
 
     results = [json.loads(mf.read_text()) for mf in metrics_files]
+
+    if format == "json":
+        rows = []
+        for r in results:
+            tt = r.get("token_table", {}).get("totals", {})
+            comp = r.get("comparison", {})
+            gap_flow = r.get("gap_flow", {})
+            qual = r.get("quality", {})
+            num_edits = len(gap_flow.get("per_turn", []))
+            parse_ok = sum(1 for t in gap_flow.get("per_turn", []) if t.get("envelope_parsed"))
+            apply_ok = sum(1 for t in gap_flow.get("per_turn", []) if t.get("apply_succeeded"))
+            rows.append({
+                "experiment_id": r["experiment_id"],
+                "format": r.get("format", ""),
+                "model": r.get("model", ""),
+                "provider": r.get("provider", ""),
+                "base_input": tt.get("base_input", 0),
+                "base_output": tt.get("base_output", 0),
+                "gap_input": tt.get("gap_input", 0),
+                "gap_output": tt.get("gap_output", 0),
+                "output_savings_pct": comp.get("output_token_savings_pct", 0),
+                "combined_savings_pct": tt.get("combined_savings_pct", 0),
+                "parse_ok": parse_ok,
+                "apply_ok": apply_ok,
+                "num_edits": num_edits,
+                "mean_sequence_similarity": qual.get("mean_sequence_similarity"),
+                "mean_token_f1": qual.get("mean_token_f1"),
+            })
+        print(json.dumps(rows, indent=2))
+        return
 
     # ── Rich terminal table ───────────────────────────────────────────
     table = Table(title="GAP Experiment Results", show_lines=True)
@@ -574,11 +639,12 @@ def evaluate(
     judge: Annotated[bool, typer.Option(help="Enable LLM-as-judge scoring")] = False,
     count: Annotated[int, typer.Option(help="Max experiments (0 = all)")] = 0,
     force: Annotated[bool, typer.Option(help="Re-evaluate even if eval.json exists")] = False,
+    format: Annotated[str, typer.Option(help="Output format: human or json")] = "human",
 ) -> None:
     """Evaluate output quality — text metrics and optional LLM-as-judge."""
     asyncio.run(_evaluate_async(
         experiments_dir, provider, model, host, experiment_id,
-        use_ragas, judge, count, force,
+        use_ragas, judge, count, force, format,
     ))
 
 
@@ -592,6 +658,7 @@ async def _evaluate_async(
     judge: bool,
     count: int,
     force: bool,
+    format: str = "human",
 ) -> None:
     from gap.evals.eval import run_eval
 
@@ -626,7 +693,8 @@ async def _evaluate_async(
         console.print("[red]No experiments with outputs found.[/red]")
         raise typer.Exit(1)
 
-    console.print(f"Evaluating {len(exp_dirs)} experiment(s)" + (f" with judge ({model})" if judge else "") + "\n")
+    if format != "json":
+        console.print(f"Evaluating {len(exp_dirs)} experiment(s)" + (f" with judge ({model})" if judge else "") + "\n")
 
     table = Table(title="Eval Results")
     table.add_column("Experiment", style="bold")
@@ -636,12 +704,15 @@ async def _evaluate_async(
         table.add_column("Base Judge", justify="right")
         table.add_column("GAP Judge", justify="right")
 
+    json_rows: list[dict] = []
+
     for exp_dir in exp_dirs:
         exp_name = exp_dir.name
         eval_file = exp_dir / "eval.json"
 
         if eval_file.exists() and not force:
-            console.print(f"[dim]{exp_name} — already evaluated, skipping[/dim]")
+            if format != "json":
+                console.print(f"[dim]{exp_name} — already evaluated, skipping[/dim]")
             continue
 
         fmt, ext = _parse_experiment_format(exp_dir / "README.md")
@@ -650,20 +721,34 @@ async def _evaluate_async(
             quality = await run_eval(exp_dir, ext, use_ragas, judge_model)
             eval_file.write_text(quality.model_dump_json(indent=2) + "\n")
 
-            row = [
-                exp_name[:35],
-                f"{quality.mean_sequence_similarity:.3f}",
-                f"{quality.mean_token_f1:.3f}",
-            ]
-            if judge:
-                row.append(f"{quality.mean_base_judge:.3f}" if quality.mean_base_judge is not None else "—")
-                row.append(f"{quality.mean_gap_judge:.3f}" if quality.mean_gap_judge is not None else "—")
-            table.add_row(*row)
-
-            console.print(f"  [green]{exp_name}[/green] sim={quality.mean_sequence_similarity:.3f} f1={quality.mean_token_f1:.3f}")
+            if format == "json":
+                row_dict: dict = {
+                    "experiment_id": exp_name,
+                    "mean_sequence_similarity": quality.mean_sequence_similarity,
+                    "mean_token_f1": quality.mean_token_f1,
+                }
+                if judge:
+                    row_dict["mean_base_judge"] = quality.mean_base_judge
+                    row_dict["mean_gap_judge"] = quality.mean_gap_judge
+                json_rows.append(row_dict)
+            else:
+                row = [
+                    exp_name[:35],
+                    f"{quality.mean_sequence_similarity:.3f}",
+                    f"{quality.mean_token_f1:.3f}",
+                ]
+                if judge:
+                    row.append(f"{quality.mean_base_judge:.3f}" if quality.mean_base_judge is not None else "—")
+                    row.append(f"{quality.mean_gap_judge:.3f}" if quality.mean_gap_judge is not None else "—")
+                table.add_row(*row)
+                console.print(f"  [green]{exp_name}[/green] sim={quality.mean_sequence_similarity:.3f} f1={quality.mean_token_f1:.3f}")
         except Exception as e:
-            console.print(f"  [red]{exp_name} failed: {e}[/red]")
+            if format != "json":
+                console.print(f"  [red]{exp_name} failed: {e}[/red]")
 
-    console.print()
-    console.print(table)
-    console.print("\n[green]Done.[/green]")
+    if format == "json":
+        print(json.dumps(json_rows, indent=2))
+    else:
+        console.print()
+        console.print(table)
+        console.print("\n[green]Done.[/green]")
