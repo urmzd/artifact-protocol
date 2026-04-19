@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.15.3 (2026-04-19)
+
+### Bug Fixes
+
+- **ci**: refresh Cargo.lock in build hook and stage it for release ([c454af2](https://github.com/urmzd/generative-artifact-protocol/commit/c454af2278866824235f29d4517f0e2a1a1232fb))
+
+[Full Changelog](https://github.com/urmzd/generative-artifact-protocol/compare/v0.15.2...v0.15.3)
+
+
 ## 0.15.2 (2026-04-19)
 
 ### Refactoring

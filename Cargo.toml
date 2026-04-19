@@ -15,7 +15,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [package]
 name = "generative-artifact-protocol"
-version = "0.15.2"
+version = "0.15.3"
 edition = "2021"
 description = "Generative Artifact Protocol (GAP) — token-efficient artifact generation and updates for LLMs"
 license = "Apache-2.0"

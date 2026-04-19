@@ -550,7 +550,7 @@ dependencies = [
 
 [[package]]
 name = "generative-artifact-protocol"
-version = "0.15.1"
+version = "0.15.3"
 dependencies = [
  "anyhow",
  "criterion",
