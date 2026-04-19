@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.15.2 (2026-04-19)
+
+### Refactoring
+
+- move cargo publish into sr hooks.post_release ([254fd0d](https://github.com/urmzd/generative-artifact-protocol/commit/254fd0d7a764d9d5b1b5215678f1287752777708))
+
+### Misc
+
+- add limitations section to README ([3256d8a](https://github.com/urmzd/generative-artifact-protocol/commit/3256d8a24cf076621f3b46076618c1ed12e3c0bb))
+- fix cost model math, qualify savings claims, update project structure ([21c65f9](https://github.com/urmzd/generative-artifact-protocol/commit/21c65f9aece271ac10c342ca775dacb8dd3dfc11))
+
+[Full Changelog](https://github.com/urmzd/generative-artifact-protocol/compare/v0.15.1...v0.15.2)
+
+
 ## 0.15.1 (2026-04-16)
 
 ### Bug Fixes
