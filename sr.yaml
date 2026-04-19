@@ -60,6 +60,10 @@ packages:
   - path: .
     version_files:
       - Cargo.toml
+    stage_files:
+      - Cargo.lock
     hooks:
+      build:
+        - cargo update --workspace
       post_release:
         - cargo publish
